@@ -1,0 +1,12 @@
+{
+  "name": "meta-ads-pro",
+  "version": "1.0.0",
+  "description": "Meta Ads Pro Dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}
