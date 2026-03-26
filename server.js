@@ -34,16 +34,14 @@ function proxy(p, method, body, res) {
     r.on('data', c => d += c);
     r.on('end', () => { cors(res); res.setHeader('Content-Type', 'application/json'); res.writeHead(200); res.end(d); });
   });
-  req.on('error', e => { cors(res); res.writeHead(500); res.end('{"error":{"message":"' + e.message + '"}}'); });
+  req.on('error', e => { cors(res); res.writeHead(500); res.end(JSON.stringify({error:{message:e.message}})); });
   if (body) req.write(body);
   req.end();
 }
-
 http.createServer((req, res) => {
   const { pathname } = url.parse(req.url);
   cors(res);
   if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
-
   if (pathname === '/api/login' && req.method === 'POST') {
     let b = ''; req.on('data', c => b += c);
     req.on('end', () => {
@@ -58,14 +56,12 @@ http.createServer((req, res) => {
     });
     return;
   }
-
   if (pathname === '/api/verify') {
     res.setHeader('Content-Type', 'application/json');
     res.writeHead(200);
     res.end(JSON.stringify({ ok: sessions.has(req.headers['authorization']) }));
     return;
   }
-
   if (pathname.startsWith('/api/meta/')) {
     if (!sessions.has(req.headers['authorization'])) { res.writeHead(401); res.end('{"error":{"message":"Not logged in"}}'); return; }
     const mp = pathname.replace('/api/meta/', '') + (req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '');
@@ -79,7 +75,6 @@ http.createServer((req, res) => {
     } else { proxy(mp, 'GET', null, res); }
     return;
   }
-
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.writeHead(200);
   res.end(HTML);
