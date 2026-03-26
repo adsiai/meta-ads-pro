@@ -4,17 +4,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#0a0a0f;color:#e8e8f0;font-family:Heebo,sans-serif;min-height:100vh;direction:rtl}
+*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0f;color:#e8e8f0;font-family:Heebo,sans-serif;min-height:100vh;direction:rtl}
 .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
 .card{background:#111118;border:1px solid #2a2a3a;border-radius:20px;padding:2.5rem;width:380px;max-width:95vw}
 .logo{font-size:1.4rem;font-weight:900;color:#4f7fff;margin-bottom:.3rem}.logo span{color:#00e5a0}
 .sub{color:#6b6b8a;font-size:.85rem;margin-bottom:2rem}
 .lbl{display:block;font-size:.72rem;font-weight:700;color:#6b6b8a;margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.06em}
 .inp{width:100%;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:10px;padding:.7rem 1rem;color:#e8e8f0;font-size:.9rem;outline:none;margin-bottom:1rem;direction:ltr;text-align:left}
-.inp:focus{border-color:#4f7fff}
-.btn-lo{width:100%;background:#4f7fff;color:#fff;border:none;border-radius:10px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:Heebo,sans-serif}
-.btn-lo:hover{background:#3a6aee}
+.inp:focus{border-color:#4f7fff}.btn-lo{width:100%;background:#4f7fff;color:#fff;border:none;border-radius:10px;padding:.85rem;font-size:1rem;font-weight:700;cursor:pointer;font-family:Heebo,sans-serif}.btn-lo:hover{background:#3a6aee}
 .err{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);border-radius:8px;padding:.7rem 1rem;color:#ff6b6b;font-size:.83rem;margin-bottom:1rem;display:none}
 .hdr{background:#111118;border-bottom:1px solid #2a2a3a;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:200;gap:.75rem}
 .logo2{font-size:.95rem;font-weight:900;color:#4f7fff}.logo2 span{color:#00e5a0}
@@ -23,7 +20,7 @@ body{background:#0a0a0f;color:#e8e8f0;font-family:Heebo,sans-serif;min-height:10
 .dp{padding:.3rem .6rem;border-radius:6px;border:1px solid #2a2a3a;background:transparent;color:#6b6b8a;font-size:.75rem;cursor:pointer;font-family:Heebo,sans-serif}
 .dp:hover,.dp.on{background:rgba(79,127,255,.15);color:#4f7fff;border-color:rgba(79,127,255,.3)}
 .di{background:#1a1a24;border:1px solid #2a2a3a;border-radius:6px;padding:.28rem .55rem;color:#e8e8f0;font-size:.75rem;outline:none;direction:ltr}
-.layout{display:grid;grid-template-columns:1fr 200px;min-height:calc(100vh - 108px)}
+.layout{display:grid;grid-template-columns:1fr 210px;min-height:calc(100vh - 108px)}
 .side{background:#111118;border-right:1px solid #2a2a3a;padding:1rem 0;order:2;overflow-y:auto}
 .nlb{font-size:.6rem;color:#6b6b8a;text-transform:uppercase;letter-spacing:.1em;padding:0 1rem;margin-bottom:.35rem;display:block}
 .ns{margin-bottom:1.1rem}
@@ -39,53 +36,45 @@ body{background:#0a0a0f;color:#e8e8f0;font-family:Heebo,sans-serif;min-height:10
 .sg{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.25rem}
 .sc{background:#111118;border:1px solid #2a2a3a;border-radius:12px;padding:1rem;position:relative;overflow:hidden}
 .sc::before{content:"";position:absolute;top:0;right:0;left:0;height:2px;background:#4f7fff}
-.sc:nth-child(2)::before{background:#00e5a0}.sc:nth-child(3)::before{background:#ff9f43}
-.sc:nth-child(4)::before{background:#a29bfe}.sc:nth-child(5)::before{background:#fd79a8}.sc:nth-child(6)::before{background:#55efc4}
-.sl{font-size:.65rem;color:#6b6b8a;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.4rem}
-.sv{font-size:1.45rem;font-weight:900;line-height:1;margin-bottom:.15rem}.sm2{font-size:.7rem;color:#6b6b8a}
+.sc:nth-child(2)::before{background:#00e5a0}.sc:nth-child(3)::before{background:#ff9f43}.sc:nth-child(4)::before{background:#a29bfe}.sc:nth-child(5)::before{background:#fd79a8}.sc:nth-child(6)::before{background:#55efc4}
+.sl{font-size:.65rem;color:#6b6b8a;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.4rem}.sv{font-size:1.45rem;font-weight:900;line-height:1;margin-bottom:.15rem}.sm2{font-size:.7rem;color:#6b6b8a}
 .cc{background:#111118;border:1px solid #2a2a3a;border-radius:12px;padding:1.1rem;margin-bottom:1.25rem}
-.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem}
-.ct{font-size:.875rem;font-weight:700}.ctg{display:flex;gap:.35rem}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem}.ct{font-size:.875rem;font-weight:700}.ctg{display:flex;gap:.35rem}
 .ctb{padding:.22rem .6rem;border-radius:20px;font-size:.72rem;font-weight:600;cursor:pointer;border:1px solid #2a2a3a;background:transparent;color:#6b6b8a;font-family:Heebo,sans-serif}
-.cs{position:relative;height:180px}
-.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem;flex-wrap:wrap;gap:.4rem}
-.st{font-size:.9rem;font-weight:700}
+.cs{position:relative;height:180px}.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem;flex-wrap:wrap;gap:.4rem}.st{font-size:.9rem;font-weight:700}
 .tw{background:#111118;border:1px solid #2a2a3a;border-radius:12px;overflow-x:auto;margin-bottom:1.25rem}
-table{width:100%;border-collapse:collapse;min-width:600px}
-th{font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;color:#6b6b8a;padding:.65rem .9rem;text-align:right;border-bottom:1px solid #2a2a3a;background:#1a1a24;white-space:nowrap}
+table{width:100%;border-collapse:collapse;min-width:600px}th{font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;color:#6b6b8a;padding:.65rem .9rem;text-align:right;border-bottom:1px solid #2a2a3a;background:#1a1a24;white-space:nowrap}
 td{padding:.65rem .9rem;font-size:.82rem;border-bottom:1px solid rgba(42,42,58,.5);vertical-align:middle;white-space:nowrap}
 tr:last-child td{border-bottom:none}tr:hover td{background:rgba(79,127,255,.04)}
 .bdc{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:20px;font-size:.7rem;font-weight:600}
-.bac{background:rgba(0,229,160,.12);color:#00e5a0;border:1px solid rgba(0,229,160,.25)}
-.bpc{background:rgba(255,107,107,.12);color:#ff6b6b;border:1px solid rgba(255,107,107,.25)}
+.bac{background:rgba(0,229,160,.12);color:#00e5a0;border:1px solid rgba(0,229,160,.25)}.bpc{background:rgba(255,107,107,.12);color:#ff6b6b;border:1px solid rgba(255,107,107,.25)}
 .dot{width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block}.ac{display:flex;gap:4px}
 .ld{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem;gap:.75rem;color:#6b6b8a;font-size:.825rem}
-.sp{width:28px;height:28px;border:2px solid #2a2a3a;border-top-color:#4f7fff;border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+.sp{width:28px;height:28px;border:2px solid #2a2a3a;border-top-color:#4f7fff;border-radius:50%;animation:spin .7s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
 .eb{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.25);border-radius:10px;padding:.8rem 1rem;color:#ff6b6b;font-size:.82rem;margin-bottom:.9rem}
 .ok{background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.25);border-radius:10px;padding:.8rem 1rem;color:#00e5a0;font-size:.82rem;margin-bottom:.9rem}
 .mo{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:999;backdrop-filter:blur(6px)}
 .mc{background:#111118;border:1px solid #2a2a3a;border-radius:16px;padding:1.5rem;width:480px;max-width:95vw;max-height:90vh;overflow-y:auto}
-.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
-.mt{font-size:1rem;font-weight:700}.xb{background:none;border:none;color:#6b6b8a;cursor:pointer;font-size:1.1rem;padding:4px}
+.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}.mt{font-size:1rem;font-weight:700}.xb{background:none;border:none;color:#6b6b8a;cursor:pointer;font-size:1.1rem;padding:4px}
 .mf{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1.1rem}
 .pg{display:none}.pg.on{display:block}
 .pt{font-size:1.3rem;font-weight:900;margin-bottom:.2rem}.ps{color:#6b6b8a;font-size:.82rem;margin-bottom:1.1rem}
 .tg{display:inline-block;background:rgba(79,127,255,.12);color:#4f7fff;border:1px solid rgba(79,127,255,.2);border-radius:4px;font-size:.66rem;padding:1px 5px}
 .si{background:#1a1a24;border:1px solid #2a2a3a;border-radius:8px;padding:.35rem .75rem;color:#e8e8f0;font-size:.82rem;outline:none;width:180px;direction:rtl}
-.dl{width:6px;height:6px;border-radius:50%;background:#00e5a0;animation:pulse 2s infinite;display:inline-block}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.dl{width:6px;height:6px;border-radius:50%;background:#00e5a0;animation:pulse 2s infinite;display:inline-block}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.ai-result-item{background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;padding:.75rem 1rem;margin-bottom:.5rem}
+.ai-action-btn{background:rgba(79,127,255,.12);color:#4f7fff;border:1px solid rgba(79,127,255,.25);border-radius:6px;padding:.25rem .65rem;font-size:.75rem;cursor:pointer;font-family:Heebo,sans-serif;font-weight:600}
+.ai-action-btn:hover{background:rgba(79,127,255,.25)}
+.rule-card{background:#0a0a0f;border:1px solid #2a2a3a;border-radius:10px;padding:.85rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:#00e5a0;animation:pulse 2s infinite;display:inline-block;margin-left:.4rem}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.side{height:auto;border-right:none;border-bottom:1px solid #2a2a3a;order:1;display:flex;overflow-x:auto;padding:.5rem}.main{order:2;padding:1rem}.ns{margin-bottom:0;display:flex;gap:.25rem}.nlb{display:none}.ni{white-space:nowrap;border-right:none;border-radius:6px;font-size:.75rem}.ni.on{border-right:none;background:rgba(79,127,255,.15)}}
 @media(max-width:650px){.sg{grid-template-columns:1fr 1fr}}
 </style></head><body>
-<div id="p0" class="wrap"><div class="card">
-<div class="logo">META<span>ADS</span> PRO</div>
-<div class="sub">Connect to manage your campaigns</div>
+<div id="p0" class="wrap"><div class="card"><div class="logo">META<span>ADS</span> PRO</div><div class="sub">Connect to manage your campaigns</div>
 <div id="lerr" class="err">Wrong username or password</div>
 <label class="lbl">Username</label><input type="text" class="inp" id="lu" placeholder="Username">
 <label class="lbl">Password</label><input type="password" class="inp" id="lp" placeholder="Password">
-<button class="btn-lo" id="lbtn">Login</button>
-</div></div>
+<button class="btn-lo" id="lbtn">Login</button></div></div>
 <div id="p1" style="display:none">
 <div class="hdr"><div class="logo2">META<span>ADS</span></div><select class="sw" id="sw"></select>
 <div style="display:flex;gap:.5rem;align-items:center"><div class="dl"></div><button class="btn bg sm" id="logoutBtn">Logout</button></div></div>
@@ -102,6 +91,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(79,127,255,.04)}
 <div class="ns"><span class="nlb">Tools</span>
 <div class="ni" data-g="create">+ New Campaign</div>
 <div class="ni" data-g="alerts">Alerts <span id="alb" style="display:none;background:#ff6b6b;color:#fff;border-radius:10px;font-size:.62rem;padding:1px 5px;margin-right:4px"></span></div>
+<div class="ni" data-g="ai">🤖 AI Center</div>
 <div class="ni" data-g="export">Export</div></div></nav>
 <main class="main">
 <div class="pg on" id="pg-dash"><div class="pt">Dashboard</div><div class="ps" id="dsub">Loading...</div>
@@ -113,8 +103,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(79,127,255,.04)}
 <div class="sh"><div class="st">Active Campaigns</div><button class="btn ba sm" data-g="camps">All</button></div>
 <div class="tw" id="dc"><div class="ld"><div class="sp"></div></div></div></div>
 <div class="pg" id="pg-camps"><div class="pt">Campaigns</div><div class="ps">All campaigns</div>
-<div class="sh"><div style="display:flex;gap:.4rem"><button class="btn bg sm" id="rCamps">Refresh</button>
-<button class="btn ba sm" data-g="create">+ New</button></div><input class="si" id="sCamps" placeholder="Search..."></div>
+<div class="sh"><div style="display:flex;gap:.4rem"><button class="btn bg sm" id="rCamps">Refresh</button><button class="btn ba sm" data-g="create">+ New</button></div><input class="si" id="sCamps" placeholder="Search..."></div>
 <div class="tw" id="ct"><div class="ld"><div class="sp"></div></div></div></div>
 <div class="pg" id="pg-adsets"><div class="pt">Ad Sets</div><div class="ps">Ad groups</div>
 <div class="sh"><button class="btn bg sm" id="rAdsets">Refresh</button><input class="si" id="sAdsets" placeholder="Search..."></div>
@@ -138,12 +127,97 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(79,127,255,.04)}
 <div class="pg" id="pg-alerts"><div class="pt">Smart Alerts</div><div class="ps">AI scans for issues</div>
 <div class="sh"><button class="btn bg sm" id="scanBtn">Scan Now</button></div>
 <div id="al"><div class="ld"><div class="sp"></div></div></div></div>
+<div class="pg" id="pg-ai">
+<div class="pt">🤖 AI Command Center</div>
+<div class="ps">ניהול חכם ואוטומטי של קמפיינים בעזרת AI</div>
+<div style="display:flex;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap" id="aiTabs">
+<button class="btn ba sm" id="aiTab1" onclick="showAITab(1)">🤖 Auto-Pilot</button>
+<button class="btn bg sm" id="aiTab2" onclick="showAITab(2)">🧠 Deep Analysis</button>
+<button class="btn bg sm" id="aiTab3" onclick="showAITab(3)">⚡ Smart Rules</button>
+<button class="btn bg sm" id="aiTab4" onclick="showAITab(4)">🔮 Forecast</button>
+<button class="btn bg sm" id="aiTab5" onclick="showAITab(5)">✍️ Copywriter</button>
+</div>
+<div id="aiSec1">
+<div class="cc"><div class="ch"><div class="ct">🤖 Auto-Pilot — ניהול אוטומטי</div>
+<div id="pilotStatus" style="padding:2px 12px;border-radius:20px;font-size:.75rem;font-weight:700;background:rgba(0,229,160,.12);color:#00e5a0;border:1px solid rgba(0,229,160,.25)">מוכן לפעולה</div></div>
+<p style="font-size:.82rem;color:#6b6b8a;margin-bottom:1rem">הגדר סף ROAS/CPA — AI יעצור קמפיינים חלשים ויגביר תקציב לחזקים</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+<div style="background:#0a0a0f;border:1px solid rgba(255,107,107,.25);border-radius:10px;padding:1rem">
+<div style="font-weight:700;font-size:.85rem;margin-bottom:.75rem;color:#ff6b6b">🛑 עצור קמפיינים חלשים</div>
+<label class="lbl">עצור אם ROAS נמוך מ</label><input type="number" class="inp" id="minRoas" value="0.8" step="0.1" min="0">
+<label class="lbl">עצור אם CPA גבוה מ (ILS)</label><input type="number" class="inp" id="maxCpa" value="300" min="0">
+<label class="lbl">עצור אם CTR נמוך מ (%)</label><input type="number" class="inp" id="minCtr" value="0.3" step="0.1" min="0">
+<label class="lbl">עצור אם הוצאה מינימלית (ILS)</label><input type="number" class="inp" id="minSpend" value="50" min="0">
+</div>
+<div style="background:#0a0a0f;border:1px solid rgba(0,229,160,.25);border-radius:10px;padding:1rem">
+<div style="font-weight:700;font-size:.85rem;margin-bottom:.75rem;color:#00e5a0">🚀 הגבר קמפיינים חזקים</div>
+<label class="lbl">הגבר אם ROAS גבוה מ</label><input type="number" class="inp" id="boostRoas" value="2.0" step="0.1" min="0">
+<label class="lbl">אחוז הגברה (%)</label><input type="number" class="inp" id="boostPct" value="20" min="5" max="100">
+<label class="lbl">תקציב יומי מקסימלי (ILS)</label><input type="number" class="inp" id="maxBudget" value="500" min="0">
+<label class="lbl">הגבר אם CTR גבוה מ (%)</label><input type="number" class="inp" id="boostCtr" value="3.0" step="0.1" min="0">
+</div></div>
+<div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
+<button class="btn" style="background:#ff6b6b;color:#fff" onclick="previewPilot()">👁 תצוגה מקדימה</button>
+<button class="btn ba" id="runPilotBtn" onclick="runAutoPilot()">⚡ הפעל Auto-Pilot</button>
+<span style="font-size:.75rem;color:#6b6b8a">* בודק נתוני 7 הימים האחרונים</span>
+</div>
+<div id="pilotResults" style="margin-top:1rem"></div>
+</div></div>
+<div id="aiSec2" style="display:none"><div class="cc">
+<div class="ch"><div class="ct">🧠 Deep Analysis — ניתוח AI מעמיק</div></div>
+<p style="font-size:.82rem;color:#6b6b8a;margin-bottom:1rem">Claude מנתח את כל הקמפיינים שלך ומייצר דוח מפורט עם המלצות מעשיות</p>
+<div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+<button class="btn ba" onclick="runDeepAnalysis('full')">🔍 ניתוח מלא</button>
+<button class="btn bg sm" onclick="runDeepAnalysis('roas')">📊 ניתוח ROAS</button>
+<button class="btn bg sm" onclick="runDeepAnalysis('budget')">💰 אופטימיזציית תקציב</button>
+<button class="btn bg sm" onclick="runDeepAnalysis('winners')">🏆 מצא מנצחים</button>
+</div>
+<div id="deepResults" style="background:#0a0a0f;border:1px solid #2a2a3a;border-radius:10px;padding:1.1rem;min-height:100px;font-size:.83rem;line-height:1.8;white-space:pre-wrap;direction:rtl;color:#e8e8f0">
+לחץ על אחד מהכפתורים לקבלת ניתוח AI מעמיק...
+</div></div></div>
+<div id="aiSec3" style="display:none"><div class="cc">
+<div class="ch"><div class="ct">⚡ Smart Rules — כללים אוטומטיים</div><button class="btn ba sm" onclick="loadDefaultRules()">📋 טען כללים מומלצים</button></div>
+<p style="font-size:.82rem;color:#6b6b8a;margin-bottom:1rem">כללים שרצים על כל הקמפיינים בלחיצה אחת</p>
+<div id="rulesList" style="display:flex;flex-direction:column;gap:.65rem;margin-bottom:1rem"></div>
+<button class="btn ba" style="margin-bottom:.75rem" onclick="runAllRules()">▶ הפעל את כל הכללים</button>
+<div id="rulesResults"></div>
+</div></div>
+<div id="aiSec4" style="display:none"><div class="cc">
+<div class="ch"><div class="ct">🔮 Forecast — תחזית AI</div></div>
+<p style="font-size:.82rem;color:#6b6b8a;margin-bottom:1rem">AI מנתח טרנדים ומנבא ביצועים עתידיים בהתבסס על הנתונים שלך</p>
+<div style="display:flex;gap:.5rem;margin-bottom:1rem">
+<button class="btn ba" onclick="runForecast(7)">🔮 תחזית 7 ימים</button>
+<button class="btn bg sm" onclick="runForecast(30)">📅 תחזית 30 ימים</button>
+</div>
+<div id="forecastResults" style="background:#0a0a0f;border:1px solid #2a2a3a;border-radius:10px;padding:1.1rem;min-height:100px;font-size:.83rem;line-height:1.8;white-space:pre-wrap;direction:rtl;color:#e8e8f0">
+לחץ לקבלת תחזית מבוססת AI...
+</div></div></div>
+<div id="aiSec5" style="display:none"><div class="cc">
+<div class="ch"><div class="ct">✍️ AI Copywriter — כתיבת טקסטים</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+<div>
+<label class="lbl">מוצר / שירות</label><input type="text" class="inp" id="copyProduct" placeholder="למשל: תכשיטי זהב" style="direction:rtl;text-align:right">
+<label class="lbl">קהל יעד</label><input type="text" class="inp" id="copyAudience" placeholder="למשל: נשים 25-45" style="direction:rtl;text-align:right">
+<label class="lbl">מטרת הקמפיין</label><select class="inp" id="copyGoal" style="direction:rtl;text-align:right">
+<option value="sales">מכירות</option><option value="leads">לידים</option><option value="awareness">מודעות</option><option value="traffic">תנועה</option></select>
+<label class="lbl">טון</label><select class="inp" id="copyTone" style="direction:rtl;text-align:right">
+<option value="professional">מקצועי</option><option value="friendly">ידידותי</option><option value="urgent">דחיפות</option><option value="luxury">יוקרתי</option></select>
+<label class="lbl">מידע נוסף (אופציונלי)</label><textarea class="inp" id="copyExtra" placeholder="מבצעים, הטבות, CTA מיוחד..." style="height:80px;direction:rtl;text-align:right;resize:vertical"></textarea>
+<button class="btn bp" onclick="generateCopy()">✍️ צור טקסטים לפרסומות</button>
+</div>
+<div>
+<label class="lbl">טקסטים שנוצרו</label>
+<div id="copyResults" style="background:#0a0a0f;border:1px solid #2a2a3a;border-radius:10px;padding:1rem;min-height:280px;font-size:.82rem;line-height:1.8;direction:rtl;white-space:pre-wrap;overflow-y:auto">
+טקסטים יופיעו כאן...
+</div>
+<button class="btn bg sm" style="margin-top:.5rem;width:100%" onclick="copyCopyResults()">📋 העתק הכל</button>
+</div></div></div></div>
 <div class="pg" id="pg-export"><div class="pt">Export</div><div class="ps">Download and share</div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1.25rem">
-<div class="sc" style="cursor:pointer;text-align:center" id="eCSV"><div style="font-size:1.75rem">CSV</div><div style="font-weight:700">Excel</div></div>
-<div class="sc" style="cursor:pointer;text-align:center" id="eJSON"><div style="font-size:1.75rem">JSON</div><div style="font-weight:700">Raw Data</div></div>
-<div class="sc" style="cursor:pointer;text-align:center" id="ePDF"><div style="font-size:1.75rem">PDF</div><div style="font-weight:700">Print</div></div>
-<div class="sc" style="cursor:pointer;text-align:center" id="eCopy"><div style="font-size:1.75rem">Share</div><div style="font-weight:700">Copy Summary</div></div>
+<div class="sc" style="cursor:pointer;text-align:center" id="eCSV"><div style="font-size:1.75rem">CSV</div><div style="font-weight:700">Excel</div><div style="color:#6b6b8a;font-size:.74rem">All campaign data</div></div>
+<div class="sc" style="cursor:pointer;text-align:center" id="eJSON"><div style="font-size:1.75rem">JSON</div><div style="font-weight:700">Raw Data</div><div style="color:#6b6b8a;font-size:.74rem">For processing</div></div>
+<div class="sc" style="cursor:pointer;text-align:center" id="ePDF"><div style="font-size:1.75rem">PDF</div><div style="font-weight:700">Print</div><div style="color:#6b6b8a;font-size:.74rem">Send to clients</div></div>
+<div class="sc" style="cursor:pointer;text-align:center" id="eCopy"><div style="font-size:1.75rem">Share</div><div style="font-weight:700">Copy Summary</div><div style="color:#6b6b8a;font-size:.74rem">WhatsApp/Email</div></div>
 </div><div id="exmsg" class="ok" style="display:none"></div></div>
 </main></div></div>
 <div class="mo" id="em" style="display:none"><div class="mc">
@@ -155,6 +229,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(79,127,255,.04)}
 (function(){
 var SID=localStorage.getItem("sid")||"",ACCT=localStorage.getItem("acct")||"";
 var CAMPS=[],EID="",DP="today",DF="",DT="",METRIC="spend",CHART=null;
+var RULES=[];
 function g(id){return document.getElementById(id);}
 function fmt(n){if(!n)return"0";var x=parseFloat(n);if(x>=1e6)return(x/1e6).toFixed(1)+"M";if(x>=1e3)return(x/1e3).toFixed(1)+"K";return x.toFixed(0);}
 function fmtM(n){return"ILS "+parseFloat(n||0).toFixed(2);}
@@ -164,30 +239,11 @@ function ago(n){return new Date(Date.now()-n*86400000).toISOString().split("T")[
 function gdp(){if(DF&&DT)return"time_range={'since':'"+DF+"','until':'"+DT+"'}";return"date_preset="+DP;}
 function apiGet(p){return fetch("/api/meta/"+p,{headers:{Authorization:SID}}).then(function(r){return r.json();}).then(function(d){if(d.error)throw new Error(d.error.message);return d;});}
 function apiPost(p,b){return fetch("/api/meta/"+p,{method:"POST",headers:{Authorization:SID,"Content-Type":"application/json"},body:JSON.stringify(b)}).then(function(r){return r.json();}).then(function(d){if(d.error)throw new Error(d.error.message);return d;});}
-g("lbtn").addEventListener("click",function(){
-  var u=g("lu").value.trim(),p=g("lp").value;
-  if(!u||!p)return;
-  g("lbtn").textContent="Connecting...";g("lbtn").disabled=true;
-  g("lerr").style.display="none";
-  fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:u,password:p})})
-  .then(function(r){return r.json();}).then(function(d){
-    if(!d.ok)throw new Error("bad");
-    SID=d.session;localStorage.setItem("sid",SID);startApp();
-  }).catch(function(){g("lerr").style.display="block";g("lbtn").textContent="Login";g("lbtn").disabled=false;});
-});
+function callClaude(system,user){return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:2000,system:system,messages:[{role:"user",content:user}]})}).then(function(r){return r.json();}).then(function(d){return d.content&&d.content[0]?d.content[0].text:"No response";});}
+g("lbtn").addEventListener("click",function(){var u=g("lu").value.trim(),p=g("lp").value;if(!u||!p)return;g("lbtn").textContent="Connecting...";g("lbtn").disabled=true;g("lerr").style.display="none";fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:u,password:p})}).then(function(r){return r.json();}).then(function(d){if(!d.ok)throw new Error("bad");SID=d.session;localStorage.setItem("sid",SID);startApp();}).catch(function(){g("lerr").style.display="block";g("lbtn").textContent="Login";g("lbtn").disabled=false;});});
 g("lp").addEventListener("keydown",function(e){if(e.key==="Enter")g("lbtn").click();});
 g("logoutBtn").addEventListener("click",function(){SID="";ACCT="";localStorage.removeItem("sid");localStorage.removeItem("acct");location.reload();});
-function startApp(){
-  g("p0").style.display="none";g("p1").style.display="block";
-  g("df").value=ago(7);g("dt").value=tod();
-  apiGet("me/adaccounts?fields=name,account_id,currency,account_status&limit=50")
-  .then(function(d){
-    var accts=(d.data||[]).filter(function(a){return a.account_status===1;});
-    if(!ACCT&&accts.length)ACCT=accts[0].account_id;
-    g("sw").innerHTML=accts.map(function(a){return"<option value=\""+a.account_id+"\""+( a.account_id===ACCT?" selected":"")+">"+a.name+" ("+a.currency+")</option>";}).join("");
-  }).catch(function(){});
-  loadDash();
-}
+function startApp(){g("p0").style.display="none";g("p1").style.display="block";g("df").value=ago(7);g("dt").value=tod();apiGet("me/adaccounts?fields=name,account_id,currency,account_status&limit=50").then(function(d){var accts=(d.data||[]).filter(function(a){return a.account_status===1;});if(!ACCT&&accts.length)ACCT=accts[0].account_id;g("sw").innerHTML=accts.map(function(a){return"<option value=\""+a.account_id+"\""+( a.account_id===ACCT?" selected":"")+">"+a.name+" ("+a.currency+")</option>";}).join("");}).catch(function(){});loadDash();}
 g("sw").addEventListener("change",function(){ACCT=this.value;localStorage.setItem("acct",ACCT);CAMPS=[];loadDash();});
 document.querySelectorAll(".dp").forEach(function(b){b.addEventListener("click",function(){DP=this.dataset.p;DF="";DT="";document.querySelectorAll(".dp").forEach(function(x){x.classList.remove("on");});this.classList.add("on");refresh();});});
 g("applyBtn").addEventListener("click",function(){DF=g("df").value;DT=g("dt").value;if(!DF||!DT)return;document.querySelectorAll(".dp").forEach(function(x){x.classList.remove("on");});refresh();});
@@ -195,39 +251,173 @@ function refresh(){var p=document.querySelector(".pg.on");if(!p)return;var id=p.
 function goPage(n){document.querySelectorAll(".pg").forEach(function(p){p.classList.remove("on");});document.querySelectorAll(".ni").forEach(function(x){x.classList.remove("on");});var pg=g("pg-"+n);if(pg)pg.classList.add("on");var ni=document.querySelector(".ni[data-g=\""+n+"\"]");if(ni)ni.classList.add("on");if(n==="camps")loadCamps();else if(n==="adsets")loadAdsets();else if(n==="ads")loadAds();else if(n==="alerts")runAlerts();}
 document.querySelectorAll("[data-g]").forEach(function(e){e.addEventListener("click",function(){var n=this.dataset.g;if(n)goPage(n);});});
 function sc(l,c,v,s){return"<div class=\"sc\"><div class=\"sl\">"+l+"</div><div class=\"sv\" style=\""+c+"\">"+v+"</div><div class=\"sm2\">"+s+"</div></div>";}
-function loadDash(){
-  g("dsub").textContent="Loading...";
-  apiGet("act_"+ACCT+"/insights?"+gdp()+"&fields=spend,impressions,clicks,ctr,actions,cost_per_action_type&level=account")
-  .then(function(ins){
-    var d=ins.data&&ins.data[0]?ins.data[0]:{};
-    var pv=(d.actions||[]).find(function(a){return a.action_type==="purchase";});
-    var pvc=pv?pv.value:0;
-    var ca=(d.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});
-    var cpa=ca?ca.value:0;
-    var roas=pvc>0&&d.spend>0?(pvc/parseFloat(d.spend)*100).toFixed(2):0;
-    g("sg").innerHTML=sc("Spend","color:#4f7fff",fmtM(d.spend),"Selected period")+sc("Impressions","color:#ff9f43",fmt(d.impressions),fmt(d.clicks)+" clicks")+sc("CTR","color:#a29bfe",fmtP(d.ctr),"Click-through rate")+sc("Purchases","color:#00e5a0",fmt(pvc),"purchase events")+sc("CPA","color:#fd79a8",cpa?fmtM(cpa):"-","Cost per purchase")+sc("ROAS","color:#55efc4",roas?roas+"x":"-","Return on ad spend");
-    g("dsub").textContent="Updated: "+new Date().toLocaleTimeString();
-  }).catch(function(e){g("sg").innerHTML="<div class=\"eb\" style=\"grid-column:1/-1\">Error: "+e.message+"</div>";});
-  apiGet("act_"+ACCT+"/insights?time_increment=1&"+gdp()+"&fields=spend,clicks,ctr,date_start").then(function(ins){drawChart(ins.data||[]);}).catch(function(){});
-  apiGet("act_"+ACCT+"/campaigns?fields=name,status,daily_budget,insights{spend,impressions,ctr}&limit=8&effective_status=[\"ACTIVE\"]").then(function(r){renderCT("dc",r.data||[],true);}).catch(function(e){g("dc").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});
-}
+function loadDash(){g("dsub").textContent="Loading...";apiGet("act_"+ACCT+"/insights?"+gdp()+"&fields=spend,impressions,clicks,ctr,actions,cost_per_action_type&level=account").then(function(ins){var d=ins.data&&ins.data[0]?ins.data[0]:{};var pv=(d.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var ca=(d.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});var cpa=ca?ca.value:0;var roas=pvc>0&&d.spend>0?(pvc/parseFloat(d.spend)*100).toFixed(2):0;g("sg").innerHTML=sc("Spend","color:#4f7fff",fmtM(d.spend),"Selected period")+sc("Impressions","color:#ff9f43",fmt(d.impressions),fmt(d.clicks)+" clicks")+sc("CTR","color:#a29bfe",fmtP(d.ctr),"Click-through rate")+sc("Purchases","color:#00e5a0",fmt(pvc),"purchase events")+sc("CPA","color:#fd79a8",cpa?fmtM(cpa):"-","Cost per purchase")+sc("ROAS","color:#55efc4",roas?roas+"x":"-","Return on ad spend");g("dsub").textContent="Updated: "+new Date().toLocaleTimeString();}).catch(function(e){g("sg").innerHTML="<div class=\"eb\" style=\"grid-column:1/-1\">Error: "+e.message+"</div>";});apiGet("act_"+ACCT+"/insights?time_increment=1&"+gdp()+"&fields=spend,clicks,ctr,date_start").then(function(ins){drawChart(ins.data||[]);}).catch(function(){});apiGet("act_"+ACCT+"/campaigns?fields=name,status,daily_budget,insights{spend,impressions,ctr}&limit=8&effective_status=[\"ACTIVE\"]").then(function(r){renderCT("dc",r.data||[],true);}).catch(function(e){g("dc").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
 function drawChart(data){if(CHART)CHART.destroy();var lbs=data.map(function(d){return new Date(d.date_start).toLocaleDateString("en-GB",{day:"2-digit",month:"2-digit"});});var cs={spend:"#4f7fff",clicks:"#00e5a0",ctr:"#ff9f43"};var bg={spend:"rgba(79,127,255,.1)",clicks:"rgba(0,229,160,.1)",ctr:"rgba(255,159,67,.1)"};CHART=new Chart(g("ch").getContext("2d"),{type:"line",data:{labels:lbs,datasets:[{label:METRIC,data:data.map(function(d){return parseFloat(d[METRIC]||0);}),borderColor:cs[METRIC],backgroundColor:bg[METRIC],tension:.4,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:"rgba(42,42,58,.5)"},ticks:{color:"#6b6b8a",font:{size:10}}},y:{grid:{color:"rgba(42,42,58,.5)"},ticks:{color:"#6b6b8a",font:{size:10}}}}}});}
 document.querySelectorAll(".ctb").forEach(function(b){b.addEventListener("click",function(){METRIC=this.dataset.m;document.querySelectorAll(".ctb").forEach(function(x){x.style.cssText="";});this.style.cssText="background:rgba(79,127,255,.15);color:#4f7fff;border-color:rgba(79,127,255,.3)";refresh();});});
 function loadCamps(){g("ct").innerHTML="<div class=\"ld\"><div class=\"sp\"></div></div>";apiGet("act_"+ACCT+"/campaigns?fields=name,status,objective,daily_budget,insights{spend,impressions,clicks,ctr,actions}&limit=100&"+gdp()).then(function(r){CAMPS=r.data||[];renderCT("ct",CAMPS,false);}).catch(function(e){g("ct").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
-g("rCamps").addEventListener("click",loadCamps);
-g("sCamps").addEventListener("input",function(){filterTbl("ct",this.value);});
+g("rCamps").addEventListener("click",loadCamps);g("sCamps").addEventListener("input",function(){filterTbl("ct",this.value);});
 function renderCT(el,data,mini){if(!data.length){g(el).innerHTML="<div class=\"ld\">No campaigns</div>";return;}var rows=data.map(function(c){var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var bdc=c.status==="ACTIVE"?"bac":"bpc";var acts=mini?"":"<td>"+(pvc||"-")+"</td><td><div class=\"ac\">"+(c.status==="ACTIVE"?"<button class=\"btn bdan sm\" onclick=\"tog('"+c.id+"','PAUSED','c')\">Pause</button>":"<button class=\"btn bsuc sm\" onclick=\"tog('"+c.id+"','ACTIVE','c')\">Resume</button>")+"<button class=\"btn bg sm\" onclick=\"openEdit('"+c.id+"')\">Edit</button></div></td>";return"<tr><td style=\"font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis\">"+c.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(c.status==="ACTIVE"?"Active":"Paused")+"</span></td><td><span class=\"tg\">"+(c.objective||"").replace("OUTCOME_","")+"</span></td><td>"+(c.daily_budget?fmtM(c.daily_budget/100)+"/d":"-")+"</td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmtP(ins.ctr)+"</td>"+acts+"</tr>";});var hx=mini?"":"<th>Purchases</th><th>Actions</th>";g(el).innerHTML="<table><thead><tr><th>Name</th><th>Status</th><th>Objective</th><th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th>"+hx+"</tr></thead><tbody>"+rows.join("")+"</tbody></table>";}
 function loadAdsets(){g("at").innerHTML="<div class=\"ld\"><div class=\"sp\"></div></div>";apiGet("act_"+ACCT+"/adsets?fields=name,status,daily_budget,insights{spend,impressions,clicks,ctr}&limit=100&"+gdp()).then(function(r){if(!r.data||!r.data.length){g("at").innerHTML="<div class=\"ld\">No ad sets</div>";return;}var rows=r.data.map(function(a){var ins=a.insights&&a.insights.data&&a.insights.data[0]?a.insights.data[0]:{};var bdc=a.status==="ACTIVE"?"bac":"bpc";return"<tr><td style=\"font-weight:600\">"+a.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(a.status==="ACTIVE"?"Active":"Paused")+"</span></td><td>"+(a.daily_budget?fmtM(a.daily_budget/100)+"/d":"-")+"</td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmtP(ins.ctr)+"</td><td><div class=\"ac\">"+(a.status==="ACTIVE"?"<button class=\"btn bdan sm\" onclick=\"tog('"+a.id+"','PAUSED','a')\">Pause</button>":"<button class=\"btn bsuc sm\" onclick=\"tog('"+a.id+"','ACTIVE','a')\">Resume</button>")+"</div></td></tr>";});g("at").innerHTML="<table><thead><tr><th>Name</th><th>Status</th><th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th><th>Actions</th></tr></thead><tbody>"+rows.join("")+"</tbody></table>";}).catch(function(e){g("at").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
 g("rAdsets").addEventListener("click",loadAdsets);g("sAdsets").addEventListener("input",function(){filterTbl("at",this.value);});
 function loadAds(){g("adt").innerHTML="<div class=\"ld\"><div class=\"sp\"></div></div>";apiGet("act_"+ACCT+"/ads?fields=name,status,insights{spend,impressions,clicks,ctr}&limit=100&"+gdp()).then(function(r){if(!r.data||!r.data.length){g("adt").innerHTML="<div class=\"ld\">No ads</div>";return;}var rows=r.data.map(function(a){var ins=a.insights&&a.insights.data&&a.insights.data[0]?a.insights.data[0]:{};var bdc=a.status==="ACTIVE"?"bac":"bpc";return"<tr><td style=\"font-weight:600\">"+a.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(a.status==="ACTIVE"?"Active":"Paused")+"</span></td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmt(ins.clicks)+"</td><td>"+fmtP(ins.ctr)+"</td><td><div class=\"ac\">"+(a.status==="ACTIVE"?"<button class=\"btn bdan sm\" onclick=\"tog('"+a.id+"','PAUSED','d')\">Pause</button>":"<button class=\"btn bsuc sm\" onclick=\"tog('"+a.id+"','ACTIVE','d')\">Resume</button>")+"</div></td></tr>";});g("adt").innerHTML="<table><thead><tr><th>Name</th><th>Status</th><th>Spend</th><th>Impressions</th><th>Clicks</th><th>CTR</th><th>Actions</th></tr></thead><tbody>"+rows.join("")+"</tbody></table>";}).catch(function(e){g("adt").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
 g("rAds").addEventListener("click",loadAds);g("sAds").addEventListener("input",function(){filterTbl("adt",this.value);});
 function tog(id,status,type){apiPost(id,{status:status}).then(function(){if(type==="c")loadCamps();else if(type==="a")loadAdsets();else loadAds();}).catch(function(e){alert("Error: "+e.message);});}
-function openEdit(id){var c=CAMPS.find(function(x){return x.id===id;});if(!c)return;EID=id;g("ec2").innerHTML="<label class=\"lbl\">Name</label><input type=\"text\" class=\"inp\" id=\"en\" value=\""+c.name+"\"><label class=\"lbl\">Daily Budget (ILS)</label><input type=\"number\" class=\"inp\" id=\"eb\" value=\""+(c.daily_budget?c.daily_budget/100:"")+"\"><label class=\"lbl\">Status</label><select class=\"inp\" id=\"es\"><option value=\"ACTIVE\""+( c.status==="ACTIVE"?" selected":"")+">Active</option><option value=\"PAUSED\""+( c.status==="PAUSED"?" selected":"")+">Paused</option></select>";g("em").style.display="flex";}
+function openEdit(id){var c=CAMPS.find(function(x){return x.id===id;});if(!c)return;EID=id;g("ec2").innerHTML="<label class=\"lbl\">Name</label><input type=\"text\" class=\"inp\" id=\"en\" value=\""+c.name+"\"><label class=\"lbl\">Daily Budget (ILS)</label><input type=\"number\" class=\"inp\" id=\"eb\" value=\""+(c.daily_budget?c.daily_budget/100:"")+"\" min=\"1\"><label class=\"lbl\">Status</label><select class=\"inp\" id=\"es\"><option value=\"ACTIVE\""+( c.status==="ACTIVE"?" selected":"")+">Active</option><option value=\"PAUSED\""+( c.status==="PAUSED"?" selected":"")+">Paused</option></select>";g("em").style.display="flex";}
 g("saveEdit").addEventListener("click",function(){var b={name:g("en").value.trim(),status:g("es").value};var bv=g("eb").value;if(bv)b.daily_budget=Math.round(parseFloat(bv)*100);apiPost(EID,b).then(function(){g("em").style.display="none";loadCamps();}).catch(function(e){alert("Error: "+e.message);});});
 g("cancelEdit").addEventListener("click",function(){g("em").style.display="none";});g("closeMo").addEventListener("click",function(){g("em").style.display="none";});
 g("createBtn").addEventListener("click",function(){var name=g("cn").value.trim(),budget=g("cb").value;g("cerr").style.display="none";g("cok").style.display="none";if(!name||!budget){g("cerr").style.display="block";g("cerrm").textContent="Please fill name and budget";return;}g("createBtn").textContent="Creating...";g("createBtn").disabled=true;apiPost("act_"+ACCT+"/campaigns",{name:name,objective:g("co").value,status:g("cs2").value,daily_budget:Math.round(parseFloat(budget)*100),special_ad_categories:"[]"}).then(function(){g("cok").style.display="block";g("cn").value="";g("cb").value="";}).catch(function(e){g("cerr").style.display="block";g("cerrm").textContent=e.message;}).finally(function(){g("createBtn").textContent="Create Campaign";g("createBtn").disabled=false;});});
-function runAlerts(){g("al").innerHTML="<div class=\"ld\"><div class=\"sp\"></div><span>Scanning...</span></div>";apiGet("act_"+ACCT+"/campaigns?fields=name,status,insights{spend,ctr,actions,cost_per_action_type}&limit=50&date_preset=last_7d").then(function(r){var alerts=[];(r.data||[]).forEach(function(c){if(c.status!=="ACTIVE")return;var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};var spend=parseFloat(ins.spend||0),ctr=parseFloat(ins.ctr||0);var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var ca=(ins.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});var cpa=ca?ca.value:0;if(spend>50&&pvc==0)alerts.push({cls:"ah",title:c.name+" - Spend with no conversions",desc:"Spent ILS "+spend.toFixed(0)+" with zero purchases."});if(ctr>0&&ctr<0.3)alerts.push({cls:"am",title:c.name+" - Low CTR ("+ctr.toFixed(2)+"%)",desc:"CTR below 0.3%."});if(cpa>200)alerts.push({cls:"am",title:c.name+" - High CPA (ILS "+parseFloat(cpa).toFixed(0)+")",desc:"High cost per purchase."});});var badge=g("alb");if(alerts.length){badge.style.display="inline";badge.textContent=alerts.length;}else{badge.style.display="none";}if(!alerts.length){g("al").innerHTML="<div class=\"ok\">All campaigns look good!</div>";return;}g("al").innerHTML=alerts.map(function(a){return"<div class=\"alc "+a.cls+"\"><div><div style=\"font-weight:700;font-size:.83rem\">"+a.title+"</div><div style=\"color:#6b6b8a;font-size:.76rem\">"+a.desc+"</div></div></div>";}).join("");}).catch(function(e){g("al").innerHTML="<div class=\"eb\">Error: "+e.message+"</div>";});}
+function runAlerts(){g("al").innerHTML="<div class=\"ld\"><div class=\"sp\"></div><span>Scanning...</span></div>";apiGet("act_"+ACCT+"/campaigns?fields=name,status,insights{spend,ctr,actions,cost_per_action_type}&limit=50&date_preset=last_7d").then(function(r){var alerts=[];(r.data||[]).forEach(function(c){if(c.status!=="ACTIVE")return;var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};var spend=parseFloat(ins.spend||0),ctr=parseFloat(ins.ctr||0);var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var ca=(ins.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});var cpa=ca?ca.value:0;if(spend>50&&pvc==0)alerts.push({cls:"ah",title:c.name+" - Spend with no conversions",desc:"Spent ILS "+spend.toFixed(0)+" with zero purchases.",id:c.id});if(ctr>0&&ctr<0.3)alerts.push({cls:"am",title:c.name+" - Low CTR ("+ctr.toFixed(2)+"%)",desc:"CTR below 0.3%."});if(cpa>200)alerts.push({cls:"am",title:c.name+" - High CPA (ILS "+parseFloat(cpa).toFixed(0)+")",desc:"High cost per purchase."});});var badge=g("alb");if(alerts.length){badge.style.display="inline";badge.textContent=alerts.length;}else{badge.style.display="none";}if(!alerts.length){g("al").innerHTML="<div class=\"ok\">All campaigns look good!</div>";return;}g("al").innerHTML=alerts.map(function(a){return"<div class=\"alc "+a.cls+"\"><div><div style=\"font-weight:700;font-size:.83rem\">"+a.title+"</div><div style=\"color:#6b6b8a;font-size:.76rem\">"+a.desc+"</div></div></div>";}).join("");}).catch(function(e){g("al").innerHTML="<div class=\"eb\">Error: "+e.message+"</div>";});}
 g("scanBtn").addEventListener("click",runAlerts);
+function showAITab(n){for(var i=1;i<=5;i++){g("aiSec"+i).style.display=i===n?"block":"none";var btn=g("aiTab"+i);if(btn){btn.className=i===n?"btn ba sm":"btn bg sm";}}};
+function getCampaignData(){return apiGet("act_"+ACCT+"/campaigns?fields=name,status,objective,daily_budget,insights{spend,impressions,clicks,ctr,actions,cost_per_action_type}&limit=100&date_preset=last_7d");}
+function previewPilot(){
+  var minRoas=parseFloat(g("minRoas").value||0),maxCpa=parseFloat(g("maxCpa").value||999999);
+  var minCtr=parseFloat(g("minCtr").value||0),minSpend=parseFloat(g("minSpend").value||0);
+  var boostRoas=parseFloat(g("boostRoas").value||999),boostPct=parseFloat(g("boostPct").value||20);
+  var maxBudget=parseFloat(g("maxBudget").value||999999);
+  g("pilotResults").innerHTML="<div class=\"ld\"><div class=\"sp\"></div><span>מנתח קמפיינים...</span></div>";
+  getCampaignData().then(function(r){
+    var toStop=[],toBoost=[],ok=[];
+    (r.data||[]).forEach(function(c){
+      if(c.status!=="ACTIVE")return;
+      var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};
+      var spend=parseFloat(ins.spend||0),ctr=parseFloat(ins.ctr||0);
+      var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});
+      var pvc=parseFloat(pv?pv.value:0);
+      var ca=(ins.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});
+      var cpa=parseFloat(ca?ca.value:0);
+      var roas=pvc>0&&spend>0?pvc/spend*100:0;
+      var budget=c.daily_budget?c.daily_budget/100:0;
+      var shouldStop=spend>minSpend&&((roas>0&&roas<minRoas)||(cpa>0&&cpa>maxCpa)||(ctr>0&&ctr<minCtr));
+      var shouldBoost=roas>boostRoas&&budget<maxBudget&&budget>0;
+      if(shouldStop)toStop.push({c:c,spend:spend,roas:roas.toFixed(2),cpa:cpa.toFixed(0),ctr:ctr.toFixed(2)});
+      else if(shouldBoost){var newB=Math.min(budget*(1+boostPct/100),maxBudget);toBoost.push({c:c,old:budget,new:newB,roas:roas.toFixed(2)});}
+      else ok.push(c.name);
+    });
+    var html="";
+    if(toStop.length){html+="<div style=\"margin-bottom:.75rem\"><div style=\"font-weight:700;color:#ff6b6b;margin-bottom:.5rem\">🛑 יופסקו ("+toStop.length+")</div>";
+    toStop.forEach(function(x){html+="<div class=\"ai-result-item\" style=\"border-color:rgba(255,107,107,.3)\"><div style=\"display:flex;justify-content:space-between;align-items:center\"><span style=\"font-weight:600\">"+x.c.name+"</span><span style=\"font-size:.75rem;color:#ff6b6b\">ROAS: "+x.roas+"x | CPA: "+x.cpa+" | CTR: "+x.ctr+"%</span></div></div>";});html+="</div>";}
+    if(toBoost.length){html+="<div style=\"margin-bottom:.75rem\"><div style=\"font-weight:700;color:#00e5a0;margin-bottom:.5rem\">🚀 תקציב יוגדל ("+toBoost.length+")</div>";
+    toBoost.forEach(function(x){html+="<div class=\"ai-result-item\" style=\"border-color:rgba(0,229,160,.3)\"><div style=\"display:flex;justify-content:space-between;align-items:center\"><span style=\"font-weight:600\">"+x.c.name+"</span><span style=\"font-size:.75rem;color:#00e5a0\">ILS "+x.old.toFixed(0)+" → ILS "+x.new.toFixed(0)+" | ROAS: "+x.roas+"x</span></div></div>";});html+="</div>";}
+    if(!toStop.length&&!toBoost.length)html="<div class=\"ok\">כל הקמפיינים תקינים — אין פעולות נדרשות</div>";
+    html+="<div style=\"margin-top:.75rem;display:flex;gap:.5rem\"><button class=\"btn ba\" onclick=\"runAutoPilot()\">✅ אשר ובצע הכל</button></div>";
+    g("pilotResults").innerHTML=html;
+    window._pilotStop=toStop;window._pilotBoost=toBoost;
+  }).catch(function(e){g("pilotResults").innerHTML="<div class=\"eb\">Error: "+e.message+"</div>";});
+}
+function runAutoPilot(){
+  if(!window._pilotStop&&!window._pilotBoost){previewPilot();setTimeout(function(){if(window._pilotStop||window._pilotBoost)_executePilot();},3000);return;}
+  _executePilot();
+}
+function _executePilot(){
+  var toStop=window._pilotStop||[],toBoost=window._pilotBoost||[];
+  if(!toStop.length&&!toBoost.length){g("pilotResults").innerHTML="<div class=\"ok\">אין פעולות לביצוע</div>";return;}
+  g("pilotResults").innerHTML="<div class=\"ld\"><div class=\"sp\"></div><span>מבצע שינויים...</span></div>";
+  var actions=[];
+  toStop.forEach(function(x){actions.push(apiPost(x.c.id,{status:"PAUSED"}).then(function(){return{type:"stop",name:x.c.name};}).catch(function(e){return{type:"err",name:x.c.name,err:e.message};}));});
+  toBoost.forEach(function(x){actions.push(apiPost(x.c.id,{daily_budget:Math.round(x.new*100)}).then(function(){return{type:"boost",name:x.c.name,old:x.old,new:x.new};}).catch(function(e){return{type:"err",name:x.c.name,err:e.message};}));});
+  Promise.all(actions).then(function(results){
+    var html="<div class=\"ok\" style=\"margin-bottom:.75rem\">✅ Auto-Pilot הושלם!</div>";
+    results.forEach(function(r){
+      if(r.type==="stop")html+="<div class=\"ai-result-item\">🛑 עוצר: <b>"+r.name+"</b></div>";
+      else if(r.type==="boost")html+="<div class=\"ai-result-item\">🚀 הגדיל תקציב: <b>"+r.name+"</b> → ILS "+r.new.toFixed(0)+"/d</div>";
+      else html+="<div class=\"ai-result-item\" style=\"border-color:rgba(255,107,107,.3)\">❌ שגיאה ב "+r.name+": "+r.err+"</div>";
+    });
+    g("pilotResults").innerHTML=html;
+    window._pilotStop=null;window._pilotBoost=null;
+    CAMPS=[];
+  });
+}
+function runDeepAnalysis(type){
+  g("deepResults").textContent="🔍 Claude מנתח את הנתונים שלך...";
+  getCampaignData().then(function(r){
+    var data=r.data||[];
+    var summary=data.map(function(c){var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var ca=(ins.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});var cpa=ca?ca.value:0;var roas=pvc>0&&ins.spend>0?(pvc/parseFloat(ins.spend)*100).toFixed(2):"0";return{name:c.name,status:c.status,budget:c.daily_budget?c.daily_budget/100:0,spend:ins.spend||0,impressions:ins.impressions||0,clicks:ins.clicks||0,ctr:ins.ctr||0,purchases:pvc,cpa:cpa,roas:roas};}).join(";");
+    var prompts={
+      full:"אני מנהל פרסום Meta Ads. נתח את כל הקמפיינים שלי ותן: 1) סיכום מצב כולל 2) 3 קמפיינים לעצור + סיבה 3) 3 קמפיינים להגביר תקציב + סיבה 4) המלצות אופטימיזציה מיידיות 5) תחזית קצרה. כתוב בעברית, בצורה ברורה ומעשית.",
+      roas:"נתח את ביצועי ROAS של כל קמפיין. זהה מי מייצר הכי הרבה ערך לעומת הוצאה, ומי בזבזן. תן 5 המלצות מעשיות לשיפור ROAS. כתוב בעברית.",
+      budget:"נתח את חלוקת התקציב בין הקמפיינים. האם ההוצאות מוצדקות? איפה צריך להוריד ואיפה להעלות? תן המלצות קונקרטיות עם מספרים. כתוב בעברית.",
+      winners:"זהה את 3 הקמפיינים המנצחים שלי — אלו שמייצרים הכי הרבה ROAS/conversions. הסבר מה הם עושים נכון ואיך אפשר לשכפל את ההצלחה. כתוב בעברית."
+    };
+    callClaude("אתה מומחה Meta Ads בכיר עם 10 שנות ניסיון. ענה בעברית בצורה מקצועית, קונקרטית ומעשית. נתוני קמפיינים (7 ימים אחרונים): "+JSON.stringify(summary),prompts[type]||prompts.full)
+    .then(function(text){g("deepResults").textContent=text;})
+    .catch(function(e){g("deepResults").textContent="Error: "+e.message;});
+  }).catch(function(e){g("deepResults").textContent="Error loading campaigns: "+e.message;});
+}
+function loadDefaultRules(){
+  RULES=[
+    {id:1,name:"עצור ROAS < 0.5",condition:"roas < 0.5 && spend > 30",action:"pause",icon:"🛑"},
+    {id:2,name:"עצור CTR < 0.2%",condition:"ctr < 0.2 && spend > 50",action:"pause",icon:"🛑"},
+    {id:3,name:"הגבר תקציב ROAS > 3x",condition:"roas > 3",action:"boost20",icon:"🚀"},
+    {id:4,name:"הגבר תקציב CTR > 5%",condition:"ctr > 5 && spend > 20",action:"boost15",icon:"📈"},
+    {id:5,name:"התרעה CPA > 500",condition:"cpa > 500 && purchases > 0",action:"alert",icon:"⚠️"}
+  ];
+  renderRules();
+}
+function renderRules(){
+  if(!RULES.length){g("rulesList").innerHTML="";return;}
+  g("rulesList").innerHTML=RULES.map(function(r){return'<div class="rule-card"><div style="display:flex;align-items:center;gap:.5rem"><span style="font-size:1.2rem">'+r.icon+'</span><div><div style="font-weight:600;font-size:.83rem">'+r.name+'</div><div style="font-size:.72rem;color:#6b6b8a">אם '+r.condition+' → '+r.action+'</div></div></div><button class="btn bdan sm" onclick="removeRule('+r.id+')">הסר</button></div>';}).join("");
+}
+function removeRule(id){RULES=RULES.filter(function(r){return r.id!==id;});renderRules();}
+function runAllRules(){
+  if(!RULES.length){g("rulesResults").innerHTML="<div class=\"eb\">אין כללים להפעיל</div>";return;}
+  g("rulesResults").innerHTML="<div class=\"ld\"><div class=\"sp\"></div><span>מפעיל כללים...</span></div>";
+  getCampaignData().then(function(r){
+    var actions=[],log=[];
+    (r.data||[]).forEach(function(c){
+      if(c.status!=="ACTIVE")return;
+      var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};
+      var spend=parseFloat(ins.spend||0),ctr=parseFloat(ins.ctr||0);
+      var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});
+      var purchases=parseFloat(pv?pv.value:0);
+      var ca=(ins.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});
+      var cpa=parseFloat(ca?ca.value:0);
+      var roas=purchases>0&&spend>0?purchases/spend*100:0;
+      var budget=c.daily_budget?c.daily_budget/100:0;
+      RULES.forEach(function(rule){
+        var match=false;
+        try{match=new Function("spend","ctr","roas","cpa","purchases","budget","return "+rule.condition)(spend,ctr,roas,cpa,purchases,budget);}catch(e){}
+        if(!match)return;
+        if(rule.action==="pause"){actions.push(apiPost(c.id,{status:"PAUSED"}).then(function(){return rule.icon+" "+rule.name+": עצרתי "+c.name;}));};
+        if(rule.action==="boost20"&&budget>0){actions.push(apiPost(c.id,{daily_budget:Math.round(budget*1.2*100)}).then(function(){return rule.icon+" "+rule.name+": הגדלתי תקציב ל-ILS "+(budget*1.2).toFixed(0)+" עבור "+c.name;}));};
+        if(rule.action==="boost15"&&budget>0){actions.push(apiPost(c.id,{daily_budget:Math.round(budget*1.15*100)}).then(function(){return rule.icon+" "+rule.name+": הגדלתי תקציב ל-ILS "+(budget*1.15).toFixed(0)+" עבור "+c.name;}));};
+        if(rule.action==="alert"){log.push(rule.icon+" "+rule.name+": "+c.name+" — CPA: ILS "+cpa.toFixed(0));}
+      });
+    });
+    Promise.all(actions).then(function(results){
+      var all=results.concat(log);
+      if(!all.length){g("rulesResults").innerHTML="<div class=\"ok\">לא נמצאו קמפיינים שמתאימים לכללים</div>";return;}
+      g("rulesResults").innerHTML="<div class=\"ok\" style=\"margin-bottom:.5rem\">✅ בוצעו "+all.length+" פעולות</div>"+all.map(function(t){return"<div class=\"ai-result-item\">"+t+"</div>";}).join("");
+      CAMPS=[];
+    });
+  }).catch(function(e){g("rulesResults").innerHTML="<div class=\"eb\">Error: "+e.message+"</div>";});
+}
+function runForecast(days){
+  g("forecastResults").textContent="🔮 Claude מחשב תחזית ל-"+days+" ימים...";
+  getCampaignData().then(function(r){
+    apiGet("act_"+ACCT+"/insights?time_increment=1&date_preset=last_30d&fields=spend,impressions,clicks,ctr,actions&level=account").then(function(hist){
+      var histData=hist.data||[];
+      var campData=JSON.stringify((r.data||[]).slice(0,10).map(function(c){var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};return{name:c.name,spend:ins.spend,ctr:ins.ctr,budget:c.daily_budget?c.daily_budget/100:0};}));
+      callClaude(
+        "אתה מומחה חיזוי ביצועים של Meta Ads. ענה בעברית.",
+        "בהתבסס על הנתונים הבאים, תן תחזית ל-"+days+" ימים הבאים:\n\nנתונים היסטוריים (30 יום): "+JSON.stringify(histData.slice(-7))+"\n\nקמפיינים פעילים: "+campData+"\n\nתחזה: 1) הוצאה צפויה לתקופה 2) המרות צפויות 3) ROAS צפוי 4) סיכונים 5) הזדמנויות. היה ספציפי עם מספרים."
+      ).then(function(text){g("forecastResults").textContent=text;})
+      .catch(function(e){g("forecastResults").textContent="Error: "+e.message;});
+    });
+  }).catch(function(e){g("forecastResults").textContent="Error: "+e.message;});
+}
+function generateCopy(){
+  var product=g("copyProduct").value.trim(),audience=g("copyAudience").value.trim();
+  var goal=g("copyGoal").value,tone=g("copyTone").value,extra=g("copyExtra").value.trim();
+  if(!product){g("copyResults").textContent="אנא הכנס מוצר/שירות";return;}
+  g("copyResults").textContent="✍️ Claude כותב טקסטים...";
+  callClaude(
+    "אתה קופירייטר מומחה Meta Ads. כתוב בעברית. תמיד כלול: כותרת ראשית, טקסט ראשי, CTA חזק.",
+    "כתוב 3 גרסאות שונות של טקסט לפרסומת Meta Ads עבור:\nמוצר: "+product+"\nקהל: "+(audience||"כללי")+"\nמטרה: "+goal+"\nטון: "+tone+(extra?"\nמידע נוסף: "+extra:"")+"\n\nלכל גרסה כלול:\n📌 כותרת (עד 40 תווים)\n📝 טקסט ראשי (עד 125 תווים)\n🔗 CTA (עד 20 תווים)\n\nהפרד בין גרסאות בשורה ריקה."
+  ).then(function(text){g("copyResults").textContent=text;})
+  .catch(function(e){g("copyResults").textContent="Error: "+e.message;});
+}
+function copyCopyResults(){navigator.clipboard.writeText(g("copyResults").textContent).then(function(){alert("הועתק!");});}
 function showEx(m){var e=g("exmsg");e.textContent=m;e.style.display="block";setTimeout(function(){e.style.display="none";},3000);}
 g("eCSV").addEventListener("click",function(){if(!CAMPS.length){alert("Load campaigns first");return;}var h=["Name","Status","Objective","Budget","Spend","Impressions","Clicks","CTR"];var rows=CAMPS.map(function(c){var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};return[c.name,c.status,c.objective,c.daily_budget?c.daily_budget/100:"",ins.spend||0,ins.impressions||0,ins.clicks||0,ins.ctr||0].join(",");});var a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\uFEFF"+[h.join(",")].concat(rows).join("\n")],{type:"text/csv;charset=utf-8"}));a.download="meta-ads-"+tod()+".csv";a.click();showEx("CSV downloaded!");});
 g("eJSON").addEventListener("click",function(){if(!CAMPS.length){alert("Load campaigns first");return;}var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({date:tod(),campaigns:CAMPS},null,2)],{type:"application/json"}));a.download="meta-ads-"+tod()+".json";a.click();showEx("JSON downloaded!");});
