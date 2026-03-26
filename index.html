@@ -268,9 +268,9 @@ g("cancelEdit").addEventListener("click",function(){g("em").style.display="none"
 g("createBtn").addEventListener("click",function(){var name=g("cn").value.trim(),budget=g("cb").value;g("cerr").style.display="none";g("cok").style.display="none";if(!name||!budget){g("cerr").style.display="block";g("cerrm").textContent="Please fill name and budget";return;}g("createBtn").textContent="Creating...";g("createBtn").disabled=true;apiPost("act_"+ACCT+"/campaigns",{name:name,objective:g("co").value,status:g("cs2").value,daily_budget:Math.round(parseFloat(budget)*100),special_ad_categories:"[]"}).then(function(){g("cok").style.display="block";g("cn").value="";g("cb").value="";}).catch(function(e){g("cerr").style.display="block";g("cerrm").textContent=e.message;}).finally(function(){g("createBtn").textContent="Create Campaign";g("createBtn").disabled=false;});});
 function runAlerts(){g("al").innerHTML="<div class=\"ld\"><div class=\"sp\"></div><span>Scanning...</span></div>";apiGet("act_"+ACCT+"/campaigns?fields=name,status,insights{spend,ctr,actions,cost_per_action_type}&limit=50&date_preset=last_7d").then(function(r){var alerts=[];(r.data||[]).forEach(function(c){if(c.status!=="ACTIVE")return;var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};var spend=parseFloat(ins.spend||0),ctr=parseFloat(ins.ctr||0);var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var ca=(ins.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});var cpa=ca?ca.value:0;if(spend>50&&pvc==0)alerts.push({cls:"ah",title:c.name+" - Spend with no conversions",desc:"Spent ILS "+spend.toFixed(0)+" with zero purchases.",id:c.id});if(ctr>0&&ctr<0.3)alerts.push({cls:"am",title:c.name+" - Low CTR ("+ctr.toFixed(2)+"%)",desc:"CTR below 0.3%."});if(cpa>200)alerts.push({cls:"am",title:c.name+" - High CPA (ILS "+parseFloat(cpa).toFixed(0)+")",desc:"High cost per purchase."});});var badge=g("alb");if(alerts.length){badge.style.display="inline";badge.textContent=alerts.length;}else{badge.style.display="none";}if(!alerts.length){g("al").innerHTML="<div class=\"ok\">All campaigns look good!</div>";return;}g("al").innerHTML=alerts.map(function(a){return"<div class=\"alc "+a.cls+"\"><div><div style=\"font-weight:700;font-size:.83rem\">"+a.title+"</div><div style=\"color:#6b6b8a;font-size:.76rem\">"+a.desc+"</div></div></div>";}).join("");}).catch(function(e){g("al").innerHTML="<div class=\"eb\">Error: "+e.message+"</div>";});}
 g("scanBtn").addEventListener("click",runAlerts);
-function showAITab(n){for(var i=1;i<=5;i++){g("aiSec"+i).style.display=i===n?"block":"none";var btn=g("aiTab"+i);if(btn){btn.className=i===n?"btn ba sm":"btn bg sm";}}};
+window.showAITab = function(n){for(var i=1;i<=5;i++){g("aiSec"+i).style.display=i===n?"block":"none";var btn=g("aiTab"+i);if(btn){btn.className=i===n?"btn ba sm":"btn bg sm";}}};
 function getCampaignData(){return apiGet("act_"+ACCT+"/campaigns?fields=name,status,objective,daily_budget,insights{spend,impressions,clicks,ctr,actions,cost_per_action_type}&limit=100&date_preset=last_7d");}
-function previewPilot(){
+window.previewPilot = function(){
   var minRoas=parseFloat(g("minRoas").value||0),maxCpa=parseFloat(g("maxCpa").value||999999);
   var minCtr=parseFloat(g("minCtr").value||0),minSpend=parseFloat(g("minSpend").value||0);
   var boostRoas=parseFloat(g("boostRoas").value||999),boostPct=parseFloat(g("boostPct").value||20);
@@ -305,11 +305,11 @@ function previewPilot(){
     window._pilotStop=toStop;window._pilotBoost=toBoost;
   }).catch(function(e){g("pilotResults").innerHTML="<div class=\"eb\">Error: "+e.message+"</div>";});
 }
-function runAutoPilot(){
+window.runAutoPilot = function(){
   if(!window._pilotStop&&!window._pilotBoost){previewPilot();setTimeout(function(){if(window._pilotStop||window._pilotBoost)_executePilot();},3000);return;}
   _executePilot();
 }
-function _executePilot(){
+window._executePilot = function(){
   var toStop=window._pilotStop||[],toBoost=window._pilotBoost||[];
   if(!toStop.length&&!toBoost.length){g("pilotResults").innerHTML="<div class=\"ok\">אין פעולות לביצוע</div>";return;}
   g("pilotResults").innerHTML="<div class=\"ld\"><div class=\"sp\"></div><span>מבצע שינויים...</span></div>";
@@ -328,7 +328,7 @@ function _executePilot(){
     CAMPS=[];
   });
 }
-function runDeepAnalysis(type){
+window.runDeepAnalysis = function(type){
   g("deepResults").textContent="🔍 Claude מנתח את הנתונים שלך...";
   getCampaignData().then(function(r){
     var data=r.data||[];
@@ -344,7 +344,7 @@ function runDeepAnalysis(type){
     .catch(function(e){g("deepResults").textContent="Error: "+e.message;});
   }).catch(function(e){g("deepResults").textContent="Error loading campaigns: "+e.message;});
 }
-function loadDefaultRules(){
+window.loadDefaultRules = function(){
   RULES=[
     {id:1,name:"עצור ROAS < 0.5",condition:"roas < 0.5 && spend > 30",action:"pause",icon:"🛑"},
     {id:2,name:"עצור CTR < 0.2%",condition:"ctr < 0.2 && spend > 50",action:"pause",icon:"🛑"},
@@ -354,12 +354,12 @@ function loadDefaultRules(){
   ];
   renderRules();
 }
-function renderRules(){
+window.renderRules = function(){
   if(!RULES.length){g("rulesList").innerHTML="";return;}
   g("rulesList").innerHTML=RULES.map(function(r){return'<div class="rule-card"><div style="display:flex;align-items:center;gap:.5rem"><span style="font-size:1.2rem">'+r.icon+'</span><div><div style="font-weight:600;font-size:.83rem">'+r.name+'</div><div style="font-size:.72rem;color:#6b6b8a">אם '+r.condition+' → '+r.action+'</div></div></div><button class="btn bdan sm" onclick="removeRule('+r.id+')">הסר</button></div>';}).join("");
 }
-function removeRule(id){RULES=RULES.filter(function(r){return r.id!==id;});renderRules();}
-function runAllRules(){
+window.removeRule = function(id){RULES=RULES.filter(function(r){return r.id!==id;});renderRules();}
+window.runAllRules = function(){
   if(!RULES.length){g("rulesResults").innerHTML="<div class=\"eb\">אין כללים להפעיל</div>";return;}
   g("rulesResults").innerHTML="<div class=\"ld\"><div class=\"sp\"></div><span>מפעיל כללים...</span></div>";
   getCampaignData().then(function(r){
@@ -392,7 +392,7 @@ function runAllRules(){
     });
   }).catch(function(e){g("rulesResults").innerHTML="<div class=\"eb\">Error: "+e.message+"</div>";});
 }
-function runForecast(days){
+window.runForecast = function(days){
   g("forecastResults").textContent="🔮 Claude מחשב תחזית ל-"+days+" ימים...";
   getCampaignData().then(function(r){
     apiGet("act_"+ACCT+"/insights?time_increment=1&date_preset=last_30d&fields=spend,impressions,clicks,ctr,actions&level=account").then(function(hist){
@@ -406,7 +406,7 @@ function runForecast(days){
     });
   }).catch(function(e){g("forecastResults").textContent="Error: "+e.message;});
 }
-function generateCopy(){
+window.generateCopy = function(){
   var product=g("copyProduct").value.trim(),audience=g("copyAudience").value.trim();
   var goal=g("copyGoal").value,tone=g("copyTone").value,extra=g("copyExtra").value.trim();
   if(!product){g("copyResults").textContent="אנא הכנס מוצר/שירות";return;}
@@ -417,7 +417,7 @@ function generateCopy(){
   ).then(function(text){g("copyResults").textContent=text;})
   .catch(function(e){g("copyResults").textContent="Error: "+e.message;});
 }
-function copyCopyResults(){navigator.clipboard.writeText(g("copyResults").textContent).then(function(){alert("הועתק!");});}
+window.copyCopyResults = function(){navigator.clipboard.writeText(g("copyResults").textContent).then(function(){alert("הועתק!");});}
 function showEx(m){var e=g("exmsg");e.textContent=m;e.style.display="block";setTimeout(function(){e.style.display="none";},3000);}
 g("eCSV").addEventListener("click",function(){if(!CAMPS.length){alert("Load campaigns first");return;}var h=["Name","Status","Objective","Budget","Spend","Impressions","Clicks","CTR"];var rows=CAMPS.map(function(c){var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};return[c.name,c.status,c.objective,c.daily_budget?c.daily_budget/100:"",ins.spend||0,ins.impressions||0,ins.clicks||0,ins.ctr||0].join(",");});var a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\uFEFF"+[h.join(",")].concat(rows).join("\n")],{type:"text/csv;charset=utf-8"}));a.download="meta-ads-"+tod()+".csv";a.click();showEx("CSV downloaded!");});
 g("eJSON").addEventListener("click",function(){if(!CAMPS.length){alert("Load campaigns first");return;}var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({date:tod(),campaigns:CAMPS},null,2)],{type:"application/json"}));a.download="meta-ads-"+tod()+".json";a.click();showEx("JSON downloaded!");});
