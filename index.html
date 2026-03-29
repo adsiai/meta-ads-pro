@@ -107,6 +107,39 @@ body.rtl .rule-card{direction:rtl}
   .ni.on,body.rtl .ni.on{border:none;background:rgba(79,127,255,.15)}
 }
 @media(max-width:650px){.sg{grid-template-columns:1fr 1fr}}
+
+.nav-bottom{margin-top:auto;padding-top:.75rem;border-top:1px solid #2a2a3a;margin-top:1rem}
+.settings-group{cursor:pointer;padding:.5rem 1rem;display:flex;align-items:center;justify-content:space-between;font-size:.82rem;font-weight:600;color:#6b6b8a;transition:all .15s;user-select:none}
+.settings-group:hover{color:#e8e8f0;background:#1a1a24}
+.settings-group.open{color:#4f7fff}
+.settings-arrow{font-size:.6rem;transition:transform .2s;display:inline-block}
+.settings-group.open .settings-arrow{transform:rotate(180deg)}
+.settings-sub{overflow:hidden;max-height:0;transition:max-height .25s ease}
+.settings-sub.open{max-height:200px}
+.settings-sub .ni{font-size:.78rem;padding:.4rem 1rem .4rem 1.75rem;color:#6b6b8a}
+body.rtl .settings-sub .ni{padding:.4rem 1.75rem .4rem 1rem}
+.settings-sub .ni:hover{color:#e8e8f0;background:#1a1a24}
+.settings-sub .ni.on{color:#4f7fff;background:rgba(79,127,255,.08);border-left-color:#4f7fff}
+body.rtl .settings-sub .ni.on{border-right-color:#4f7fff;border-left-color:transparent}
+.pg-settings{display:none}.pg-settings.on{display:block}
+.set-section{background:#111118;border:1px solid #2a2a3a;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.set-title{font-size:.7rem;font-weight:700;color:#6b6b8a;text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem}
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid rgba(42,42,58,.4);gap:1rem}
+.set-row:last-child{border-bottom:none;padding-bottom:0}
+.set-label{font-size:.85rem;font-weight:500;color:#e8e8f0}
+.set-desc{font-size:.75rem;color:#6b6b8a;margin-top:.15rem}
+.set-control{flex-shrink:0}
+.lang-btns{display:flex;gap:.35rem}
+.lang-btn{padding:.3rem .8rem;border-radius:6px;border:1px solid #2a2a3a;background:transparent;color:#6b6b8a;font-size:.8rem;cursor:pointer;font-family:Heebo,sans-serif;transition:all .15s}
+.lang-btn.active{background:rgba(79,127,255,.15);color:#4f7fff;border-color:rgba(79,127,255,.3);font-weight:700}
+.theme-btns{display:flex;gap:.35rem}
+.theme-btn{padding:.3rem .75rem;border-radius:6px;border:1px solid #2a2a3a;background:transparent;color:#6b6b8a;font-size:.8rem;cursor:pointer;font-family:Heebo,sans-serif;transition:all .15s}
+.theme-btn.active{background:rgba(79,127,255,.15);color:#4f7fff;border-color:rgba(79,127,255,.3);font-weight:700}
+.set-input{background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;padding:.4rem .75rem;color:#e8e8f0;font-size:.85rem;outline:none;width:200px;direction:ltr;text-align:left}
+.set-input:focus{border-color:#4f7fff}
+.set-save{background:#4f7fff;color:#fff;border:none;border-radius:8px;padding:.45rem 1rem;font-size:.8rem;font-weight:600;cursor:pointer;font-family:Heebo,sans-serif;margin-top:1rem}
+.set-save:hover{background:#3a6aee}
+.set-ok{color:#00e5a0;font-size:.78rem;margin-top:.5rem;display:none}
 </style></head><body class="ltr">
 <div class="splash" id="splash">
   <div class="splash-logo">
@@ -297,6 +330,61 @@ body.rtl .rule-card{direction:rtl}
 <div class="sc" style="cursor:pointer;text-align:center" id="ePDF"><div style="font-size:1.75rem">PDF</div><div style="font-weight:700">Print</div><div style="color:#6b6b8a;font-size:.74rem">Send to clients</div></div>
 <div class="sc" style="cursor:pointer;text-align:center" id="eCopy"><div style="font-size:1.75rem">Share</div><div style="font-weight:700">Copy Summary</div><div style="color:#6b6b8a;font-size:.74rem">WhatsApp/Email</div></div>
 </div><div id="exmsg" class="ok" style="display:none"></div></div>
+
+<!-- SETTINGS: GENERAL -->
+<div class="pg pg-settings" id="pg-settings-general">
+  <div class="pt">General</div>
+  <div class="ps">Account settings</div>
+  <div class="set-section">
+    <div class="set-title">Profile</div>
+    <div class="set-row">
+      <div><div class="set-label">Display name</div><div class="set-desc">Your name in the dashboard</div></div>
+      <div class="set-control"><input class="set-input" id="set-name" type="text" placeholder="Your name"></div>
+    </div>
+    <div class="set-row">
+      <div><div class="set-label">Email</div><div class="set-desc">Contact email</div></div>
+      <div class="set-control"><input class="set-input" id="set-email" type="email" placeholder="email@example.com"></div>
+    </div>
+  </div>
+  <button class="set-save" onclick="saveGeneral()">Save changes</button>
+  <div class="set-ok" id="set-general-ok">✓ Saved successfully</div>
+</div>
+
+<!-- SETTINGS: LANGUAGE -->
+<div class="pg pg-settings" id="pg-settings-language">
+  <div class="pt">Language</div>
+  <div class="ps">Interface language & direction</div>
+  <div class="set-section">
+    <div class="set-title">Interface language</div>
+    <div class="set-row">
+      <div><div class="set-label">Language</div><div class="set-desc">Changes direction and labels instantly</div></div>
+      <div class="set-control">
+        <div class="lang-btns">
+          <button class="lang-btn active" id="lang-en" onclick="setLang('en');updateLangBtns()">English</button>
+          <button class="lang-btn" id="lang-he" onclick="setLang('he');updateLangBtns()">עברית</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS: APPEARANCE -->
+<div class="pg pg-settings" id="pg-settings-appearance">
+  <div class="pt">Appearance</div>
+  <div class="ps">Theme and display preferences</div>
+  <div class="set-section">
+    <div class="set-title">Theme</div>
+    <div class="set-row">
+      <div><div class="set-label">Color theme</div><div class="set-desc">Choose between dark and light mode</div></div>
+      <div class="set-control">
+        <div class="theme-btns">
+          <button class="theme-btn active" id="theme-dark" onclick="setTheme('dark')">🌙 Dark</button>
+          <button class="theme-btn" id="theme-light" onclick="setTheme('light')">☀️ Light</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </main></div></div>
 <div class="mo" id="em" style="display:none"><div class="mc">
 <div class="mh"><div class="mt">Edit Campaign</div><button class="xb" id="closeMo">X</button></div>
@@ -581,6 +669,81 @@ g("ePDF").addEventListener("click",function(){window.print();});
 g("eCopy").addEventListener("click",function(){if(!CAMPS.length){alert("Load campaigns first");return;}var txt="Meta Ads Report - "+tod()+"\n"+CAMPS.slice(0,5).map(function(c){var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};return c.name+": ILS"+parseFloat(ins.spend||0).toFixed(0)+" spend";}).join("\n");navigator.clipboard.writeText(txt).then(function(){showEx("Copied!");});});
 function filterTbl(id,q){var t=document.querySelector("#"+id+" table");if(!t)return;t.querySelectorAll("tbody tr").forEach(function(tr){tr.style.display=tr.textContent.toLowerCase().includes(q.toLowerCase())?"":"none";});}
 setLang(LANG);
+
+// ===== SETTINGS =====
+window.toggleSettings = function() {
+  var g = document.getElementById('settingsToggle');
+  var s = document.getElementById('settingsSub');
+  g.classList.toggle('open');
+  s.classList.toggle('open');
+};
+
+window.updateLangBtns = function() {
+  var isHe = LANG === 'he';
+  var enBtn = document.getElementById('lang-en');
+  var heBtn = document.getElementById('lang-he');
+  if (enBtn) enBtn.classList.toggle('active', !isHe);
+  if (heBtn) heBtn.classList.toggle('active', isHe);
+};
+
+window.setTheme = function(theme) {
+  localStorage.setItem('theme', theme);
+  var isDark = theme === 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  if (!isDark) {
+    document.documentElement.style.setProperty('--bg', '#f5f5f7');
+    document.body.style.background = '#f0f0f5';
+    document.body.style.color = '#1a1a2e';
+  } else {
+    document.documentElement.style.removeProperty('--bg');
+    document.body.style.background = '#0a0a0f';
+    document.body.style.color = '#e8e8f0';
+  }
+  document.querySelectorAll('.theme-btn').forEach(function(b) { b.classList.remove('active'); });
+  var btn = document.getElementById('theme-' + theme);
+  if (btn) btn.classList.add('active');
+};
+
+window.saveGeneral = function() {
+  var name = document.getElementById('set-name').value.trim();
+  var email = document.getElementById('set-email').value.trim();
+  if (name) localStorage.setItem('set-name', name);
+  if (email) localStorage.setItem('set-email', email);
+  var ok = document.getElementById('set-general-ok');
+  ok.style.display = 'block';
+  setTimeout(function() { ok.style.display = 'none'; }, 2500);
+};
+
+function loadSettingsValues() {
+  var name = localStorage.getItem('set-name');
+  var email = localStorage.getItem('set-email');
+  var nameEl = document.getElementById('set-name');
+  var emailEl = document.getElementById('set-email');
+  if (nameEl && name) nameEl.value = name;
+  if (emailEl && email) emailEl.value = email;
+  var theme = localStorage.getItem('theme') || 'dark';
+  window.setTheme(theme);
+  updateLangBtns();
+}
+
+// Handle settings sub-nav clicks
+document.querySelectorAll('[data-g^="settings-"]').forEach(function(el) {
+  el.addEventListener('click', function() {
+    var page = this.dataset.g;
+    // Hide all pages
+    document.querySelectorAll('.pg').forEach(function(p) { p.classList.remove('on'); });
+    document.querySelectorAll('.pg-settings').forEach(function(p) { p.classList.remove('on'); });
+    // Show selected
+    var target = document.getElementById('pg-' + page);
+    if (target) { target.classList.add('on'); target.classList.add('pg-settings'); }
+    // Update nav active state
+    document.querySelectorAll('.ni').forEach(function(n) { n.classList.remove('on'); });
+    this.classList.add('on');
+    // Load values when entering settings
+    loadSettingsValues();
+  });
+});
+
 if(SID){fetch("/api/verify",{headers:{Authorization:SID}}).then(function(r){return r.json();}).then(function(d){if(d.ok)startApp();}).catch(function(){});}
 })();
 </script></body></html>
