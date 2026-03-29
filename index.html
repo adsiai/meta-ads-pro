@@ -1,4 +1,4 @@
-<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8">
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>ADSI - AI ADS</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
@@ -114,32 +114,33 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(79,127,255,.04)}
 <div style="width:180px;height:1px;background:linear-gradient(90deg,#4f8fee,#00c48c);opacity:.3;margin:.5rem auto"></div>
 <div style="font-size:.55rem;letter-spacing:.32em;color:#6b6b8a;opacity:.45">META ADS PRO</div>
 </div>
-<div class="sub">Connect to manage your campaigns</div>
+<div class="sub" data-i18n="connectTo">Connect to manage your campaigns</div>
 <div id="lerr" class="err">Wrong username or password</div>
 <label class="lbl">Username</label><input type="text" class="inp" id="lu" placeholder="Username">
 <label class="lbl">Password</label><input type="password" class="inp" id="lp" placeholder="Password">
-<button class="btn-lo" id="lbtn">Login</button></div></div>
+<button class="btn-lo" id="lbtn" data-i18n="login">Login</button></div></div>
 <div id="p1" style="display:none">
 <div class="hdr"><div style="display:flex;flex-direction:column;justify-content:center;line-height:1.1">
 <span style="font-size:1.05rem;font-weight:900;letter-spacing:-.5px;background:linear-gradient(90deg,#4f8fee,#00c48c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">ADSI</span>
 <span style="font-size:.42rem;letter-spacing:.38em;color:#6b6b8a;opacity:.65;margin-top:1px">META ADS PRO</span>
 </div><select class="sw" id="sw"></select>
-<div style="display:flex;gap:.5rem;align-items:center"><div class="dl"></div><button class="btn bg sm" id="logoutBtn">Logout</button></div></div>
+<div style="display:flex;gap:.5rem;align-items:center"><div class="dl"></div><button class="btn bg sm" id="langBtn" onclick="setLang(LANG==='en'?'he':'en')" style="min-width:36px;font-weight:700">עב</button>
+<button class="btn bg sm" id="logoutBtn" data-i18n="logout">Logout</button></div></div>
 <div class="dbar">
-<button class="dp on" data-p="today">Today</button><button class="dp" data-p="yesterday">Yesterday</button>
-<button class="dp" data-p="last_7d">7 days</button><button class="dp" data-p="last_14d">14 days</button>
-<button class="dp" data-p="last_30d">30 days</button><button class="dp" data-p="last_month">Last month</button>
+<button class="dp on" data-p="today" data-i18n="today">Today</button><button class="dp" data-p="yesterday" data-i18n="yesterday">Yesterday</button>
+<button class="dp" data-p="last_7d" data-i18n="days7">7 days</button><button class="dp" data-p="last_14d" data-i18n="days14">14 days</button>
+<button class="dp" data-p="last_30d" data-i18n="days30">30 days</button><button class="dp" data-p="last_month" data-i18n="lastMonth">Last month</button>
 <input type="date" class="di" id="df" style="margin-right:auto"><span style="color:#6b6b8a;font-size:.75rem">-</span>
-<input type="date" class="di" id="dt"><button class="btn bg sm" id="applyBtn">Apply</button></div>
+<input type="date" class="di" id="dt"><button class="btn bg sm" id="applyBtn" data-i18n="apply">Apply</button></div>
 <div class="layout"><nav class="side">
 <div class="ns"><span class="nlb">Analytics</span>
-<div class="ni on" data-g="dash">Dashboard</div><div class="ni" data-g="camps">Campaigns</div>
-<div class="ni" data-g="adsets">Ad Sets</div><div class="ni" data-g="ads">Ads</div></div>
+<div class="ni on" data-g="dash" data-i18n="dashboard">Dashboard</div><div class="ni" data-g="camps" data-i18n="campaigns">Campaigns</div>
+<div class="ni" data-g="adsets" data-i18n="adsets">Ad Sets</div><div class="ni" data-g="ads" data-i18n="ads">Ads</div></div>
 <div class="ns"><span class="nlb">Tools</span>
-<div class="ni" data-g="create">+ New Campaign</div>
+<div class="ni" data-g="create" data-i18n="newCamp">+ New Campaign</div>
 <div class="ni" data-g="alerts">Alerts <span id="alb" style="display:none;background:#ff6b6b;color:#fff;border-radius:10px;font-size:.62rem;padding:1px 5px;margin-right:4px"></span></div>
-<div class="ni" data-g="ai">🤖 AI Center</div>
-<div class="ni" data-g="export">Export</div></div></nav>
+<div class="ni" data-g="ai" data-i18n="aiCenter">🤖 AI Center</div>
+<div class="ni" data-g="export" data-i18n="export">Export</div></div></nav>
 <main class="main">
 <div class="pg on" id="pg-dash"><div class="pt">Dashboard</div><div class="ps" id="dsub">Loading...</div>
 <div class="sg" id="sg"><div class="ld" style="grid-column:1/-1"><div class="sp"></div></div></div>
@@ -291,6 +292,80 @@ function gdp(){if(DF&&DT)return"time_range={'since':'"+DF+"','until':'"+DT+"'}";
 function apiGet(p,_retry){_retry=_retry||0;return fetch("/api/meta/"+p,{headers:{Authorization:SID}}).then(function(r){return r.json();}).then(function(d){if(d.error){if(_retry<3&&(d.error.code===1||d.error.code===2||d.error.message.indexOf("timeout")>-1||d.error.message.indexOf("network")>-1)){return new Promise(function(res){setTimeout(function(){res(apiGet(p,_retry+1));},2000*(_retry+1));});}throw new Error(d.error.message);}return d;}).catch(function(e){if(_retry<3&&(e.message.indexOf("fetch")>-1||e.message.indexOf("network")>-1||e.message.indexOf("Failed")>-1)){return new Promise(function(res){setTimeout(function(){res(apiGet(p,_retry+1));},2000*(_retry+1));});}throw e;});}
 function apiPost(p,b){return fetch("/api/meta/"+p,{method:"POST",headers:{Authorization:SID,"Content-Type":"application/json"},body:JSON.stringify(b)}).then(function(r){return r.json();}).then(function(d){if(d.error)throw new Error(d.error.message);return d;});}
 function callClaude(system,user){return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:2000,system:system,messages:[{role:"user",content:user}]})}).then(function(r){return r.json();}).then(function(d){return d.content&&d.content[0]?d.content[0].text:"No response";});}
+
+var LANG = localStorage.getItem('lang') || 'en';
+
+var T = {
+  en: {
+    dashboard: 'Dashboard', campaigns: 'Campaigns', adsets: 'Ad Sets', ads: 'Ads',
+    newCamp: '+ New Campaign', alerts: 'Alerts', aiCenter: '🤖 AI Center', export: 'Export',
+    analytics: 'Analytics', tools: 'Tools',
+    spend: 'Spend', impressions: 'Impressions', clicks: 'clicks', ctr: 'Click-through rate',
+    purchases: 'purchase events', cpa: 'Cost per purchase', roas: 'Return on ad spend',
+    updated: 'Updated', loading: 'Loading...', activeCamps: 'Active Campaigns',
+    all: 'All', refresh: 'Refresh', search: 'Search...', status: 'Status',
+    name: 'Name', objective: 'Objective', budget: 'Budget', active: 'Active', paused: 'Paused',
+    pause: 'Pause', resume: 'Resume', edit: 'Edit', logout: 'Logout',
+    today: 'Today', yesterday: 'Yesterday', days7: '7 days', days14: '14 days',
+    days30: '30 days', lastMonth: 'Last month', apply: 'Apply',
+    newCampTitle: 'New Campaign', newCampSub: 'Set up your campaign',
+    campName: 'Name', campObj: 'Objective', campBudget: 'Daily Budget (ILS)',
+    campStatus: 'Status', createBtn: 'Create Campaign', cancel: 'Cancel',
+    smartAlerts: 'Smart Alerts', aiScans: 'AI scans for issues', scanNow: 'Scan Now',
+    exportTitle: 'Export', exportSub: 'Download and share',
+    connectTo: 'Connect to manage your campaigns', username: 'Username', password: 'Password', login: 'Login',
+    performance: 'Performance', noData: 'No campaigns', noCamps: 'No campaigns', noAdsets: 'No ad sets', noAds: 'No ads',
+    selectedPeriod: 'Selected period',
+    aiCenter2: 'AI Command Center', aiSub: 'Smart automated campaign management',
+    autoPilot: '🤖 Auto-Pilot', deepAnalysis: '🧠 Deep Analysis', smartRules: '⚡ Smart Rules',
+    forecast: '🔮 Forecast', copywriter: '✍️ Copywriter'
+  },
+  he: {
+    dashboard: 'דשבורד', campaigns: 'קמפיינים', adsets: 'קבוצות מודעות', ads: 'מודעות',
+    newCamp: '+ קמפיין חדש', alerts: 'התראות', aiCenter: '🤖 מרכז AI', export: 'ייצוא',
+    analytics: 'אנליטיקס', tools: 'כלים',
+    spend: 'הוצאה', impressions: 'חשיפות', clicks: 'קליקים', ctr: 'שיעור קליקים',
+    purchases: 'אירועי רכישה', cpa: 'עלות לרכישה', roas: 'החזר על הוצאה',
+    updated: 'עודכן', loading: 'טוען...', activeCamps: 'קמפיינים פעילים',
+    all: 'הכל', refresh: 'רענן', search: 'חיפוש...', status: 'סטטוס',
+    name: 'שם', objective: 'מטרה', budget: 'תקציב', active: 'פעיל', paused: 'מושהה',
+    pause: 'השהה', resume: 'הפעל', edit: 'ערוך', logout: 'התנתק',
+    today: 'היום', yesterday: 'אתמול', days7: '7 ימים', days14: '14 ימים',
+    days30: '30 ימים', lastMonth: 'חודש שעבר', apply: 'אישור',
+    newCampTitle: 'קמפיין חדש', newCampSub: 'הגדר את הקמפיין שלך',
+    campName: 'שם', campObj: 'מטרה', campBudget: 'תקציב יומי (ILS)',
+    campStatus: 'סטטוס', createBtn: 'צור קמפיין', cancel: 'ביטול',
+    smartAlerts: 'התראות חכמות', aiScans: 'AI סורק בעיות', scanNow: 'סרוק עכשיו',
+    exportTitle: 'ייצוא', exportSub: 'הורד ושתף',
+    connectTo: 'התחבר לניהול הקמפיינים שלך', username: 'שם משתמש', password: 'סיסמה', login: 'כניסה',
+    performance: 'ביצועים', noData: 'אין קמפיינים', noCamps: 'אין קמפיינים', noAdsets: 'אין קבוצות מודעות', noAds: 'אין מודעות',
+    selectedPeriod: 'תקופה נבחרת',
+    aiCenter2: 'מרכז AI', aiSub: 'ניהול חכם ואוטומטי של קמפיינים',
+    autoPilot: '🤖 Auto-Pilot', deepAnalysis: '🧠 ניתוח מעמיק', smartRules: '⚡ כללים חכמים',
+    forecast: '🔮 תחזית', copywriter: '✍️ כתיבת טקסטים'
+  }
+};
+
+function t(key) { return (T[LANG] && T[LANG][key]) || T.en[key] || key; }
+
+function setLang(lang) {
+  LANG = lang;
+  localStorage.setItem('lang', lang);
+  document.documentElement.dir = lang === 'he' ? 'rtl' : 'ltr';
+  document.documentElement.lang = lang;
+  // Update all elements with data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    el.textContent = t(el.dataset.i18n);
+  });
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el) {
+    el.placeholder = t(el.dataset.i18nPh);
+  });
+  // Update toggle button
+  var btn = document.getElementById('langBtn');
+  if (btn) btn.textContent = lang === 'he' ? 'EN' : 'עב';
+}
+
 g("lbtn").addEventListener("click",function(){var u=g("lu").value.trim(),p=g("lp").value;if(!u||!p)return;g("lbtn").textContent="Connecting...";g("lbtn").disabled=true;g("lerr").style.display="none";var _tryLogin=function(attempt){fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:u,password:p})}).then(function(r){return r.json();}).then(function(d){if(!d.ok){g("lerr").style.display="block";g("lbtn").textContent="Login";g("lbtn").disabled=false;}else{SID=d.session;localStorage.setItem("sid",SID);startApp();}}).catch(function(e){if(attempt<4){g("lbtn").textContent="Waking up server... ("+attempt+"/4)";setTimeout(function(){_tryLogin(attempt+1);},3000);}else{g("lerr").style.display="block";g("lerr").textContent="Server not responding. Try again.";g("lbtn").textContent="Login";g("lbtn").disabled=false;}});};_tryLogin(1);});
 g("lp").addEventListener("keydown",function(e){if(e.key==="Enter")g("lbtn").click();});
 g("logoutBtn").addEventListener("click",function(){SID="";ACCT="";localStorage.removeItem("sid");localStorage.removeItem("acct");location.reload();});
@@ -475,6 +550,7 @@ g("eJSON").addEventListener("click",function(){if(!CAMPS.length){alert("Load cam
 g("ePDF").addEventListener("click",function(){window.print();});
 g("eCopy").addEventListener("click",function(){if(!CAMPS.length){alert("Load campaigns first");return;}var txt="Meta Ads Report - "+tod()+"\n"+CAMPS.slice(0,5).map(function(c){var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};return c.name+": ILS"+parseFloat(ins.spend||0).toFixed(0)+" spend";}).join("\n");navigator.clipboard.writeText(txt).then(function(){showEx("Copied!");});});
 function filterTbl(id,q){var t=document.querySelector("#"+id+" table");if(!t)return;t.querySelectorAll("tbody tr").forEach(function(tr){tr.style.display=tr.textContent.toLowerCase().includes(q.toLowerCase())?"":"none";});}
+setLang(LANG);
 if(SID){fetch("/api/verify",{headers:{Authorization:SID}}).then(function(r){return r.json();}).then(function(d){if(d.ok)startApp();}).catch(function(){});}
 })();
 </script></body></html>
