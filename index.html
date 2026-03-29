@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8">
+<!DOCTYPE html><html dir="ltr" lang="en"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>ADSI - AI ADS</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
@@ -85,7 +85,19 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(79,127,255,.04)}
 .splash-dots{display:flex;gap:.4rem;margin-top:1rem}
 .splash-dots span{width:5px;height:5px;border-radius:50%;background:#2a2a3a;animation:dot .8s ease infinite}
 .splash-dots span:nth-child(2){animation-delay:.15s}.splash-dots span:nth-child(3){animation-delay:.3s}
-@keyframes dot{0%,100%{background:#2a2a3a}50%{background:#4f7fff}}</style></head><body>
+@keyframes dot{0%,100%{background:#2a2a3a}50%{background:#4f7fff}}
+body.ltr .layout{grid-template-columns:210px 1fr !important}
+body.ltr .side{order:1 !important;border-right:none !important;border-left:1px solid #2a2a3a !important}
+body.ltr .main{order:2 !important}
+body.ltr .ni{border-right:none !important;border-left:3px solid transparent !important}
+body.ltr .ni.on{border-left-color:#4f7fff !important;border-right-color:transparent !important}
+body.ltr .hdr{direction:ltr}
+body.ltr .dbar{direction:ltr}
+body.ltr .side{direction:ltr}
+body.rtl .layout{grid-template-columns:1fr 210px !important}
+body.rtl .side{order:2 !important;border-left:none !important;border-right:1px solid #2a2a3a !important}
+body.rtl .main{order:1 !important}
+</style></head><body class="ltr">
 <div class="splash" id="splash">
   <div class="splash-logo">
     <div class="splash-icon">
