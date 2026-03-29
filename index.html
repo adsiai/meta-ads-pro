@@ -1,6 +1,6 @@
 <!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Meta Ads Pro</title>
+<title>ADSI - AI ADS</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
@@ -69,14 +69,48 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(79,127,255,.04)}
 .pulse-dot{width:8px;height:8px;border-radius:50%;background:#00e5a0;animation:pulse 2s infinite;display:inline-block;margin-left:.4rem}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.side{height:auto;border-right:none;border-bottom:1px solid #2a2a3a;order:1;display:flex;overflow-x:auto;padding:.5rem}.main{order:2;padding:1rem}.ns{margin-bottom:0;display:flex;gap:.25rem}.nlb{display:none}.ni{white-space:nowrap;border-right:none;border-radius:6px;font-size:.75rem}.ni.on{border-right:none;background:rgba(79,127,255,.15)}}
 @media(max-width:650px){.sg{grid-template-columns:1fr 1fr}}
-</style></head><body>
-<div id="p0" class="wrap"><div class="card"><div class="logo">META<span>ADS</span> PRO</div><div class="sub">Connect to manage your campaigns</div>
+
+.splash{position:fixed;inset:0;background:#0a0a0f;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .6s ease}
+.splash.hide{opacity:0;pointer-events:none}
+.splash-logo{display:flex;flex-direction:column;align-items:center;gap:1rem}
+.splash-icon{width:90px;height:90px;position:relative}
+.splash-icon svg{width:90px;height:90px}
+.splash-name{font-size:2.2rem;font-weight:900;letter-spacing:.08em;color:#fff}
+.splash-name span{color:#4f7fff}
+.splash-name em{color:#00e5a0;font-style:normal}
+.splash-sub{font-size:.85rem;color:#6b6b8a;letter-spacing:.15em;text-transform:uppercase;margin-top:-.5rem}
+.splash-bar{width:180px;height:2px;background:#1a1a24;border-radius:2px;overflow:hidden;margin-top:2rem}
+.splash-prog{height:100%;width:0%;background:linear-gradient(90deg,#4f7fff,#00e5a0);border-radius:2px;animation:prog 1.8s ease forwards}
+@keyframes prog{0%{width:0%}60%{width:70%}100%{width:100%}}
+.splash-dots{display:flex;gap:.4rem;margin-top:1rem}
+.splash-dots span{width:5px;height:5px;border-radius:50%;background:#2a2a3a;animation:dot .8s ease infinite}
+.splash-dots span:nth-child(2){animation-delay:.15s}.splash-dots span:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,100%{background:#2a2a3a}50%{background:#4f7fff}}</style></head><body>
+<div class="splash" id="splash">
+  <div class="splash-logo">
+    <div class="splash-icon">
+      <svg viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="90" height="90" rx="22" fill="#111118"/>
+        <rect x="1" y="1" width="88" height="88" rx="21" stroke="#2a2a3a" stroke-width="2"/>
+        <path d="M28 62L45 25L62 62" stroke="#4f7fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M33 50H57" stroke="#4f7fff" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="68" cy="26" r="7" fill="#00e5a0"/>
+        <path d="M65 26L67 28L71 24" stroke="#0a0a0f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="splash-name">ADSI <em>AI</em> <span>ADS</span></div>
+    <div class="splash-sub">Intelligent Advertising Platform</div>
+    <div class="splash-bar"><div class="splash-prog"></div></div>
+    <div class="splash-dots"><span></span><span></span><span></span></div>
+  </div>
+</div>
+<div id="p0" class="wrap"><div class="card"><div class="logo">ADSI <span>AI</span> ADS</div><div class="sub">Connect to manage your campaigns</div>
 <div id="lerr" class="err">Wrong username or password</div>
 <label class="lbl">Username</label><input type="text" class="inp" id="lu" placeholder="Username">
 <label class="lbl">Password</label><input type="password" class="inp" id="lp" placeholder="Password">
 <button class="btn-lo" id="lbtn">Login</button></div></div>
 <div id="p1" style="display:none">
-<div class="hdr"><div class="logo2">META<span>ADS</span></div><select class="sw" id="sw"></select>
+<div class="hdr"><div class="logo2">ADSI <span>AI</span></div><select class="sw" id="sw"></select>
 <div style="display:flex;gap:.5rem;align-items:center"><div class="dl"></div><button class="btn bg sm" id="logoutBtn">Logout</button></div></div>
 <div class="dbar">
 <button class="dp on" data-p="today">Today</button><button class="dp" data-p="yesterday">Yesterday</button>
@@ -227,6 +261,10 @@ tr:last-child td{border-bottom:none}tr:hover td{background:rgba(79,127,255,.04)}
 </div></div>
 <script>
 (function(){
+
+var _splash = document.getElementById("splash");
+var _splashTimer = setTimeout(function(){ if(_splash){_splash.classList.add("hide");setTimeout(function(){if(_splash)_splash.remove();},700);} }, 2200);
+function hideSplash(){ clearTimeout(_splashTimer); if(_splash){_splash.classList.add("hide");setTimeout(function(){if(_splash)_splash.remove();},600);} }
 var SID=localStorage.getItem("sid")||"",ACCT=localStorage.getItem("acct")||"";
 var CAMPS=[],EID="",DP="today",DF="",DT="",METRIC="spend",CHART=null;
 var RULES=[];
@@ -243,7 +281,7 @@ function callClaude(system,user){return fetch("https://api.anthropic.com/v1/mess
 g("lbtn").addEventListener("click",function(){var u=g("lu").value.trim(),p=g("lp").value;if(!u||!p)return;g("lbtn").textContent="Connecting...";g("lbtn").disabled=true;g("lerr").style.display="none";var _tryLogin=function(attempt){fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:u,password:p})}).then(function(r){return r.json();}).then(function(d){if(!d.ok){g("lerr").style.display="block";g("lbtn").textContent="Login";g("lbtn").disabled=false;}else{SID=d.session;localStorage.setItem("sid",SID);startApp();}}).catch(function(e){if(attempt<4){g("lbtn").textContent="Waking up server... ("+attempt+"/4)";setTimeout(function(){_tryLogin(attempt+1);},3000);}else{g("lerr").style.display="block";g("lerr").textContent="Server not responding. Try again.";g("lbtn").textContent="Login";g("lbtn").disabled=false;}});};_tryLogin(1);});
 g("lp").addEventListener("keydown",function(e){if(e.key==="Enter")g("lbtn").click();});
 g("logoutBtn").addEventListener("click",function(){SID="";ACCT="";localStorage.removeItem("sid");localStorage.removeItem("acct");location.reload();});
-function startApp(){g("p0").style.display="none";g("p1").style.display="block";g("df").value=ago(7);g("dt").value=tod();apiGet("me/adaccounts?fields=name,account_id,currency,account_status&limit=50").then(function(d){var accts=(d.data||[]).filter(function(a){return a.account_status===1;});if(!ACCT&&accts.length)ACCT=accts[0].account_id;g("sw").innerHTML=accts.map(function(a){return"<option value=\""+a.account_id+"\""+( a.account_id===ACCT?" selected":"")+">"+a.name+" ("+a.currency+")</option>";}).join("");loadDash();}).catch(function(){loadDash();});}
+function startApp(){hideSplash();g("p0").style.display="none";g("p1").style.display="block";g("df").value=ago(7);g("dt").value=tod();apiGet("me/adaccounts?fields=name,account_id,currency,account_status&limit=50").then(function(d){var accts=(d.data||[]).filter(function(a){return a.account_status===1;});if(!ACCT&&accts.length)ACCT=accts[0].account_id;g("sw").innerHTML=accts.map(function(a){return"<option value=\""+a.account_id+"\""+( a.account_id===ACCT?" selected":"")+">"+a.name+" ("+a.currency+")</option>";}).join("");loadDash();}).catch(function(){loadDash();});}
 g("sw").addEventListener("change",function(){ACCT=this.value;localStorage.setItem("acct",ACCT);CAMPS=[];loadDash();});
 document.querySelectorAll(".dp").forEach(function(b){b.addEventListener("click",function(){DP=this.dataset.p;DF="";DT="";document.querySelectorAll(".dp").forEach(function(x){x.classList.remove("on");});this.classList.add("on");refresh();});});
 g("applyBtn").addEventListener("click",function(){DF=g("df").value;DT=g("dt").value;if(!DF||!DT)return;document.querySelectorAll(".dp").forEach(function(x){x.classList.remove("on");});refresh();});
