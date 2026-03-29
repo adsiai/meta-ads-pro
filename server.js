@@ -9,7 +9,7 @@ const USERS = { ADMIN: 'IDO' };
 const APP_ID = '1301393171858763';
 const APP_SECRET = 'e9bafaa07a6efc8ca1da2f3cab739129';
 const sessions = {};
-let META_TOKEN = process.env.META_TOKEN || 'EAASfnDW4xUsBRIFdthcaLmpyo7GcwQ6l5pKA0mP2ZCtWux7uXBCIOC39pWdCR5pa5gLN4jyLpvmtEs82nm90my1TqpNX5alXQQZAc6Mtkef9cxLpJwZB27pHsTaW4mJI2Dmd1TmeKxclLIpDNOxQY6pGnNK5ZASygG0h3OOARCcHnweDaA8Y33et6fgEljyUcT3jB6zodJjgjR8t';
+let META_TOKEN = process.env.META_TOKEN || 'EAASfnDW4xUsBREoro7V4Jc5OjoaMMf9ObURPTPUCxOxLaPtAgNqrQ4NDn5w8l6v1gWQAEfMoHieZBTvVlYr5vdlYaYhy0gy5AONOvxY6k7UWp4E22bB15sYZBnanpZBg17FtWdaywfZCgTCocnWu0wYjyG3B5oMjZBtaBPJFb6jKUB5ZCooK6YLVjrdKH8UWgXFWGZBRykRGLix';
 
 function genSession() { return crypto.randomBytes(32).toString('hex'); }
 
