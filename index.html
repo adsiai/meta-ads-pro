@@ -346,9 +346,9 @@ var T = {
   }
 };
 
-function t(key) { return (T[LANG] && T[LANG][key]) || T.en[key] || key; }
+window.t = function t(key) { return (T[LANG] && T[LANG][key]) || T.en[key] || key; }
 
-function setLang(lang) {
+window.setLang = function setLang(lang) {
   LANG = lang;
   localStorage.setItem('lang', lang);
   document.documentElement.dir = lang === 'he' ? 'rtl' : 'ltr';
