@@ -840,6 +840,19 @@ if(SID){fetch("/api/verify",{headers:{Authorization:SID}}).then(function(r){retu
 
 
 // ===== SETTINGS =====
+// Move settings pages to main on every load (they may be inside pg-ai)
+function moveSettingsPages() {
+  var main = document.querySelector('.main');
+  if (!main) return;
+  ['pg-sg-general','pg-sg-language','pg-sg-appearance'].forEach(function(id) {
+    var pg = document.getElementById(id);
+    if (pg && pg.parentElement !== main) {
+      main.appendChild(pg);
+    }
+  });
+}
+moveSettingsPages();
+
 window.toggleSettings = function(){
   var btn=document.getElementById('settingsBtn');
   var sub=document.getElementById('settingsSub');
