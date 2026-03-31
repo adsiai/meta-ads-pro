@@ -970,7 +970,7 @@ if(SID){fetch("/api/verify",{headers:{Authorization:SID}}).then(function(r){retu
 function moveSettingsPages() {
   var main = document.querySelector('.main');
   if (!main) return;
-  ['pg-sg-general','pg-sg-language','pg-sg-appearance'].forEach(function(id) {
+  ['pg-sg-general','pg-sg-language','pg-sg-appearance','pg-copywriter','pg-insights','pg-smartalerts'].forEach(function(id) {
     var pg = document.getElementById(id);
     if (pg && pg.parentElement !== main) {
       main.appendChild(pg);
