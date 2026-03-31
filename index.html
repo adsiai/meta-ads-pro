@@ -189,6 +189,27 @@ body.light .di{background:#f8f9fb;border-color:#dde1ea;color:#1a1a2e}
 body.light .ctb{border-color:#dde1ea;color:#6b7280}
 body.light .eb{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.2)}
 body.light .ok{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.2)}
+
+.cp-form{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.cp-full{grid-column:1/-1}
+.cp-result{background:#0a0a0f;border:1px solid #2a2a3a;border-radius:12px;padding:1.25rem;margin-top:1rem;display:none}
+.cp-result.show{display:block}
+.cp-var{background:#111118;border:1px solid #2a2a3a;border-radius:10px;padding:1rem;margin-bottom:.75rem;position:relative}
+.cp-var-lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:#6b6b8a;margin-bottom:.5rem}
+.cp-var-txt{font-size:.88rem;line-height:1.6;white-space:pre-wrap}
+.cp-copy{position:absolute;top:.75rem;right:.75rem;padding:.25rem .6rem;font-size:.7rem;border-radius:6px;background:#1a1a24;border:1px solid #2a2a3a;color:#6b6b8a;cursor:pointer}
+.cp-copy:hover{color:#4f7fff;border-color:#4f7fff}
+.ai-spin-wrap{display:none;align-items:center;gap:.75rem;color:#6b6b8a;font-size:.85rem;padding:1rem 0}
+.ai-spin-wrap.show{display:flex}
+.ai-spin{width:20px;height:20px;border:2px solid #2a2a3a;border-top-color:#4f7fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.tone-wrap{display:flex;gap:.5rem;flex-wrap:wrap}
+.tone-opt{padding:.3rem .75rem;border-radius:20px;border:1px solid #2a2a3a;background:transparent;color:#6b6b8a;cursor:pointer;font-size:.78rem;font-family:Heebo,sans-serif;transition:all .15s}
+.tone-opt.on,.tone-opt:hover{border-color:#4f7fff;color:#4f7fff;background:rgba(79,127,255,.08)}
+.ins-card{background:#111118;border:1px solid #2a2a3a;border-radius:10px;padding:1rem;margin-bottom:.75rem}
+.sa-card{background:#111118;border:1px solid #2a2a3a;border-radius:10px;padding:.9rem 1rem;margin-bottom:.6rem;display:flex;align-items:flex-start;gap:.75rem}
+.sa-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:.35rem}
+.sa-red{background:#ff6b6b}.sa-yellow{background:#ff9f43}.sa-green{background:#00e5a0}
+body.light .cp-result,.body.light .cp-var,.body.light .ins-card,.body.light .sa-card{background:#fff}
 </style></head><body class="ltr">
 <div class="splash" id="splash">
   <div class="splash-logo">
@@ -251,7 +272,7 @@ body.light .ok{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.2)}
 <div class="ns"><span class="nlb">Tools</span>
 <div class="ni" data-g="create" data-i18n="newCamp">+ New Campaign</div>
 <div class="ni" data-g="alerts"><span data-i18n="alerts">Alerts</span> <span id="alb" style="display:none;background:#ff6b6b;color:#fff;border-radius:10px;font-size:.62rem;padding:1px 5px;margin-right:4px"></span></div>
-<div class="ni" data-g="ai" data-i18n="aiCenter" data-i18n="aiCenter">🤖 AI Center</div>
+<div class="ni" data-g="ai" data-i18n="aiCenter" data-i18n="aiCenter">🤖 AI Center</div><div class="ni" data-g="copywriter" style="padding-left:1.75rem;font-size:.78rem">✍️ Copywriter</div><div class="ni" data-g="pg-insights" style="padding-left:1.75rem;font-size:.78rem">🧠 Insights</div><div class="ni" data-g="pg-smartalerts" style="padding-left:1.75rem;font-size:.78rem">⚡ Smart Alerts</div>
 <div class="ni" data-g="export" data-i18n="export" data-i18n="export">Export</div></div>
 
 <div class="ns-bottom">
@@ -516,6 +537,72 @@ body.light .ok{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.2)}
 </div>
 </div>
 
+<div class="pg" id="pg-copywriter">
+<div class="pt">✍️ AI Copywriter</div>
+<div class="ps">Generate high-converting Meta ad copy powered by Claude AI</div>
+<div class="cc">
+<div class="cp-form">
+<div class="cp-full"><label class="lbl">Product / Service</label>
+<input type="text" class="inp" id="cp-product" placeholder="e.g. Running shoes, Online course..." style="direction:ltr"></div>
+<div><label class="lbl">Target Audience</label>
+<input type="text" class="inp" id="cp-audience" placeholder="e.g. Women 25-40, fitness lovers" style="direction:ltr"></div>
+<div><label class="lbl">Campaign Goal</label>
+<select class="inp" id="cp-goal">
+<option value="sales">Sales / Conversions</option>
+<option value="leads">Lead Generation</option>
+<option value="awareness">Brand Awareness</option>
+<option value="traffic">Website Traffic</option>
+<option value="engagement">Engagement</option>
+</select></div>
+<div><label class="lbl">Language</label>
+<select class="inp" id="cp-lang">
+<option value="hebrew">Hebrew</option>
+<option value="english">English</option>
+<option value="both">Both</option>
+</select></div>
+<div class="cp-full"><label class="lbl">Tone of Voice</label>
+<div class="tone-wrap">
+<button class="tone-opt on" data-tone="professional">Professional</button>
+<button class="tone-opt" data-tone="friendly">Friendly</button>
+<button class="tone-opt" data-tone="urgent">Urgent</button>
+<button class="tone-opt" data-tone="playful">Playful</button>
+<button class="tone-opt" data-tone="inspirational">Inspirational</button>
+<button class="tone-opt" data-tone="direct">Direct</button>
+</div></div>
+<div class="cp-full"><label class="lbl">Key Benefits (optional)</label>
+<textarea class="inp" id="cp-benefits" rows="2" placeholder="Free shipping, Award winning, 30-day return..." style="direction:ltr;resize:none"></textarea></div>
+</div>
+<button class="btn ba" id="cp-run-btn" style="width:100%;padding:.85rem;font-size:.95rem;font-weight:700">Generate Ad Copy</button>
+<div class="ai-spin-wrap" id="cp-loading"><div class="ai-spin"></div><span>Claude AI is writing your copy...</span></div>
+<div class="cp-result" id="cp-result">
+<div class="sh"><div class="st">Generated Variations</div>
+<button class="btn bg sm" id="cp-regen-btn">Regenerate</button></div>
+<div id="cp-output"></div>
+</div>
+</div></div>
+<div class="pg" id="pg-insights">
+<div class="pt">AI Insights</div>
+<div class="ps">AI-powered analysis of your campaign performance</div>
+<div class="cc">
+<label class="lbl">Select Campaign to Analyze</label>
+<select class="inp" id="ins-camp" style="margin-bottom:1rem;direction:ltr"><option value="">Select a campaign</option></select>
+<button class="btn ba" id="ins-run-btn" style="width:100%;padding:.75rem;font-weight:700">Analyze with AI</button>
+<div class="ai-spin-wrap" id="ins-loading"><div class="ai-spin"></div><span>Analyzing campaign data...</span></div>
+</div>
+<div id="ins-result" style="display:none;margin-top:1rem">
+<div class="cc"><div class="sh"><div class="st">AI Analysis</div></div>
+<div id="ins-output" style="font-size:.88rem;line-height:1.8;white-space:pre-wrap"></div>
+</div></div></div>
+<div class="pg" id="pg-smartalerts">
+<div class="pt">Smart Alerts AI</div>
+<div class="ps">AI scans all active campaigns and flags issues automatically</div>
+<div class="cc">
+<p style="font-size:.85rem;color:#6b6b8a;margin-bottom:1rem">Analyzes all active campaigns: ROAS, CPA, CTR, budget issues and optimization opportunities.</p>
+<button class="btn ba" id="sa-run-btn" style="width:100%;padding:.75rem;font-weight:700">Scan All Campaigns</button>
+<div class="ai-spin-wrap" id="sa-loading"><div class="ai-spin"></div><span>Scanning all campaigns...</span></div>
+</div>
+<div id="sa-result" style="display:none;margin-top:1rem"></div>
+</div>
 </main></div></div>
 <div class="mo" id="em" style="display:none"><div class="mc">
 <div class="mh"><div class="mt">Edit Campaign</div><button class="xb" id="closeMo">X</button></div>
@@ -992,6 +1079,144 @@ setTimeout(function(){
 document.querySelectorAll('.ni[data-g^="sg-"]').forEach(function(el){
   el.addEventListener('click',function(){window.goPage(this.dataset.g);});
 });
+
+(function(){
+document.addEventListener("click",function(e){if(e.target.classList.contains("tone-opt")){document.querySelectorAll(".tone-opt").forEach(function(b){b.classList.remove("on");});e.target.classList.add("on");}});
+setTimeout(function(){
+var cpBtn=document.getElementById("cp-run-btn");if(cpBtn)cpBtn.addEventListener("click",function(){window.runCopywriter();});
+var regenBtn=document.getElementById("cp-regen-btn");if(regenBtn)regenBtn.addEventListener("click",function(){window.runCopywriter();});
+var insBtn=document.getElementById("ins-run-btn");if(insBtn)insBtn.addEventListener("click",function(){window.runInsights();});
+var saBtn=document.getElementById("sa-run-btn");if(saBtn)saBtn.addEventListener("click",function(){window.runSmartAlerts();});
+["copywriter","pg-insights","pg-smartalerts"].forEach(function(page){
+var ni=document.querySelector("[data-g=\""+page+"\"]");
+if(ni)ni.addEventListener("click",function(){var t=page.replace("pg-","");window.goPage(t);if(page==="pg-insights")window.populateInsightsCamps();});
+});
+},800);
+window.populateInsightsCamps=function(){
+var sel=document.getElementById("ins-camp");if(!sel)return;
+var rows=document.querySelectorAll("#pg-camps tbody tr");
+if(rows.length>0){sel.innerHTML="<option value=\"\">Select a campaign</option>";
+rows.forEach(function(row){var tds=row.querySelectorAll("td");var name=tds[tds.length-1]?tds[tds.length-1].textContent.trim():"";var id=row.dataset.id;
+if(name&&id){var opt=document.createElement("option");opt.value=id;opt.textContent=name;sel.appendChild(opt);}});}
+};
+window.runCopywriter=function(){
+var product=((document.getElementById("cp-product")||{}).value||"").trim();
+var audience=((document.getElementById("cp-audience")||{}).value||"").trim();
+var goal=(document.getElementById("cp-goal")||{}).value||"sales";
+var lang=(document.getElementById("cp-lang")||{}).value||"english";
+var toneEl=document.querySelector(".tone-opt.on");
+var tone=toneEl?toneEl.dataset.tone:"professional";
+var benefits=((document.getElementById("cp-benefits")||{}).value||"").trim();
+if(!product){alert("Please enter your product or service.");return;}
+var loading=document.getElementById("cp-loading");
+var result=document.getElementById("cp-result");
+var output=document.getElementById("cp-output");
+if(loading)loading.classList.add("show");
+if(result)result.classList.remove("show");
+if(output)output.innerHTML="";
+var langInstr=lang==="hebrew"?"Write ONLY in Hebrew.":lang==="english"?"Write ONLY in English.":"Write each variation in both Hebrew and English.";
+var parts=["You are an expert Meta Ads copywriter. Create 3 ad variations for Facebook and Instagram.","Product: "+product];
+if(audience)parts.push("Audience: "+audience);
+parts.push("Goal: "+goal,"Tone: "+tone);
+if(benefits)parts.push("Key benefits: "+benefits);
+parts.push(langInstr,"","Format each variation as:","VARIATION N","Primary Text: [2-4 sentences]","Headline: [max 40 chars]","Description: [max 30 chars]","CTA: [action text]","","Make each distinct. Focus on emotion and benefits.");
+var prompt=parts.join("\n");
+fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
+body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1500,messages:[{role:"user",content:prompt}]})})
+.then(function(r){return r.json();})
+.then(function(d){
+if(loading)loading.classList.remove("show");
+var text=(d.content&&d.content[0]&&d.content[0].text)?d.content[0].text:"Error.";
+var rx=new RegExp("VARIATION \\d+","g");
+var vars=text.split(rx).filter(function(v){return v.trim();});
+if(!vars.length)vars=[text];
+if(output)output.innerHTML=vars.map(function(v,i){
+var s=v.trim().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+return "<div class=\"cp-var\"><div class=\"cp-var-lbl\">Variation "+(i+1)+"</div><div class=\"cp-var-txt\">"+s+"</div><button class=\"cp-copy\" onclick=\"window.cpCopy(this)\">Copy</button></div>";
+}).join("");
+if(result)result.classList.add("show");
+}).catch(function(e){
+if(loading)loading.classList.remove("show");
+if(output)output.innerHTML="<div class=\"eb\">Error: "+e.message+"</div>";
+if(result)result.classList.add("show");
+});
+};
+window.cpCopy=function(btn){
+var txt=btn.parentElement.querySelector(".cp-var-txt");
+if(txt&&navigator.clipboard){navigator.clipboard.writeText(txt.textContent);btn.textContent="Copied!";setTimeout(function(){btn.textContent="Copy";},2000);}
+};
+window.runInsights=function(){
+var sel=document.getElementById("ins-camp");
+var campId=sel?sel.value:"";
+var campName=sel&&sel.selectedOptions[0]?sel.selectedOptions[0].text:"";
+if(!campId){alert("Please select a campaign.");return;}
+var loading=document.getElementById("ins-loading"),result=document.getElementById("ins-result"),output=document.getElementById("ins-output");
+if(loading)loading.classList.add("show");
+if(result)result.style.display="none";
+apiGet(campId+"/insights?fields=impressions,clicks,ctr,spend,actions,action_values,frequency,reach&date_preset=last_30d")
+.then(function(ins){
+var i=(ins.data&&ins.data[0])?ins.data[0]:{};
+var purchases=(i.actions||[]).find(function(a){return a.action_type==="purchase";});
+var revenue=(i.action_values||[]).find(function(a){return a.action_type==="purchase";});
+var spend=parseFloat(i.spend||0);
+var roasVal=(revenue&&spend>0)?(parseFloat(revenue.value)/spend).toFixed(2)+"x":"no data";
+var dp=["Campaign: "+campName,"Period: Last 30 days","Spend: ILS "+spend.toFixed(2),"Impressions: "+parseInt(i.impressions||0).toLocaleString(),"Clicks: "+parseInt(i.clicks||0).toLocaleString(),"CTR: "+(parseFloat(i.ctr||0)*100).toFixed(2)+"%","Reach: "+parseInt(i.reach||0).toLocaleString(),"Frequency: "+parseFloat(i.frequency||0).toFixed(2)];
+if(purchases)dp.push("Purchases: "+purchases.value);
+if(revenue)dp.push("Revenue: ILS "+parseFloat(revenue.value).toFixed(2));
+dp.push("ROAS: "+roasVal);
+var pp=["You are a senior Meta Ads analyst. Analyze this campaign data.","",dp.join("\n"),"","Provide:","1. Performance Summary","2. What is Working Well","3. Issues and Concerns","4. Top 3 Recommendations","5. Priority Action (most urgent NOW)","","Be specific with numbers. Write in English."];
+return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:pp.join("\n")}]})}).then(function(r){return r.json();});
+}).then(function(d){
+if(loading)loading.classList.remove("show");
+var text=(d.content&&d.content[0])?d.content[0].text:"No insights.";
+if(output)output.textContent=text;
+if(result)result.style.display="block";
+}).catch(function(e){
+if(loading)loading.classList.remove("show");
+if(output)output.textContent="Error: "+e.message;
+if(result)result.style.display="block";
+});
+};
+window.runSmartAlerts=function(){
+var loading=document.getElementById("sa-loading"),result=document.getElementById("sa-result");
+if(loading)loading.classList.add("show");
+if(result)result.style.display="none";
+apiGet("act_"+ACCT+"/campaigns?fields=name,status&filtering=[{\"field\":\"effective_status\",\"operator\":\"IN\",\"value\":[\"ACTIVE\"]}]&limit=15")
+.then(function(d){
+var camps=(d.data||[]).slice(0,10);
+if(!camps.length){if(loading)loading.classList.remove("show");if(result){result.innerHTML="<div class=\"ok\">No active campaigns.</div>";result.style.display="block";}return null;}
+return Promise.all(camps.map(function(camp){
+return apiGet(camp.id+"/insights?fields=spend,clicks,ctr,actions,action_values&date_preset=last_7d")
+.then(function(ins){return{camp:camp,ins:(ins.data&&ins.data[0])||{}};}).catch(function(){return{camp:camp,ins:{}};});
+}));
+}).then(function(results){
+if(!results)return;
+var lines=results.map(function(r){
+var i=r.ins,spend=parseFloat(i.spend||0),ctr=(parseFloat(i.ctr||0)*100).toFixed(2);
+var purchases=(i.actions||[]).find(function(a){return a.action_type==="purchase";});
+var revenue=(i.action_values||[]).find(function(a){return a.action_type==="purchase";});
+var roas=(revenue&&spend>0)?(parseFloat(revenue.value)/spend).toFixed(2)+"x":"0x";
+return r.camp.name+": Spend=ILS"+spend.toFixed(0)+" CTR="+ctr+"% ROAS="+roas+(purchases?" Purchases="+purchases.value:"");
+}).join("\n");
+var pp=["You are a Meta Ads expert. Analyze campaigns (last 7 days) and flag issues.","",lines,"","For each campaign output ONE line:","CRITICAL [name]: [issue] -> [action needed]   (ROAS under 1x, CTR under 0.5%)","WARNING [name]: [issue] -> [monitor this]","GOOD [name]: [what is performing well]","","One line per campaign. Be concise and specific."];
+return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,messages:[{role:"user",content:pp.join("\n")}]})}).then(function(r){return r.json();});
+}).then(function(d){
+if(!d)return;
+if(loading)loading.classList.remove("show");
+var text=(d.content&&d.content[0])?d.content[0].text:"";
+var alertLines=text.split("\n").filter(function(l){return l.trim();});
+var cards=alertLines.map(function(line){
+var dc=line.indexOf("CRITICAL")>-1?"sa-red":line.indexOf("WARNING")>-1?"sa-yellow":"sa-green";
+var safe=line.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+return "<div class=\"sa-card\"><div class=\"sa-dot "+dc+"\"></div><div style=\"font-size:.85rem;line-height:1.6\">"+safe+"</div></div>";
+}).join("");
+if(result){result.innerHTML="<div class=\"cc\"><div class=\"sh\"><div class=\"st\">AI Alert Report</div><span style=\"font-size:.75rem;color:#6b6b8a\">Last 7 days</span></div>"+cards+"</div>";result.style.display="block";}
+}).catch(function(e){
+if(loading)loading.classList.remove("show");
+if(result){result.innerHTML="<div class=\"eb\">Error: "+e.message+"</div>";result.style.display="block";}
+});
+};
+})();
 
 })();
 </script></body></html>
