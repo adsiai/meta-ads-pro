@@ -150,6 +150,45 @@ body.rtl .settings-sub .ni.on{border-right-color:#4f7fff;border-left-color:trans
 .settings-sub.open{max-height:120px}
 .settings-sub .ni{padding:.38rem 1rem .38rem 2rem;font-size:.78rem}
 body.rtl .settings-sub .ni{padding:.38rem 2rem .38rem 1rem}
+
+body.light{background:#f0f2f5;color:#1a1a2e}
+body.light .hdr{background:#ffffff;border-color:#dde1ea}
+body.light .side{background:#ffffff;border-color:#dde1ea}
+body.light .dbar{background:#ffffff;border-color:#dde1ea}
+body.light .layout{background:#f0f2f5}
+body.light .cc{background:#ffffff;border-color:#dde1ea}
+body.light .sc{background:#ffffff;border-color:#dde1ea}
+body.light .tw{background:#ffffff;border-color:#dde1ea}
+body.light th{background:#f8f9fb;color:#6b7280;border-color:#dde1ea}
+body.light td{border-color:#eef0f4;color:#1a1a2e}
+body.light tr:hover td{background:rgba(79,127,255,.04)}
+body.light .ni{color:#6b7280}
+body.light .ni:hover{background:#f0f2f5;color:#1a1a2e}
+body.light .ni.on{background:rgba(79,127,255,.08);color:#4f7fff}
+body.light .nlb{color:#9ca3af}
+body.light .dp{color:#6b7280;border-color:#dde1ea}
+body.light .dp:hover,.dp.on{background:rgba(79,127,255,.1);color:#4f7fff}
+body.light .sw{background:#f8f9fb;border-color:#dde1ea;color:#1a1a2e}
+body.light .btn.bg{background:#f0f2f5;color:#1a1a2e;border-color:#dde1ea}
+body.light .btn.bg:hover{border-color:#4f7fff;color:#4f7fff}
+body.light .inp{background:#f8f9fb;border-color:#dde1ea;color:#1a1a2e}
+body.light .inp:focus{border-color:#4f7fff}
+body.light .sl{color:#6b7280}
+body.light .sm2{color:#6b7280}
+body.light .st{color:#1a1a2e}
+body.light .ct{color:#1a1a2e}
+body.light .pt{color:#1a1a2e}
+body.light .ps{color:#6b7280}
+body.light .lbl{color:#6b7280}
+body.light .mc{background:#ffffff;border-color:#dde1ea}
+body.light .settings-btn{color:#6b7280}
+body.light .settings-btn:hover{background:#f0f2f5;color:#1a1a2e}
+body.light .ns-bottom{border-color:#dde1ea}
+body.light .logo2{color:#4f7fff}
+body.light .di{background:#f8f9fb;border-color:#dde1ea;color:#1a1a2e}
+body.light .ctb{border-color:#dde1ea;color:#6b7280}
+body.light .eb{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.2)}
+body.light .ok{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.2)}
 </style></head><body class="ltr">
 <div class="splash" id="splash">
   <div class="splash-logo">
@@ -454,15 +493,15 @@ body.rtl .settings-sub .ni{padding:.38rem 2rem .38rem 1rem}
 <div class="cc" style="max-width:480px">
 <div class="ch"><div class="ct">Theme</div></div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
-<div id="thDark" style="border:2px solid #4f7fff;border-radius:12px;padding:1.5rem 1rem;text-align:center;background:rgba(79,127,255,.08);cursor:pointer">
+<div id="thDark" style="border:2px solid #4f7fff;border-radius:12px;padding:1.5rem 1rem;text-align:center;background:rgba(79,127,255,.08);cursor:pointer;transition:all .2s" onclick="window.setTheme('dark')">
 <div style="font-size:2rem;margin-bottom:.5rem">🌙</div>
 <div style="font-weight:700">Dark</div>
 <div style="font-size:.72rem;color:#00e5a0;margin-top:.25rem">● Active</div>
 </div>
-<div id="thLight" style="border:2px solid #2a2a3a;border-radius:12px;padding:1.5rem 1rem;text-align:center;cursor:pointer;opacity:.6">
+<div id="thLight" style="border:2px solid #2a2a3a;border-radius:12px;padding:1.5rem 1rem;text-align:center;cursor:pointer;transition:all .2s" onclick="window.setTheme('light')">
 <div style="font-size:2rem;margin-bottom:.5rem">☀️</div>
 <div style="font-weight:700">Light</div>
-<div style="font-size:.72rem;color:#6b6b8a;margin-top:.25rem">Coming soon</div>
+<div style="font-size:.72rem;color:#6b6b8a;margin-top:.25rem">Click to activate</div>
 </div>
 </div>
 <div class="ch"><div class="ct">Accent Color</div></div>
@@ -909,8 +948,23 @@ window.saveGeneral = function(){
 };
 
 window.setTheme = function(theme){
+  document.body.classList.toggle('light', theme==='light');
+  localStorage.setItem('theme', theme);
+  // Update theme cards
+  var dk=document.getElementById('thDark');
+  var lt=document.getElementById('thLight');
+  if(dk){
+    dk.style.border=theme==='dark'?'2px solid #4f7fff':'2px solid #2a2a3a';
+    dk.style.background=theme==='dark'?'rgba(79,127,255,.08)':'transparent';
+    dk.style.opacity='1';
+  }
+  if(lt){
+    lt.style.border=theme==='light'?'2px solid #4f7fff':'2px solid #2a2a3a';
+    lt.style.background=theme==='light'?'rgba(79,127,255,.08)':'transparent';
+    lt.style.opacity='1';
+  }
   var m=document.getElementById('appMsg');
-  if(m){m.textContent=theme==='light'?'☀️ Light mode coming soon!':'🌙 Dark mode active!';m.style.display='block';setTimeout(function(){m.style.display='none';},2000);}
+  if(m){m.textContent=theme==='light'?'☀️ Light mode activated!':'🌙 Dark mode activated!';m.style.display='block';setTimeout(function(){m.style.display='none';},2000);}
 };
 
 window.setAccent = function(color,id){
