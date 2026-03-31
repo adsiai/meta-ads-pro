@@ -162,6 +162,37 @@ const server = http.createServer(async (req, res) => {
     }
     return;
   }
+  if (pathname === '/api/ai' && req.method === 'POST') {
+    const session = req.headers.authorization;
+    if (!session || !sessions[session]) {
+      res.writeHead(401, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({error:'Unauthorized'}));
+      return;
+    }
+    let body = '';
+    req.on('data', c => body += c);
+    req.on('end', async () => {
+      try {
+        const r = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': process.env.ANTHROPIC_API_KEY || '',
+            'anthropic-version': '2023-06-01'
+          },
+          body: body
+        });
+        const data = await r.text();
+        res.writeHead(r.status, {'Content-Type':'application/json'});
+        res.end(data);
+      } catch(e) {
+        res.writeHead(500);
+        res.end(JSON.stringify({error:{message:e.message}}));
+      }
+    });
+    return;
+  }
+
   res.writeHead(404); res.end('Not found');
 });
 
