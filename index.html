@@ -210,6 +210,33 @@ body.light .ok{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.2)}
 .sa-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:.35rem}
 .sa-red{background:#ff6b6b}.sa-yellow{background:#ff9f43}.sa-green{background:#00e5a0}
 body.light .cp-result,.body.light .cp-var,.body.light .ins-card,.body.light .sa-card{background:#fff}
+
+.auto-card{background:#111118;border:1px solid #2a2a3a;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.auto-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.auto-card-title{font-size:.9rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
+.auto-toggle{position:relative;width:40px;height:22px;cursor:pointer}
+.auto-toggle input{opacity:0;width:0;height:0;position:absolute}
+.auto-toggle-track{position:absolute;inset:0;background:#2a2a3a;border-radius:11px;transition:background .2s}
+.auto-toggle input:checked + .auto-toggle-track{background:#4f7fff}
+.auto-toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s}
+.auto-toggle input:checked ~ .auto-toggle-thumb{transform:translateX(18px)}
+.rule-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.75rem;margin-bottom:.75rem}
+.rule-label{font-size:.82rem;color:#6b6b8a}
+.rule-op{font-size:.82rem;color:#4f7fff;font-weight:600;text-align:center}
+.auto-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem;border-radius:20px;font-size:.7rem;font-weight:600}
+.auto-badge-on{background:rgba(0,229,160,.12);color:#00e5a0;border:1px solid rgba(0,229,160,.25)}
+.auto-badge-off{background:rgba(107,107,138,.1);color:#6b6b8a;border:1px solid #2a2a3a}
+.auto-log{background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;padding:.75rem;max-height:200px;overflow-y:auto;font-size:.75rem;font-family:monospace;color:#6b6b8a}
+.auto-log-entry{padding:.2rem 0;border-bottom:1px solid rgba(42,42,58,.4)}
+.auto-log-entry:last-child{border:none}
+.auto-log-ok{color:#00e5a0}
+.auto-log-warn{color:#ff9f43}
+.auto-log-err{color:#ff6b6b}
+.auto-run-btn{width:100%;padding:.7rem;font-weight:700;margin-top:.75rem}
+.digest-preview{background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;padding:1rem;font-size:.83rem;line-height:1.7;white-space:pre-wrap;display:none;margin-top:.75rem}
+.digest-preview.show{display:block}
+body.light .auto-card,.body.light .auto-log,.body.light .digest-preview{background:#fff}
+body.light .auto-log{background:#f8f9fb}
 </style></head><body class="ltr">
 <div class="splash" id="splash">
   <div class="splash-logo">
@@ -273,7 +300,8 @@ body.light .cp-result,.body.light .cp-var,.body.light .ins-card,.body.light .sa-
 <div class="ni" data-g="create" data-i18n="newCamp">+ New Campaign</div>
 <div class="ni" data-g="alerts"><span data-i18n="alerts">Alerts</span> <span id="alb" style="display:none;background:#ff6b6b;color:#fff;border-radius:10px;font-size:.62rem;padding:1px 5px;margin-right:4px"></span></div>
 <div class="ni" data-g="ai" data-i18n="aiCenter" data-i18n="aiCenter">🤖 AI Center</div><div class="ni" data-g="copywriter" style="padding-left:1.75rem;font-size:.78rem">✍️ Copywriter</div><div class="ni" data-g="pg-insights" style="padding-left:1.75rem;font-size:.78rem">🧠 Insights</div><div class="ni" data-g="pg-smartalerts" style="padding-left:1.75rem;font-size:.78rem">⚡ Smart Alerts</div>
-<div class="ni" data-g="export" data-i18n="export" data-i18n="export">Export</div></div>
+<div class="ni" data-g="export" data-i18n="export" data-i18n="export">Export</div>
+<div class="ni" data-g="automations">🤖 Automations</div></div>
 
 <div class="ns-bottom">
 <button class="settings-btn" id="settingsBtn" onclick="window.toggleSettings()">
@@ -603,6 +631,104 @@ body.light .cp-result,.body.light .cp-var,.body.light .ins-card,.body.light .sa-
 </div>
 <div id="sa-result" style="display:none;margin-top:1rem"></div>
 </div>
+
+<div class="pg" id="pg-automations">
+<div class="pt">🤖 Automations</div>
+<div class="ps">Set rules that run automatically on your campaigns</div>
+
+<!-- RULE 1: Low ROAS Auto-Pause -->
+<div class="auto-card">
+  <div class="auto-card-head">
+    <div class="auto-card-title">
+      <span>🛑 Auto-Pause Low ROAS</span>
+      <span class="auto-badge auto-badge-off" id="rule1-badge">OFF</span>
+    </div>
+    <label class="auto-toggle">
+      <input type="checkbox" id="rule1-toggle" onchange="window.toggleRule('rule1',this.checked)">
+      <div class="auto-toggle-track"></div>
+      <div class="auto-toggle-thumb"></div>
+    </label>
+  </div>
+  <p style="font-size:.82rem;color:#6b6b8a;margin-bottom:.85rem">Automatically pause campaigns when ROAS drops below your threshold</p>
+  <div class="rule-row">
+    <div>
+      <label class="lbl">If ROAS is below</label>
+      <input type="number" class="inp" id="rule1-roas" value="1.5" step="0.1" min="0" style="direction:ltr">
+    </div>
+    <div class="rule-op">AND<br>spend &gt;</div>
+    <div>
+      <label class="lbl">Min Spend (ILS)</label>
+      <input type="number" class="inp" id="rule1-spend" value="50" min="0" style="direction:ltr">
+    </div>
+  </div>
+  <div>
+    <label class="lbl">Check Period</label>
+    <select class="inp" id="rule1-period">
+      <option value="last_3d">Last 3 days</option>
+      <option value="last_7d" selected>Last 7 days</option>
+      <option value="last_14d">Last 14 days</option>
+    </select>
+  </div>
+  <button class="btn ba auto-run-btn" onclick="window.runRule1()">Run Check Now</button>
+</div>
+
+<!-- RULE 2: Low CTR Alert -->
+<div class="auto-card">
+  <div class="auto-card-head">
+    <div class="auto-card-title">
+      <span>📉 Low CTR Alert</span>
+      <span class="auto-badge auto-badge-off" id="rule2-badge">OFF</span>
+    </div>
+    <label class="auto-toggle">
+      <input type="checkbox" id="rule2-toggle" onchange="window.toggleRule('rule2',this.checked)">
+      <div class="auto-toggle-track"></div>
+      <div class="auto-toggle-thumb"></div>
+    </label>
+  </div>
+  <p style="font-size:.82rem;color:#6b6b8a;margin-bottom:.85rem">Flag campaigns with CTR below threshold — needs new creative</p>
+  <div class="rule-row">
+    <div>
+      <label class="lbl">If CTR is below (%)</label>
+      <input type="number" class="inp" id="rule2-ctr" value="0.8" step="0.1" min="0" style="direction:ltr">
+    </div>
+    <div class="rule-op">FOR<br>AT LEAST</div>
+    <div>
+      <label class="lbl">Days</label>
+      <input type="number" class="inp" id="rule2-days" value="3" min="1" max="30" style="direction:ltr">
+    </div>
+  </div>
+  <button class="btn ba auto-run-btn" onclick="window.runRule2()">Run Check Now</button>
+</div>
+
+<!-- RULE 3: Daily Digest -->
+<div class="auto-card">
+  <div class="auto-card-head">
+    <div class="auto-card-title">
+      <span>📊 Daily Performance Digest</span>
+      <span class="auto-badge auto-badge-off" id="rule3-badge">OFF</span>
+    </div>
+    <label class="auto-toggle">
+      <input type="checkbox" id="rule3-toggle" onchange="window.toggleRule('rule3',this.checked)">
+      <div class="auto-toggle-track"></div>
+      <div class="auto-toggle-thumb"></div>
+    </label>
+  </div>
+  <p style="font-size:.82rem;color:#6b6b8a;margin-bottom:.85rem">AI summary of yesterday's performance across all campaigns</p>
+  <button class="btn ba auto-run-btn" onclick="window.runDigest()">Generate Digest Now</button>
+  <div class="copy-loading" id="digest-loading" style="margin-top:.5rem"><div class="ai-spin"></div><span>Generating digest...</span></div>
+  <div class="digest-preview" id="digest-output"></div>
+</div>
+
+<!-- AUTOMATION LOG -->
+<div class="auto-card">
+  <div class="auto-card-head">
+    <div class="auto-card-title">🗒 Automation Log</div>
+    <button class="btn bg sm" onclick="window.clearAutoLog()">Clear</button>
+  </div>
+  <div class="auto-log" id="auto-log"><div class="auto-log-entry" style="color:#2a2a3a">No activity yet</div></div>
+</div>
+</div>
+
 </main></div></div>
 <div class="mo" id="em" style="display:none"><div class="mc">
 <div class="mh"><div class="mt">Edit Campaign</div><button class="xb" id="closeMo">X</button></div>
@@ -970,7 +1096,7 @@ if(SID){fetch("/api/verify",{headers:{Authorization:SID}}).then(function(r){retu
 function moveSettingsPages() {
   var main = document.querySelector('.main');
   if (!main) return;
-  ['pg-sg-general','pg-sg-language','pg-sg-appearance','pg-copywriter','pg-insights','pg-smartalerts'].forEach(function(id) {
+  ['pg-sg-general','pg-sg-language','pg-sg-appearance','pg-copywriter','pg-insights','pg-smartalerts','pg-automations'].forEach(function(id) {
     var pg = document.getElementById(id);
     if (pg && pg.parentElement !== main) {
       main.appendChild(pg);
@@ -1215,6 +1341,118 @@ if(result){result.innerHTML="<div class=\"cc\"><div class=\"sh\"><div class=\"st
 if(loading)loading.classList.remove("show");
 if(result){result.innerHTML="<div class=\"eb\">Error: "+e.message+"</div>";result.style.display="block";}
 });
+};
+})();
+
+(function(){
+setTimeout(function(){
+  var ni=document.querySelector('[data-g="automations"]');
+  if(ni)ni.addEventListener('click',function(){window.goPage('automations');});
+},900);
+function loadRules(){
+['rule1','rule2','rule3'].forEach(function(r){
+var saved=localStorage.getItem('auto_'+r);
+if(saved==='true'){var el=document.getElementById(r+'-toggle');if(el){el.checked=true;window.toggleRule(r,true,true);}}
+});
+}
+setTimeout(loadRules,1200);
+window.autoLog=function(msg,type){
+var log=document.getElementById('auto-log');if(!log)return;
+var empty=log.querySelector('[style*="2a2a3a"]');if(empty)empty.remove();
+var d=new Date().toLocaleTimeString();
+var cls=type==='ok'?'auto-log-ok':type==='warn'?'auto-log-warn':type==='err'?'auto-log-err':'';
+var entry=document.createElement('div');
+entry.className='auto-log-entry '+cls;
+entry.textContent='['+d+'] '+msg;
+log.insertBefore(entry,log.firstChild);
+};
+window.clearAutoLog=function(){var log=document.getElementById('auto-log');if(log)log.innerHTML='<div class="auto-log-entry" style="color:#2a2a3a">No activity yet</div>';};
+window.toggleRule=function(rule,on,silent){
+localStorage.setItem('auto_'+rule,on);
+var badge=document.getElementById(rule+'-badge');
+if(badge){badge.textContent=on?'ON':'OFF';badge.className='auto-badge '+(on?'auto-badge-on':'auto-badge-off');}
+if(!silent)window.autoLog('Rule '+rule+' turned '+(on?'ON':'OFF'),on?'ok':'warn');
+};
+window.runRule1=function(){
+var minRoas=parseFloat((document.getElementById('rule1-roas')||{}).value||1.5);
+var minSpend=parseFloat((document.getElementById('rule1-spend')||{}).value||50);
+var period=(document.getElementById('rule1-period')||{}).value||'last_7d';
+window.autoLog('Checking ROAS...','');
+apiGet('act_'+ACCT+'/campaigns?fields=name,status&filtering=[{"field":"effective_status","operator":"IN","value":["ACTIVE"]}]&limit=20')
+.then(function(d){
+var camps=d.data||[];
+if(!camps.length){window.autoLog('No active campaigns','warn');return;}
+return Promise.all(camps.map(function(camp){
+return apiGet(camp.id+'/insights?fields=spend,actions,action_values&date_preset='+period)
+.then(function(ins){
+var i=(ins.data&&ins.data[0])?ins.data[0]:{};
+var spend=parseFloat(i.spend||0);
+var revenue=(i.action_values||[]).find(function(a){return a.action_type==='purchase';});
+var roas=(revenue&&spend>0)?parseFloat(revenue.value)/spend:0;
+return{camp:camp,spend:spend,roas:roas};
+}).catch(function(){return{camp:camp,spend:0,roas:0};});
+}));
+}).then(function(results){
+if(!results)return;
+var flagged=0;
+results.forEach(function(r){
+if(r.spend>=minSpend&&r.roas>0&&r.roas<minRoas){flagged++;window.autoLog('LOW ROAS: "'+r.camp.name+'" ROAS='+r.roas.toFixed(2)+'x ILS'+r.spend.toFixed(0)+' -> Pause?','warn');}
+else if(r.spend>=minSpend&&r.roas>=minRoas){window.autoLog('"'+r.camp.name+'" ROAS='+r.roas.toFixed(2)+'x OK','ok');}
+else{window.autoLog('"'+r.camp.name+'" ILS'+r.spend.toFixed(0)+' (below min)','');}
+});
+if(!flagged)window.autoLog('All campaigns OK (ROAS>'+minRoas+'x)','ok');
+else window.autoLog(flagged+' campaign(s) below ROAS '+minRoas+'x','warn');
+}).catch(function(e){window.autoLog('Error: '+e.message,'err');});
+};
+window.runRule2=function(){
+var minCtr=parseFloat((document.getElementById('rule2-ctr')||{}).value||0.8)/100;
+window.autoLog('Checking CTR...','');
+apiGet('act_'+ACCT+'/campaigns?fields=name,status&filtering=[{"field":"effective_status","operator":"IN","value":["ACTIVE"]}]&limit=20')
+.then(function(d){
+return Promise.all((d.data||[]).map(function(camp){
+return apiGet(camp.id+'/insights?fields=impressions,ctr&date_preset=last_7d')
+.then(function(ins){var i=(ins.data&&ins.data[0])||{};return{camp:camp,ctr:parseFloat(i.ctr||0),imp:parseInt(i.impressions||0)};}).catch(function(){return{camp:camp,ctr:0,imp:0};});
+}));
+}).then(function(results){
+var flagged=0;
+results.forEach(function(r){
+if(r.imp>500&&r.ctr<minCtr){flagged++;window.autoLog('LOW CTR: "'+r.camp.name+'" CTR='+(r.ctr*100).toFixed(2)+'% -> Creative needed','warn');}
+else if(r.imp>500){window.autoLog('"'+r.camp.name+'" CTR='+(r.ctr*100).toFixed(2)+'% OK','ok');}
+});
+if(!flagged)window.autoLog('All campaigns CTR OK','ok');
+else window.autoLog(flagged+' need creative refresh','warn');
+}).catch(function(e){window.autoLog('Error: '+e.message,'err');});
+};
+window.runDigest=function(){
+var loading=document.getElementById('digest-loading');
+var output=document.getElementById('digest-output');
+if(loading)loading.classList.add('show');
+if(output)output.classList.remove('show');
+window.autoLog('Generating daily digest...','');
+apiGet('act_'+ACCT+'/campaigns?fields=name&filtering=[{"field":"effective_status","operator":"IN","value":["ACTIVE"]}]&limit=10')
+.then(function(d){
+return Promise.all((d.data||[]).slice(0,8).map(function(camp){
+return apiGet(camp.id+'/insights?fields=spend,impressions,ctr,actions,action_values&date_preset=yesterday')
+.then(function(ins){
+var i=(ins.data&&ins.data[0])||{};
+var purchases=(i.actions||[]).find(function(a){return a.action_type==='purchase';});
+var revenue=(i.action_values||[]).find(function(a){return a.action_type==='purchase';});
+var spend=parseFloat(i.spend||0);
+var roas=(revenue&&spend>0)?(parseFloat(revenue.value)/spend).toFixed(2)+'x':'no purchases';
+return camp.name+': ILS'+spend.toFixed(0)+' CTR='+(parseFloat(i.ctr||0)*100).toFixed(2)+'% ROAS='+roas+(purchases?' Purch='+purchases.value:'');
+}).catch(function(){return camp.name+': no data';});
+}));
+}).then(function(lines){
+var today=new Date().toLocaleDateString('en-GB');
+var pp=['Meta Ads analyst. Create a daily digest for '+today+'.','','Data:',lines.join('\n'),'','Format:\n--- ADSI Daily Digest: '+today+' ---\nHIGHLIGHTS: [wins]\nCONCERNS: [issues]\nTOP CAMPAIGN: [best]\nACTIONS: [3 things to do today]\n\nBe specific with numbers.'];
+return fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json','Authorization':localStorage.getItem('sid')||''}
+,body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:pp.join('\n')}]})}).then(function(r){return r.json();});
+}).then(function(d){
+if(loading)loading.classList.remove('show');
+var text=(d.content&&d.content[0])?d.content[0].text:'Error - check ANTHROPIC_API_KEY';
+if(output){output.textContent=text;output.classList.add('show');}
+window.autoLog('Digest ready','ok');
+}).catch(function(e){if(loading)loading.classList.remove('show');window.autoLog('Error: '+e.message,'err');});
 };
 })();
 
