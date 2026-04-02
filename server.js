@@ -193,6 +193,41 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // POST /api/meta/:id — pause or resume campaign
+  if (pathname.startsWith('/api/meta/') && req.method === 'POST') {
+    const session = req.headers.authorization;
+    if (!session || !sessions[session]) {
+      res.writeHead(401, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({error:'Unauthorized'}));
+      return;
+    }
+    const metaId = pathname.replace('/api/meta/', '').split('?')[0];
+    let body = '';
+    req.on('data', c => body += c);
+    req.on('end', async () => {
+      try {
+        const params = JSON.parse(body);
+        const token = await getToken();
+        const form = new URLSearchParams();
+        form.append('status', params.status);
+        form.append('access_token', token);
+        const r = await fetch('https://graph.facebook.com/v19.0/' + metaId, {method:'POST', body: form});
+        const data = await r.json();
+        if (data.error) {
+          res.writeHead(400, {'Content-Type':'application/json'});
+          res.end(JSON.stringify({error: data.error}));
+        } else {
+          res.writeHead(200, {'Content-Type':'application/json'});
+          res.end(JSON.stringify({success: true}));
+        }
+      } catch(e) {
+        res.writeHead(500, {'Content-Type':'application/json'});
+        res.end(JSON.stringify({error:{message:e.message}}));
+      }
+    });
+    return;
+  }
+
   res.writeHead(404); res.end('Not found');
 });
 
