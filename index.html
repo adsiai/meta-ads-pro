@@ -434,7 +434,7 @@ body.light .auto-log{background:#f8f9fb}
 </div>
 <button class="btn bg sm" style="margin-top:.5rem;width:100%" onclick="copyCopyResults()">📋 העתק הכל</button>
 </div></div></div></div>
-<div class="pg" id="pg-export"><div class="pt">Export</div><div class="ps">Download your campaign data</div><div class="export-options"><div class="export-card" onclick="window.exportCSV('campaigns')"><div class="export-card-icon">📊</div><div class="export-card-title">Campaigns CSV</div><div class="export-card-desc">Spend, CTR, ROAS, purchases</div></div><div class="export-card" onclick="window.exportCSV('adsets')"><div class="export-card-icon">📋</div><div class="export-card-title">Ad Sets CSV</div><div class="export-card-desc">All ad sets + metrics</div></div><div class="export-card" onclick="window.exportCSV('summary')"><div class="export-card-icon">📈</div><div class="export-card-title">Summary</div><div class="export-card-desc">Account totals</div></div></div><div class="copy-loading" id="export-spin"><div class="ai-spin"></div><span>Preparing export...</span></div><div class="ok" id="export-ok" style="display:none">Download ready!</div><div class="eb" id="export-err" style="display:none"></div><div class="pt">Export</div><div class="ps">Download and share</div>
+<div class="pg" id="pg-export"><div class="pt">Export</div><div class="ps">Download your campaign data</div><div class="export-options"><div class="export-card" onclick="window.exportCSV('campaigns')"><div class="export-card-icon">📊</div><div class="export-card-title">Campaigns CSV</div><div class="export-card-desc">Spend, CTR, ROAS, purchases</div></div><div class="export-card" onclick="window.exportCSV('adsets')"><div class="export-card-icon">📋</div><div class="export-card-title">Ad Sets CSV</div><div class="export-card-desc">All ad sets + metrics</div></div></div><div class="copy-loading" id="export-spin"><div class="ai-spin"></div><span>Preparing...</span></div><div class="ok" id="export-ok" style="display:none">Download ready!</div><div class="eb" id="export-err" style="display:none"></div><div class="pt">Export</div><div class="ps">Download and share</div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1.25rem">
 <div class="sc" style="cursor:pointer;text-align:center" id="eCSV"><div style="font-size:1.75rem">CSV</div><div style="font-weight:700">Excel</div><div style="color:#6b6b8a;font-size:.74rem">All campaign data</div></div>
 <div class="sc" style="cursor:pointer;text-align:center" id="eJSON"><div style="font-size:1.75rem">JSON</div><div style="font-weight:700">Raw Data</div><div style="color:#6b6b8a;font-size:.74rem">For processing</div></div>
@@ -1456,8 +1456,74 @@ window.autoLog('Digest ready','ok');
 };
 })();
 
-window.exportCSV=function(type){var spin=document.getElementById("export-spin");var ok=document.getElementById("export-ok");var err=document.getElementById("export-err");if(spin)spin.classList.add("show");if(ok)ok.style.display="none";if(err)err.style.display="none";var ep=type==="adsets"?"adsets":"campaigns";var fname=ep;apiGet("act_"+ACCT+"/"+ep+"?fields=name,status,daily_budget&limit=50").then(function(d){return Promise.all((d.data||[]).map(function(item){return apiGet(item.id+"/insights?fields=spend,impressions,clicks,ctr,actions,action_values,reach&date_preset=last_30d").then(function(ins){var i=(ins.data&&ins.data[0])||{};var pur=(i.actions||[]).find(function(a){return a.action_type==="purchase";});var rev=(i.action_values||[]).find(function(a){return a.action_type==="purchase";});var sp=parseFloat(i.spend||0);var roas=(rev&&sp>0)?(parseFloat(rev.value)/sp).toFixed(2):"";return[item.name,item.status,sp.toFixed(2),i.impressions||"",i.clicks||"",(parseFloat(i.ctr||0)*100).toFixed(2),pur?pur.value:"",roas,i.reach||""];}).catch(function(){return[item.name,item.status,"","","","","","",""];});}));}).then(function(rows){var hdr="Name,Status,Spend ILS,Impressions,Clicks,CTR%,Purchases,ROAS,Reach
-";var body=rows.map(function(r){return r.map(function(v){return String(v||"");}).join(",");}).join("
-");var blob=new Blob([hdr+body],{type:"text/csv"});var url=URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download="adsi-"+fname+"-"+new Date().toISOString().slice(0,10)+".csv";document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);if(spin)spin.classList.remove("show");if(ok){ok.style.display="block";setTimeout(function(){ok.style.display="none";},3000);}}).catch(function(e){if(spin)spin.classList.remove("show");if(err){err.textContent="Error: "+e.message;err.style.display="block";}});};window.quickPause=function(id,name,btn){if(!confirm("Pause: "+name+"?"))return;btn.textContent="...";btn.disabled=true;fetch("/api/meta/"+id,{method:"POST",headers:{"Content-Type":"application/json","Authorization":SID},body:JSON.stringify({status:"PAUSED"})}).then(function(r){return r.json();}).then(function(){btn.textContent="Resume";btn.style.color="#00e5a0";btn.style.borderColor="#00e5a0";btn.disabled=false;btn.onclick=function(){window.quickResume(id,name,btn);};}).catch(function(){btn.textContent="Pause";btn.disabled=false;});};window.quickResume=function(id,name,btn){if(!confirm("Resume: "+name+"?"))return;btn.textContent="...";btn.disabled=true;fetch("/api/meta/"+id,{method:"POST",headers:{"Content-Type":"application/json","Authorization":SID},body:JSON.stringify({status:"ACTIVE"})}).then(function(r){return r.json();}).then(function(){btn.textContent="Pause";btn.style.color="";btn.style.borderColor="";btn.disabled=false;btn.onclick=function(){window.quickPause(id,name,btn);};}).catch(function(){btn.textContent="Resume";btn.disabled=false;});};window.loadWoW=function(){apiGet("act_"+ACCT+"/insights?fields=spend,impressions,ctr&date_preset=last_7d").then(function(c){return apiGet("act_"+ACCT+"/insights?fields=spend,impressions,ctr&date_preset=last_14d").then(function(p){var cu=(c.data&&c.data[0])||{};var pr=(p.data&&p.data[0])||{};function badge(a,b){a=parseFloat(a||0);b=parseFloat(b||0)/2;if(!b||!a)return "";var pct=Math.round((a-b)/b*100);var cls=pct>0?"wow-up":"wow-down";var arr=pct>0?"+ ":"- ";return "<span class=\"wow-badge "+cls+"\">"+arr+Math.abs(pct)+"%</span>";}var svs=document.querySelectorAll(".sc .sv");var nb0=svs[0]&&svs[0].nextElementSibling;if(svs[0]&&(!nb0||!nb0.classList||!nb0.classList.contains("wow-badge")))svs[0].insertAdjacentHTML("afterend",badge(cu.ctr,pr.ctr));var nb1=svs[1]&&svs[1].nextElementSibling;if(svs[1]&&(!nb1||!nb1.classList||!nb1.classList.contains("wow-badge")))svs[1].insertAdjacentHTML("afterend",badge(cu.impressions,pr.impressions));var nb2=svs[2]&&svs[2].nextElementSibling;if(svs[2]&&(!nb2||!nb2.classList||!nb2.classList.contains("wow-badge")))svs[2].insertAdjacentHTML("afterend",badge(cu.spend,pr.spend));});}).catch(function(){});};setTimeout(function(){var d=document.getElementById("pg-dash");if(d&&d.classList.contains("on"))window.loadWoW();},3500);
 })();
-</script></body></html>
+</script><script>
+window.addEventListener("load",function(){
+window.exportCSV=function(t){
+var spin=document.getElementById("export-spin"),ok=document.getElementById("export-ok"),err=document.getElementById("export-err");
+if(spin)spin.classList.add("show");if(ok)ok.style.display="none";if(err)err.style.display="none";
+var ep=t==="adsets"?"adsets":"campaigns";
+var sid=localStorage.getItem("sid")||"";
+var acc=(document.getElementById("sw")||{}).value||"";
+function af(p){return fetch("/api/meta/"+p,{headers:{"Authorization":sid}}).then(function(r){return r.json();});}
+af("act_"+acc+"/"+ep+"?fields=name,status,daily_budget&limit=50")
+.then(function(d){return Promise.all((d.data||[]).map(function(item){
+return af(item.id+"/insights?fields=spend,impressions,clicks,ctr,actions,action_values,reach&date_preset=last_30d")
+.then(function(ins){var i=(ins.data&&ins.data[0])||{};
+var pur=(i.actions||[]).filter(function(a){return a.action_type==="purchase";})[0];
+var rev=(i.action_values||[]).filter(function(a){return a.action_type==="purchase";})[0];
+var sp=parseFloat(i.spend||0);
+var roas=(rev&&sp>0)?(parseFloat(rev.value)/sp).toFixed(2):"";
+return[item.name,item.status,sp.toFixed(2),i.impressions||"",i.clicks||"",(parseFloat(i.ctr||0)*100).toFixed(2),pur?pur.value:"",roas,i.reach||""];
+}).catch(function(){return[item.name,item.status,"","","","","","",""];});
+}));})
+.then(function(rows){
+var csv="Name,Status,Spend ILS,Impressions,Clicks,CTR%,Purchases,ROAS,Reach\n";
+csv+=rows.map(function(r){return r.map(function(v){return String(v||"");}).join(",");}).join("\n");
+var blob=new Blob([csv],{type:"text/csv"});
+var url=URL.createObjectURL(blob);var a=document.createElement("a");
+a.href=url;a.download="adsi-"+ep+"-"+new Date().toISOString().slice(0,10)+".csv";
+document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+if(spin)spin.classList.remove("show");
+if(ok){ok.style.display="block";setTimeout(function(){ok.style.display="none";},3000);}
+}).catch(function(e){if(spin)spin.classList.remove("show");if(err){err.textContent="Error: "+e.message;err.style.display="block";}});
+};
+window.quickPause=function(id,name,btn){
+if(!confirm("Pause: "+name+"?"))return;
+btn.textContent="...";btn.disabled=true;
+var sid=localStorage.getItem("sid")||"";
+fetch("/api/meta/"+id,{method:"POST",headers:{"Content-Type":"application/json","Authorization":sid},body:JSON.stringify({status:"PAUSED"})})
+.then(function(r){return r.json();})
+.then(function(){btn.textContent="Resume";btn.style.color="#00e5a0";btn.style.borderColor="#00e5a0";btn.disabled=false;btn.onclick=function(){window.quickResume(id,name,btn);};})
+.catch(function(){btn.textContent="Pause";btn.disabled=false;});
+};
+window.quickResume=function(id,name,btn){
+if(!confirm("Resume: "+name+"?"))return;
+btn.textContent="...";btn.disabled=true;
+var sid=localStorage.getItem("sid")||"";
+fetch("/api/meta/"+id,{method:"POST",headers:{"Content-Type":"application/json","Authorization":sid},body:JSON.stringify({status:"ACTIVE"})})
+.then(function(r){return r.json();})
+.then(function(){btn.textContent="Pause";btn.style.color="";btn.style.borderColor="";btn.disabled=false;btn.onclick=function(){window.quickPause(id,name,btn);};})
+.catch(function(){btn.textContent="Resume";btn.disabled=false;});
+};
+window.loadWoW=function(){
+var sid=localStorage.getItem("sid")||"";
+var acc=(document.getElementById("sw")||{}).value||"";
+if(!acc)return;
+function ap(p){return fetch("/api/meta/"+p,{headers:{"Authorization":sid}}).then(function(r){return r.json();});}
+ap("act_"+acc+"/insights?fields=spend,impressions,ctr&date_preset=last_7d")
+.then(function(c){return ap("act_"+acc+"/insights?fields=spend,impressions,ctr&date_preset=last_14d").then(function(p){
+var cu=(c.data&&c.data[0])||{},pr=(p.data&&p.data[0])||{};
+function badge(a,b){a=parseFloat(a||0);b=parseFloat(b||0)/2;if(!b||!a)return "";
+var pct=Math.round((a-b)/b*100);
+var cls=pct>0?"wow-up":"wow-down";var arr=pct>0?"+ ":"- ";
+return "<span class=\"wow-badge "+cls+"\">"+arr+Math.abs(pct)+"%</span>";}
+var svs=document.querySelectorAll(".sc .sv");
+if(svs[0])svs[0].insertAdjacentHTML("afterend",badge(cu.ctr,pr.ctr));
+if(svs[1])svs[1].insertAdjacentHTML("afterend",badge(cu.impressions,pr.impressions));
+if(svs[2])svs[2].insertAdjacentHTML("afterend",badge(cu.spend,pr.spend));
+});}).catch(function(){});};
+setTimeout(function(){var d=document.getElementById("pg-dash");if(d&&d.classList.contains("on"))window.loadWoW();},4000);
+});
+</script>
+</body></html>
