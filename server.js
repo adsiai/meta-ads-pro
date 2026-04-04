@@ -209,7 +209,8 @@ const server = http.createServer(async (req, res) => {
         const params = JSON.parse(body);
         const token = await getToken();
         const form = new URLSearchParams();
-        form.append('status', params.status);
+        if (params.status) form.append('status', params.status);
+        if (params.daily_budget) form.append('daily_budget', params.daily_budget);
         form.append('access_token', token);
         const r = await fetch('https://graph.facebook.com/v19.0/' + metaId, {method:'POST', body: form});
         const data = await r.json();
