@@ -229,6 +229,60 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // POST /api/token — update Meta token
+  if (pathname === '/api/token' && req.method === 'POST') {
+    const session = req.headers.authorization;
+    if (!session || !sessions[session]) {
+      res.writeHead(401, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({error:'Unauthorized'}));
+      return;
+    }
+    let body = '';
+    req.on('data', c => body += c);
+    req.on('end', async () => {
+      try {
+        const { token } = JSON.parse(body);
+        if (!token || token.length < 10) {
+          res.writeHead(400, {'Content-Type':'application/json'});
+          res.end(JSON.stringify({error:'Invalid token'}));
+          return;
+        }
+        // Validate token with Meta first
+        const check = await fetch('https://graph.facebook.com/v19.0/me?access_token=' + token);
+        const data = await check.json();
+        if (data.error) {
+          res.writeHead(400, {'Content-Type':'application/json'});
+          res.end(JSON.stringify({error: data.error.message}));
+          return;
+        }
+        // Save token to GitHub
+        currentToken = token;
+        await saveToken(token);
+        res.writeHead(200, {'Content-Type':'application/json'});
+        res.end(JSON.stringify({success: true, user: data.name}));
+      } catch(e) {
+        res.writeHead(500, {'Content-Type':'application/json'});
+        res.end(JSON.stringify({error: e.message}));
+      }
+    });
+    return;
+  }
+
+  // GET /api/token — get current token status
+  if (pathname === '/api/token' && req.method === 'GET') {
+    const session = req.headers.authorization;
+    if (!session || !sessions[session]) {
+      res.writeHead(401, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({error:'Unauthorized'}));
+      return;
+    }
+    const hasToken = !!currentToken;
+    const preview = hasToken ? currentToken.slice(0,10)+'...' : 'none';
+    res.writeHead(200, {'Content-Type':'application/json'});
+    res.end(JSON.stringify({hasToken, preview}));
+    return;
+  }
+
   res.writeHead(404); res.end('Not found');
 });
 
