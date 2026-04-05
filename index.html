@@ -790,6 +790,7 @@ body.light .skel{background:linear-gradient(90deg,#f0f2f5 25%,#e8eaed 50%,#f0f2f
 </div>
 </div>
 
+<div class="pg" id="pg-sg-token"><div class="pt">Meta Token</div><div class="ps">Update your Meta API access token</div><div class="cc"><div class="mb"><div class="mb-h">Current Token Status</div><div id="token-status" style="font-size:.85rem;color:#6b6b8a;margin-bottom:1rem">Checking...</div></div><div class="mb"><div class="mb-h">New Access Token</div><p style="font-size:.8rem;color:#6b6b8a;margin-bottom:.75rem">Get your token from <a href="https://developers.facebook.com/tools/explorer/" target="_blank" style="color:#4f7fff">Meta Graph API Explorer</a></p><textarea class="inp" id="token-input" rows="3" placeholder="EAA..." style="font-family:monospace;font-size:.78rem;resize:vertical"></textarea></div><button class="btn ba" id="token-save-btn" style="width:100%;padding:.75rem;font-weight:700;margin-top:.5rem" onclick="window.saveMetaToken()">Update Token</button><div id="token-msg" style="margin-top:.75rem;font-size:.82rem;min-height:1.2rem"></div></div></div>
 </main></div></div>
 <div class="mo" id="em" style="display:none"><div class="mc">
 <div class="mh"><div class="mt">Edit Campaign</div><button class="xb" id="closeMo">X</button></div>
@@ -1158,7 +1159,7 @@ if(SID){fetch("/api/verify",{headers:{Authorization:SID}}).then(function(r){retu
 function moveSettingsPages() {
   var main = document.querySelector('.main');
   if (!main) return;
-  ['pg-sg-general','pg-sg-language','pg-sg-appearance','pg-copywriter','pg-insights','pg-smartalerts','pg-automations'].forEach(function(id) {
+  ['pg-sg-general','pg-sg-language','pg-sg-appearance','pg-sg-token','pg-copywriter','pg-insights','pg-smartalerts','pg-automations'].forEach(function(id) {
     var pg = document.getElementById(id);
     if (pg && pg.parentElement !== main) {
       main.appendChild(pg);
@@ -1572,7 +1573,47 @@ ham.innerHTML="<span></span><span></span><span></span>";
 hdr.insertBefore(ham,hdr.firstChild);
 nav.id="mob-nav";
 })();
+// Token management
+window.saveMetaToken=function(){
+var input=document.getElementById("token-input");
+var msg=document.getElementById("token-msg");
+var btn=document.getElementById("token-save-btn");
+var token=(input?input.value:"").trim();
+if(!token||token.length<20){if(msg)msg.style.color="#ff6b6b",msg.textContent="Please paste a valid Meta token";return;}
+if(btn){btn.textContent="Validating...";btn.disabled=true;}
+if(msg)msg.textContent="";
+var sid=localStorage.getItem("sid")||"";
+fetch("/api/token",{method:"POST",headers:{"Content-Type":"application/json","Authorization":sid},body:JSON.stringify({token:token})})
+.then(function(r){return r.json();})
+.then(function(d){
+if(btn){btn.textContent="Update Token";btn.disabled=false;}
+if(d.success){
+if(msg){msg.style.color="#00e5a0";msg.textContent="Token updated! Connected as: "+(d.user||"Unknown");}
+if(input)input.value="";
+// Reload dashboard data
+setTimeout(function(){if(window.loadDash)window.loadDash();},1000);
+}else{if(msg){msg.style.color="#ff6b6b";msg.textContent="Error: "+(d.error||"Invalid token");}}
+}).catch(function(e){
+if(btn){btn.textContent="Update Token";btn.disabled=false;}
+if(msg){msg.style.color="#ff6b6b";msg.textContent="Error: "+e.message;}
 });
-</script>div class="modal-bg" id="bm"><div class="modal-box"><div class="modal-ttl">Edit Daily Budget</div><div class="modal-lbl">Campaign</div><div class="modal-val" id="bm-name"></div><div class="modal-lbl">Current Budget</div><div class="modal-val" id="bm-cur"></div><div class="modal-lbl">New Daily Budget (ILS)</div><input type="number" class="inp" id="bm-inp" min="1" step="1" style="direction:ltr;margin-bottom:.5rem"><div id="bm-err" style="font-size:.75rem;color:#ff6b6b;min-height:1rem"></div><div class="modal-acts"><button class="btn bg" onclick="document.getElementById('bm').classList.remove('show')">Cancel</button><button class="btn ba" id="bm-save">Save Budget</button></div></div></div>
+};
+window.checkTokenStatus=function(){
+var statusEl=document.getElementById("token-status");
+if(!statusEl)return;
+var sid=localStorage.getItem("sid")||"";
+fetch("/api/token",{headers:{"Authorization":sid}})
+.then(function(r){return r.json();})
+.then(function(d){
+if(statusEl){statusEl.textContent=d.hasToken?"Active token: "+d.preview:"No token set";}
+}).catch(function(){if(statusEl)statusEl.textContent="Could not check status";});
+};
+var sgTokenNi=document.querySelector("[data-g='sg-token']");
+if(sgTokenNi)sgTokenNi.addEventListener("click",function(){
+if(window.goPage)window.goPage("sg-token");
+setTimeout(window.checkTokenStatus,100);
+});
+});
+</script>iv class="modal-bg" id="bm"><div class="modal-box"><div class="modal-ttl">Edit Daily Budget</div><div class="modal-lbl">Campaign</div><div class="modal-val" id="bm-name"></div><div class="modal-lbl">Current Budget</div><div class="modal-val" id="bm-cur"></div><div class="modal-lbl">New Daily Budget (ILS)</div><input type="number" class="inp" id="bm-inp" min="1" step="1" style="direction:ltr;margin-bottom:.5rem"><div id="bm-err" style="font-size:.75rem;color:#ff6b6b;min-height:1rem"></div><div class="modal-acts"><button class="btn bg" onclick="document.getElementById('bm').classList.remove('show')">Cancel</button><button class="btn ba" id="bm-save">Save Budget</button></div></div></div>
 <div id="ab-roas" class="ab ab-warn"><div style="display:flex;align-items:center;gap:.6rem"><span>Warning: </span><span id="ab-roas-txt"></span></div><div style="display:flex;gap:.5rem"><button class="ab-act" onclick="window.goPage('automations')">View Rules</button><button class="ab-close" onclick="document.getElementById('ab-roas').classList.remove('show')">X</button></div></div><div id="ab-sess" class="ab ab-info"><span>Session expired - please log in again</span><button onclick="location.reload()" style="padding:.25rem .75rem;font-size:.75rem;border-radius:6px;background:#4f7fff;border:none;color:#fff;cursor:pointer;font-family:Heebo,sans-serif">Log in</button></div><div class="modal-bg" id="bm"><div class="modal-box"><div class="modal-ttl">Edit Daily Budget</div><div class="modal-lbl">Campaign</div><div class="modal-val" id="bm-name"></div><div class="modal-lbl">Current Budget</div><div class="modal-val" id="bm-cur"></div><div class="modal-lbl">New Daily Budget (ILS)</div><input type="number" class="inp" id="bm-inp" min="1" step="1" style="direction:ltr;margin-bottom:.5rem"><div id="bm-err" style="font-size:.75rem;color:#ff6b6b;min-height:1rem"></div><div class="modal-acts"><button class="btn bg" onclick="document.getElementById('bm').classList.remove('show')">Cancel</button><button class="btn ba" id="bm-save">Save Budget</button></div></div></div>
 </body>
