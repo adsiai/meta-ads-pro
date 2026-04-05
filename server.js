@@ -32,8 +32,8 @@ async function loadTokenFromGitHub() {
     const d = await httpsGet('https://api.github.com/repos/' + GH_REPO + '/contents/token.json');
     if (d.content) {
       const json = JSON.parse(Buffer.from(d.content.replace(/\n/g,''), 'base64').toString('utf-8'));
-      if (json.access_token) {
-        META_TOKEN = json.access_token;
+      if (json.access_token || json.token) {
+        META_TOKEN = json.access_token || json.token;
         tokenFileSha = d.sha;
         console.log('[Token] Loaded from GitHub:', json.updated_at);
         return true;
@@ -43,6 +43,7 @@ async function loadTokenFromGitHub() {
   return false;
 }
 
+async function saveToken(t){return saveTokenToGitHub(t);}
 async function saveTokenToGitHub(token) {
   if (!GH_TOKEN) return;
   return new Promise((resolve) => {
@@ -257,7 +258,7 @@ const server = http.createServer(async (req, res) => {
         }
         // Save token to GitHub
         currentToken = token;
-        await saveToken(token);
+        await saveTokenToGitHub(token);
         res.writeHead(200, {'Content-Type':'application/json'});
         res.end(JSON.stringify({success: true, user: data.name}));
       } catch(e) {
