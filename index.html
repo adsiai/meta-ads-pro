@@ -301,6 +301,14 @@ table th,table td{padding:.32rem .4rem!important}
 .modal-box{width:93%!important;padding:1.1rem!important}
 .auto-card{padding:.8rem!important}
 #ch{height:150px!important}
+/* Fix: override tablet flex that makes nav items horizontal */
+nav.side{flex-direction:column!important;height:auto!important;align-items:stretch!important}
+nav.side .ns{display:block!important;margin-bottom:.15rem!important}
+nav.side .nlb{display:block!important;padding:.5rem 1rem .2rem!important}
+nav.side .ni{display:flex!important;flex-direction:row!important;align-items:center!important;white-space:normal!important;border:none!important;border-radius:0!important;padding:.55rem 1rem!important;font-size:.85rem!important;width:100%!important;box-sizing:border-box!important}
+nav.side .ni.on{background:rgba(79,127,255,.12)!important;border-left:3px solid #4f7fff!important;color:#4f7fff!important}
+nav.side .ni-icon{margin-right:.5rem!important;flex-shrink:0!important}
+nav.side .ns-bottom{display:flex!important;flex-direction:column!important;width:100%!important}
 }
 @media (max-width:480px){
 .sc{grid-template-columns:1fr!important}
