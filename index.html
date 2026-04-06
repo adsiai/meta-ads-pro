@@ -1913,6 +1913,7 @@ function buildCampaign(){
   }).then(function(r){return r.json();})
   .then(function(d){
     removeTyping();
+    if(d.error==='Unauthorized'||d.error==='Unauthorized'){addMsg('פג תוקף החיבור — יש להתנתק ולהתחבר שוב ⚠️','system',false);if(ia)ia.style.display='';setInputEnabled(true);return;}
     var text=d.content&&d.content[0]?d.content[0].text:'';
     var copies;
     try{
