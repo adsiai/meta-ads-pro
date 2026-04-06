@@ -341,6 +341,7 @@ body.logged-in .dbar{display:flex!important}
 body.logged-in .layout{display:grid!important}
 /* #p0 = login page: make it fixed fullscreen so nothing shows behind */
 #p0{position:fixed!important;inset:0!important;z-index:9999!important;overflow:hidden!important}
+.splash-logo{transform:scale(0.6);transform-origin:center center}.splash{background:#0d0d14}
 </style></head><body class="ltr">
 <div class="splash" id="splash">
   <div class="splash-logo">
@@ -365,7 +366,7 @@ body.logged-in .layout{display:grid!important}
   </div>
 </div>
 <div id="p0" class="wrap"><div class="card">
-<div class="sub" data-i18n="connectTo">Connect to manage your campaigns</div>
+<div style="text-align:center;margin-bottom:1.5rem"><div style="font-size:2rem;font-weight:900;letter-spacing:-1px;background:linear-gradient(90deg,#4f8fee 0%,#00c48c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">ADSI</div><div style="font-size:.6rem;letter-spacing:.18em;color:#5a6478;margin-top:.3rem;text-transform:uppercase">AI Advertising Intelligence</div><div style="width:40px;height:1px;background:rgba(255,255,255,.1);margin:.5rem auto"></div><div style="font-size:.55rem;letter-spacing:.12em;color:#3d4a5c;text-transform:uppercase">Meta Ads Pro</div></div><div class="sub" data-i18n="connectTo">Connect to manage your campaigns</div>
 <div id="lerr" class="err">Wrong username or password</div>
 <label class="lbl">Username</label><input type="text" class="inp" id="lu" placeholder="Username">
 <label class="lbl">Password</label><input type="password" class="inp" id="lp" placeholder="Password">
