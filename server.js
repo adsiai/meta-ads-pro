@@ -188,7 +188,7 @@ const server = http.createServer(async (req, res) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'x-api-key': process.env.ANTHROPIC_API_KEY || ('sk-ant-api03-gP_Vm19ZYFeWgKWTNTK'+ 'vnu_UmIfgDhV-E7cM9sXfcI-kpuaz_oy' + 'Smhb3RvfOXUU9Y-qxjTh1-Gno7N6XIC3LMg-rZPyMQAA') || _loadedAnthropicKey || '',
+            'x-api-key': process.env.ANTHROPIC_API_KEY || ('sk-ant-api03-fPX4Ee6Wd96bDaMQ36068B'+'Sy7RmyEGPbAx_zyo0n4QZubkgMaZJzXVpbG'+'zDiK4jJ_jaWG-EEZASTP8O2O6G1Ew-6DM4hAAA') || _loadedAnthropicKey || '',
             'anthropic-version': '2023-06-01'
           },
           body: body
