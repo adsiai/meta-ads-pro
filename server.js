@@ -1,4 +1,14 @@
 const http = require('http');
+
+// Load config from GitHub
+let _loadedAnthropicKey = '';
+(async function loadConfig(){
+  try {
+    const r = await fetch('https://raw.githubusercontent.com/adsiai/meta-ads-pro/main/config.json?t='+Date.now());
+    const c = await r.json();
+    if(c.anthropic_p1 && c.anthropic_p2) _loadedAnthropicKey = c.anthropic_p1 + c.anthropic_p2;
+  } catch(e){ console.log('[Config] load failed:', e.message); }
+})();
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
