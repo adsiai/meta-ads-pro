@@ -821,7 +821,7 @@ body.logged-in .layout{display:grid!important}
 var _splash = document.getElementById("splash");(function(){var bar=document.getElementById("splash-bar");if(!bar)return;var pct=0;var iv=setInterval(function(){pct+=2;if(pct>=90){pct=90;clearInterval(iv);}bar.style.width=pct+"%";},36);window._splashBarIv=iv;})();
 
 var _splashTimer = setTimeout(function(){ if(_splash){_splash.classList.add("hide");setTimeout(function(){if(_splash)_splash.remove();},700);} }, 2200);
-function hideSplash(){clearTimeout(_splashTimer);var bar=document.getElementById("splash-bar");if(bar)bar.style.width="100%";setTimeout(function(){var s=document.getElementById("splash");var p0=document.getElementById("p0");if(s){s.style.transition="opacity .4s ease";s.style.opacity="0";setTimeout(function(){if(s)s.style.display="none";if(p0){p0.style.display="flex";}},420);}else if(p0){p0.style.display="flex";}},350);}
+function hideSplash(){clearTimeout(_splashTimer);var bar=document.getElementById("splash-bar");if(bar)bar.style.width="100%";setTimeout(function(){var s=document.getElementById("splash");var p0=document.getElementById("p0");if(s){s.style.transition="opacity .4s ease";s.style.opacity="0";setTimeout(function(){if(s)s.style.display="none";if(p0&&!document.body.classList.contains("logged-in")){p0.style.display="flex";}},420);}else if(p0&&!document.body.classList.contains("logged-in")){p0.style.display="flex";}},350);}
 window._hideSplash=hideSplash;
 var SID=localStorage.getItem("sid")||"",ACCT=localStorage.getItem("acct")||"";
 var CAMPS=[],EID="",DP="today",DF="",DT="",METRIC="spend",CHART=null;
