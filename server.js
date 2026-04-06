@@ -294,6 +294,38 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // POST /api/meta/create-campaign — Campaign AI
+  if (pathname === '/api/meta/create-campaign' && req.method === 'POST') {
+    const session = req.headers.authorization;
+    if (!session || !sessions[session]) { res.writeHead(401,{'Content-Type':'application/json'}); res.end(JSON.stringify({error:'Unauthorized'})); return; }
+    let body = '';
+    req.on('data', c => body += c);
+    req.on('end', async () => {
+      try {
+        const d = JSON.parse(body);
+        const tok = currentToken;
+        if (!tok) { res.writeHead(400,{'Content-Type':'application/json'}); res.end(JSON.stringify({error:'No Meta token'})); return; }
+        // Step 1: Create Campaign
+        const objectiveMap = {'מכירות':'OUTCOME_SALES','לידים':'OUTCOME_LEADS','תנועה לאתר':'OUTCOME_TRAFFIC','מעורבות':'OUTCOME_ENGAGEMENT','הורדות אפליקציה':'OUTCOME_APP_PROMOTION','מודעות למותג':'OUTCOME_AWARENESS'};
+        const objective = objectiveMap[d.objective] || 'OUTCOME_TRAFFIC';
+        const campRes = await fetch('https://graph.facebook.com/v19.0/'+d.account_id+'/campaigns?access_token='+tok, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({name:d.name||'Campaign AI', objective, status:'PAUSED', special_ad_categories:[]})
+        }).then(r=>r.json());
+        if (campRes.error) { res.writeHead(400,{'Content-Type':'application/json'}); res.end(JSON.stringify({error:campRes.error.message})); return; }
+        // Step 2: Create Ad Set
+        const adSetRes = await fetch('https://graph.facebook.com/v19.0/'+d.account_id+'/adsets?access_token='+tok, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({name:d.name+' AdSet', campaign_id:campRes.id, daily_budget:d.daily_budget||5000, billing_event:'IMPRESSIONS', optimization_goal:'REACH', bid_strategy:'LOWEST_COST_WITHOUT_CAP', targeting:{geo_locations:{countries:['IL']}, age_min:18, age_max:65}, status:'PAUSED'})
+        }).then(r=>r.json());
+        res.writeHead(200,{'Content-Type':'application/json'});
+        res.end(JSON.stringify({success:true, campaign_id:campRes.id, adset_id:adSetRes.id||null, message:'Campaign created in PAUSED state. Activate in Campaigns page.'}));
+      } catch(e) {
+        res.writeHead(500,{'Content-Type':'application/json'}); res.end(JSON.stringify({error:e.message}));
+      }
+    }); return;
+  }
+
   res.writeHead(404); res.end('Not found');
 });
 
