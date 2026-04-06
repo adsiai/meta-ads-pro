@@ -1752,7 +1752,10 @@ function sid(){ return localStorage.getItem('sid')||''; }
 
 function scrollDown(){
   var m=document.getElementById('cai-messages');
-  if(m) m.scrollTop=m.scrollHeight;
+  if(!m)return;
+  m.scrollTop=m.scrollHeight;
+  var last=m.lastElementChild;
+  if(last)last.scrollIntoView({behavior:'smooth',block:'end'});
 }
 
 function setStep(n){
@@ -1956,6 +1959,7 @@ function showCopies(copies){
       wrap.querySelectorAll('.cai-copy-card').forEach(function(el){el.classList.remove('selected');});
       card.classList.add('selected');
       CAI.selectedCopy=c;
+      setTimeout(scrollDown,50);
       showImageUpload();
     };
     wrap.appendChild(card);
@@ -2000,6 +2004,7 @@ function showImageUpload(){
 
     m.appendChild(zone);
     scrollDown();
+    setTimeout(scrollDown,100);
   },500);
 }
 
