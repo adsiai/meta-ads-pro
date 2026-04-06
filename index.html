@@ -450,7 +450,7 @@ body.light .cai-summary,.body.light .cai-copy-card{background:#fff;border-color:
 <div class="ni" data-g="create" data-i18n="newCamp">+ New Campaign</div>
 <div class="ni" data-g="alerts"><span data-i18n="alerts">Alerts</span> <span id="alb" style="display:none;background:#ff6b6b;color:#fff;border-radius:10px;font-size:.62rem;padding:1px 5px;margin-right:4px"></span></div>
 <div class="ni" data-g="ai" data-i18n="aiCenter" data-i18n="aiCenter">🤖 AI Center</div><div class="ni" data-g="copywriter" style="padding-left:1.75rem;font-size:.78rem">✍️ Copywriter</div><div class="ni" data-g="pg-insights" style="padding-left:1.75rem;font-size:.78rem">🧠 Insights</div><div class="ni" data-g="pg-smartalerts" style="padding-left:1.75rem;font-size:.78rem">⚡ Smart Alerts</div>
-<div class="ni" data-g="pg-campaign-ai" style="padding-left:1.5rem;font-size:.82rem">🤖 Campaign AI</div>
+<div class="ni" data-g="campaign-ai" style="padding-left:1.5rem;font-size:.82rem">🤖 Campaign AI</div>
 <div class="ni" data-g="export" data-i18n="export" data-i18n="export">Export</div>
 <div class="ni" data-g="automations">🤖 Automations</div></div>
 
@@ -2137,7 +2137,7 @@ window.caiInit=caiInit;
 // ===== HOOK INTO NAV =====
 // When user clicks Campaign AI nav item, init the chat
 document.addEventListener('click',function(e){
-  var ni=e.target.closest('[data-g="pg-campaign-ai"]');
+  var ni=e.target.closest('[data-g="campaign-ai"]');
   if(ni){
     var m=document.getElementById('cai-messages');
     if(m&&m.children.length===0) setTimeout(caiInit,200);
