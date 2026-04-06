@@ -1559,7 +1559,7 @@ window.addEventListener("load",function(){
     if(bar)bar.style.width="100%";
     setTimeout(function(){
       if(splash){splash.style.transition="opacity .35s";splash.style.opacity="0";setTimeout(function(){splash.style.display="none";},360);}
-      if(p0&&(p0.style.display==="none"||!p0.style.display))p0.style.display="flex";
+      if(p0&&!document.body.classList.contains("logged-in"))p0.style.display="flex";
     },250);
   },1800);
 });
