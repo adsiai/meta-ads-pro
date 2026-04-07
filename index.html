@@ -1994,8 +1994,8 @@ CAI.imageFile=f;
 var reader=new FileReader();
 reader.onload=function(ev){
 CAI.imageDataUrl=ev.target.result;
-zone.innerHTML="<img class='cai-upload-preview' src='"+ev.target.result+"' alt='preview'><div style='font-size:.78rem;color:#00e5a0;margin-top:.5rem;text-align:center'>✅ תמונה נטענה</div>";
-setTimeout(function(){showImageVariations(ev.target.result);},600);
+zone.innerHTML="<img class='cai-upload-preview' src='"+ev.target.result+"' alt='preview'><div style='font-size:.78rem;color:#00e5a0;margin-top:.5rem;text-align:center'>✅ תמונה נטענה — בחר וריאציה</div>";
+setTimeout(function(){showImageVariations(ev.target.result);},500);
 };
 reader.readAsDataURL(f);
 };
@@ -2009,75 +2009,83 @@ scrollDown();setTimeout(scrollDown,100);
 function showImageVariations(dataUrl){
 var m=document.getElementById("cai-messages");if(!m)return;
 var c=CAI.selectedCopy||{};
-addMsg("בחר את הוריאציה המועדפת עליך:","ai",false);
+var a=CAI.answers||{};
+setTimeout(function(){
+addMsg("בחר את הוריאציה המועדפת עליך — לחץ עליה כדי להמשיך:","ai",false);
 var wrap=document.createElement("div");
-wrap.style.cssText="display:flex;flex-direction:column;gap:.8rem;margin:.5rem 0";
+wrap.style.cssText="display:flex;flex-direction:column;gap:.75rem;margin:.5rem 0;width:100%";
 var variants=[
-{label:"🅐 מקורית",desc:"התמונה כפי שהיא",draw:function(ctx,img,w,h){ctx.drawImage(img,0,0,w,h);}},
-{label:"🅑 כותרת + CTA",desc:"overlay כהה עם טקסט",draw:function(ctx,img,w,h){
+{label:"🅐 תמונה מקורית",desc:"כפי שהיא",fn:function(ctx,img,w,h){
 ctx.drawImage(img,0,0,w,h);
-var g=ctx.createLinearGradient(0,h*0.45,0,h);
-g.addColorStop(0,"rgba(0,0,0,0)");g.addColorStop(1,"rgba(0,0,0,0.8)");
+}},
+{label:"🅑 Overlay כהה + טקסט",desc:"כותרת ו-CTA על התמונה",fn:function(ctx,img,w,h){
+ctx.drawImage(img,0,0,w,h);
+var g=ctx.createLinearGradient(0,h*0.42,0,h);
+g.addColorStop(0,"rgba(0,0,0,0)");g.addColorStop(1,"rgba(0,0,0,0.82)");
 ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
-ctx.fillStyle="#fff";ctx.textAlign="right";ctx.direction="rtl";
-ctx.font="bold "+(w*0.065)+"px Arial";
-ctx.fillText((c.headline||"כותרת").slice(0,22),w-18,h*0.72);
-ctx.font=(w*0.038)+"px Arial";ctx.fillStyle="rgba(255,255,255,.85)";
-ctx.fillText((c.body||"").slice(0,38),w-18,h*0.82);
-var bw=w*0.26,bh=h*0.1,bx=w-18-bw,by=h*0.87;
+ctx.direction="rtl";ctx.textAlign="right";
+ctx.fillStyle="#fff";
+ctx.font="bold "+(w*0.063)+"px Arial";
+var hl=(c.headline||a.product||"").slice(0,24);
+ctx.fillText(hl,w-16,h*0.71);
+ctx.font=(w*0.037)+"px Arial";
+ctx.fillStyle="rgba(255,255,255,.84)";
+ctx.fillText((c.body||"").slice(0,40),w-16,h*0.81);
+var bw=120,bh=32,bx=w-16-bw,by=h*0.87;
 ctx.fillStyle="#4f7fff";
 ctx.beginPath();ctx.roundRect(bx,by,bw,bh,6);ctx.fill();
-ctx.fillStyle="#fff";ctx.font="bold "+(w*0.042)+"px Arial";ctx.textAlign="center";
-ctx.fillText(c.cta||"קנה עכשיו",bx+bw/2,by+bh*0.67);
+ctx.fillStyle="#fff";ctx.font="bold 14px Arial";ctx.textAlign="center";
+ctx.fillText(c.cta||"קנה עכשיו",bx+bw/2,by+21);
 }},
-{label:"🅒 מסגרת + מותג",desc:"מסגרת צבעונית + שם המוצר",draw:function(ctx,img,w,h){
+{label:"🅒 מסגרת מותג + CTA",desc:"פס עליון ותחתון עם שם ו-CTA",fn:function(ctx,img,w,h){
 ctx.drawImage(img,0,0,w,h);
-ctx.fillStyle="rgba(79,127,255,.9)";ctx.fillRect(0,0,w,h*0.13);
-ctx.fillStyle="#fff";ctx.font="bold "+(w*0.058)+"px Arial";
-ctx.textAlign="right";ctx.direction="rtl";
-ctx.fillText((CAI.answers.product||"המותג שלך").slice(0,20),w-14,h*0.095);
-ctx.fillStyle="rgba(0,0,0,.75)";ctx.fillRect(0,h*0.84,w,h*0.16);
-ctx.fillStyle="#fff";ctx.font="bold "+(w*0.052)+"px Arial";ctx.textAlign="center";
-ctx.fillText(c.cta||"קנה עכשיו",w/2,h*0.95);
-ctx.strokeStyle="#4f7fff";ctx.lineWidth=w*0.022;
+ctx.fillStyle="rgba(79,127,255,.92)";ctx.fillRect(0,0,w,h*0.13);
+ctx.fillStyle="#fff";ctx.font="bold "+(w*0.056)+"px Arial";
+ctx.direction="rtl";ctx.textAlign="right";
+ctx.fillText((a.product||"המותג שלך").slice(0,22),w-14,h*0.094);
+ctx.fillStyle="rgba(0,0,0,.78)";ctx.fillRect(0,h*0.85,w,h*0.15);
+ctx.fillStyle="#fff";ctx.font="bold "+(w*0.05)+"px Arial";
+ctx.textAlign="center";
+ctx.fillText(c.cta||"קנה עכשיו",w/2,h*0.945);
+ctx.strokeStyle="#4f7fff";ctx.lineWidth=Math.round(w*0.02);
 ctx.strokeRect(ctx.lineWidth/2,ctx.lineWidth/2,w-ctx.lineWidth,h-ctx.lineWidth);
 }}
 ];
 var canvases=[];
 variants.forEach(function(v,vi){
 var card=document.createElement("div");
-card.style.cssText="background:#111118;border:1px solid #2a2a3a;border-radius:12px;padding:.75rem;cursor:pointer;transition:border-color .2s";
+card.style.cssText="background:#111118;border:2px solid #2a2a3a;border-radius:12px;padding:.7rem;cursor:pointer;transition:border-color .2s";
 var hdr=document.createElement("div");
-hdr.style.cssText="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem";
+hdr.style.cssText="display:flex;justify-content:space-between;align-items:center;margin-bottom:.45rem";
 var lbl=document.createElement("span");
 lbl.style.cssText="font-size:.82rem;font-weight:700;color:#e8e8f0";
 lbl.textContent=v.label+" — "+v.desc;
 var chk=document.createElement("span");
-chk.style.cssText="display:none;color:#00e5a0;font-size:.82rem;font-weight:700";
+chk.style.cssText="display:none;color:#00e5a0;font-weight:700;font-size:.82rem";
 chk.textContent="✅ נבחר";
 hdr.appendChild(lbl);hdr.appendChild(chk);
 card.appendChild(hdr);
 var cv=document.createElement("canvas");
 cv.width=600;cv.height=315;
-cv.style.cssText="width:100%;border-radius:8px;display:block";
-canvases.push(cv);
+cv.style.cssText="width:100%;border-radius:8px;display:block;pointer-events:none";
+canvases.push({cv:cv,chk:chk,card:card});
 var img2=new Image();
-img2.onload=function(){v.draw(cv.getContext("2d"),img2,600,315);};
+img2.crossOrigin="anonymous";
+img2.onload=function(){v.fn(cv.getContext("2d"),img2,600,315);};
 img2.src=dataUrl;
 card.appendChild(cv);
 card.onclick=function(){
-canvases.forEach(function(c2){c2.style.outline="none";});
-cv.style.outline="3px solid #00e5a0";
-wrap.querySelectorAll("span[style*=none]").forEach(function(s){s.style.display="none";});
-chk.style.display="inline";
+canvases.forEach(function(o){o.card.style.borderColor="#2a2a3a";o.chk.style.display="none";});
 card.style.borderColor="#00e5a0";
-CAI.imageDataUrl=cv.toDataURL("image/jpeg",.92);
-setTimeout(function(){showPreview();},400);
+chk.style.display="inline";
+CAI.imageDataUrl=cv.toDataURL("image/jpeg",.9);
+setTimeout(function(){showPreview();},450);
 };
 wrap.appendChild(card);
 });
 m.appendChild(wrap);
-scrollDown();setTimeout(scrollDown,500);
+scrollDown();setTimeout(scrollDown,600);
+},400);
 }
 
 function showImageVariations(dataUrl){
