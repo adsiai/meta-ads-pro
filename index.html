@@ -1907,7 +1907,8 @@ function buildCampaign(){
   var userPrompt='מוצר/שירות: '+a.product+'\nמטרה: '+a.objective+'\nקהל יעד: '+a.audience+'\nמיקום: '+a.location+'\nהודעה מרכזית: '+a.message+'\nשפה: עברית';
 
   function caiCallAI(s){
-    return fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json','Authorization':s||sid()},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})}).then(function(r){return r.json();});
+    return fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json','Authorization':s||sid()},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})})
+    .then(function(r){if(r.status===401||r.status===403)return {error:'Unauthorized'};return r.json().catch(function(){return {error:'Unauthorized'};});});
   }
   caiCallAI()
   .then(function(d){
