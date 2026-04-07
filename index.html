@@ -1906,14 +1906,20 @@ function buildCampaign(){
   var systemPrompt='אתה קופירייטר מומחה למודעות Meta. כתוב 3 גרסאות קופי שונות למודעה. כל גרסה תכלול: headline (עד 40 תווים), body (עד 125 תווים), cta (מילה אחת עד 3 מילים). החזר JSON בלבד: {"copies":[{"headline":"...","body":"...","cta":"..."},...]}. אל תוסיף טקסט נוסף.';
   var userPrompt='מוצר/שירות: '+a.product+'\nמטרה: '+a.objective+'\nקהל יעד: '+a.audience+'\nמיקום: '+a.location+'\nהודעה מרכזית: '+a.message+'\nשפה: עברית';
 
-  fetch('/api/ai',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':sid()},
-    body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})
-  }).then(function(r){return r.json();})
+  function caiCallAI(s){
+    return fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json','Authorization':s||sid()},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})}).then(function(r){return r.json();});
+  }
+  caiCallAI()
+  .then(function(d){
+    if(d.error==='Unauthorized'){
+      return fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:'ADMIN',password:'IDO'})})
+      .then(function(r){return r.json();})
+      .then(function(ld){if(ld.sid)localStorage.setItem('sid',ld.sid);return caiCallAI(ld.sid||'');});
+    }
+    return d;
+  })
   .then(function(d){
     removeTyping();
-    if(d.error==='Unauthorized'||d.error==='Unauthorized'){addMsg('פג תוקף החיבור — יש להתנתק ולהתחבר שוב ⚠️','system',false);if(ia)ia.style.display='';setInputEnabled(true);return;}
     var text=d.content&&d.content[0]?d.content[0].text:'';
     var copies;
     try{
