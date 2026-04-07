@@ -1978,22 +1978,16 @@ function showCopies(copies){
 
 // ===== IMAGE UPLOAD =====
 function showImageUpload(){
-  var m=document.getElementById('cai-messages');
+  var m=document.getElementById("cai-messages");
   if(!m)return;
-
   setTimeout(function(){
-    addMsg('נהדר! עכשיו העלה את התמונה למודעה 📸','ai',false);
-
-    var zone=document.createElement('div');
-    zone.className='cai-upload-zone';
-    zone.id='cai-upload-zone';
-    zone.innerHTML='<div class="cai-upload-zone-icon">🖼️</div><div class="cai-upload-zone-txt">לחץ לבחירת תמונה<br><small>JPG, PNG עד 10MB</small></div>';
-
-    var inp=document.createElement('input');
-    inp.type='file';
-    inp.accept='image/*';
-    inp.style.display='none';
-    inp.id='cai-file-input';
+    addMsg("נהדר! עכשיו העלה את התמונה למודעה 📸","ai",false);
+    var zone=document.createElement("div");
+    zone.className="cai-upload-zone";
+    zone.id="cai-upload-zone";
+    zone.innerHTML="<div class=\"cai-upload-zone-icon\">🖼️</div><div class=\"cai-upload-zone-txt\">לחץ לבחירת תמונה<br><small>JPG, PNG עד 10MB</small></div>";
+    var inp=document.createElement("input");
+    inp.type="file"; inp.accept="image/*"; inp.style.display="none"; inp.id="cai-file-input";
     inp.onchange=function(e){
       var f=e.target.files[0];
       if(!f)return;
@@ -2001,18 +1995,131 @@ function showImageUpload(){
       var reader=new FileReader();
       reader.onload=function(ev){
         CAI.imageDataUrl=ev.target.result;
-        zone.innerHTML='<img class="cai-upload-preview" src="'+ev.target.result+'" alt="preview">'+'<div style="font-size:.78rem;color:#00e5a0;margin-top:.5rem;text-align:center">✅ תמונה נטענה בהצלחה</div>';
-        setTimeout(function(){showPreview();},600);
+        zone.innerHTML="<img class=\"cai-upload-preview\" src=\""+ev.target.result+"\" alt=\"preview\"><div style=\"font-size:.78rem;color:#00e5a0;margin-top:.5rem;text-align:center\">✅ תמונה נטענה</div>";
+        setTimeout(function(){showImageVariations(ev.target.result);},600);
       };
       reader.readAsDataURL(f);
     };
     zone.appendChild(inp);
     zone.onclick=function(e){if(e.target!==inp)inp.click();};
-
     m.appendChild(zone);
-    scrollDown();
-    setTimeout(scrollDown,100);
+    scrollDown(); setTimeout(scrollDown,100);
   },500);
+}
+
+function showImageVariations(dataUrl){
+  var m=document.getElementById("cai-messages");
+  if(!m)return;
+  var c=CAI.selectedCopy||{};
+  addMsg("מעולה! הנה 3 וריאציות לתמונה — בחר את האחת שאתה אוהב:","ai",false);
+  var wrap=document.createElement("div");
+  wrap.style.cssText="display:flex;flex-direction:column;gap:.8rem;margin:.5rem 0";
+
+  var variants=[
+    {label:"🅐 מקורית",desc:"תמונה כפי שהיא",fn:function(ctx,img,w,h){
+      ctx.drawImage(img,0,0,w,h);
+    }},
+    {label:"🅑 כותרת + CTA",desc:"overlay כהה עם טקסט",fn:function(ctx,img,w,h){
+      ctx.drawImage(img,0,0,w,h);
+      // Dark gradient overlay at bottom
+      var grad=ctx.createLinearGradient(0,h*0.5,0,h);
+      grad.addColorStop(0,"rgba(0,0,0,0)");
+      grad.addColorStop(1,"rgba(0,0,0,0.78)");
+      ctx.fillStyle=grad;
+      ctx.fillRect(0,0,w,h);
+      // Headline
+      ctx.fillStyle="#fff";
+      ctx.font="bold "+(w*0.065)+"px Heebo,Arial";
+      ctx.textAlign="right";
+      ctx.fillText(c.headline||"כותרת המודעה",w-20,h*0.72);
+      // Body
+      ctx.font=(w*0.04)+"px Heebo,Arial";
+      ctx.fillStyle="rgba(255,255,255,0.85)";
+      ctx.fillText((c.body||"").slice(0,40),w-20,h*0.82);
+      // CTA button
+      var btnW=w*0.28,btnH=h*0.09;
+      var btnX=w-20-btnW,btnY=h*0.87;
+      ctx.fillStyle="#4f7fff";
+      ctx.beginPath();
+      ctx.roundRect(btnX,btnY,btnW,btnH,8);
+      ctx.fill();
+      ctx.fillStyle="#fff";
+      ctx.font="bold "+(w*0.042)+"px Heebo,Arial";
+      ctx.textAlign="center";
+      ctx.fillText(c.cta||"קנה עכשיו",btnX+btnW/2,btnY+btnH*0.67);
+    }},
+    {label:"🅒 לוגו + מסגרת",desc:"מסגרת צבעונית + brand",fn:function(ctx,img,w,h){
+      ctx.drawImage(img,0,0,w,h);
+      // Color border
+      ctx.strokeStyle="#4f7fff";
+      ctx.lineWidth=w*0.025;
+      ctx.strokeRect(ctx.lineWidth/2,ctx.lineWidth/2,w-ctx.lineWidth,h-ctx.lineWidth);
+      // Top bar
+      ctx.fillStyle="rgba(79,127,255,0.88)";
+      ctx.fillRect(0,0,w,h*0.14);
+      // Brand text
+      ctx.fillStyle="#fff";
+      ctx.font="bold "+(w*0.06)+"px Heebo,Arial";
+      ctx.textAlign="right";
+      ctx.fillText(CAI.answers.product||"המותג שלך",w-16,h*0.098);
+      // Bottom bar
+      ctx.fillStyle="rgba(0,0,0,0.72)";
+      ctx.fillRect(0,h*0.84,w,h*0.16);
+      ctx.fillStyle="#fff";
+      ctx.font="bold "+(w*0.052)+"px Heebo,Arial";
+      ctx.textAlign="center";
+      ctx.fillText(c.cta||"קנה עכשיו",w/2,h*0.95);
+    }}
+  ];
+
+  var selectedVariant=0;
+  var canvases=[];
+
+  function buildVariant(vIdx,card){
+    var canvas=document.createElement("canvas");
+    canvas.width=600; canvas.height=314;
+    canvas.style.cssText="width:100%;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:border-color .2s";
+    canvases.push(canvas);
+    var ctx=canvas.getContext("2d");
+    var img=new Image();
+    img.onload=function(){
+      variants[vIdx].fn(ctx,img,600,314);
+      canvas.onclick=function(){
+        canvases.forEach(function(cn){cn.style.borderColor="transparent";});
+        canvas.style.borderColor="#00e5a0";
+        selectedVariant=vIdx;
+        CAI.imageDataUrl=canvas.toDataURL("image/jpeg",0.9);
+        // Show checkmark
+        card.querySelector(".cai-var-check").style.display="block";
+        setTimeout(function(){showPreview();},400);
+      };
+    };
+    img.src=dataUrl;
+    return canvas;
+  }
+
+  variants.forEach(function(v,i){
+    var card=document.createElement("div");
+    card.style.cssText="background:#111118;border:1px solid #2a2a3a;border-radius:12px;padding:.75rem;cursor:pointer";
+    var topRow=document.createElement("div");
+    topRow.style.cssText="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem";
+    var lbl=document.createElement("div");
+    lbl.style.cssText="font-size:.82rem;font-weight:700;color:#e8e8f0";
+    lbl.textContent=v.label+" — "+v.desc;
+    var check=document.createElement("div");
+    check.className="cai-var-check";
+    check.style.cssText="display:none;color:#00e5a0;font-size:1.1rem";
+    check.textContent="✅ נבחר";
+    topRow.appendChild(lbl); topRow.appendChild(check);
+    card.appendChild(topRow);
+    var canvas=buildVariant(i,card);
+    card.appendChild(canvas);
+    card.onclick=function(){canvas.click();};
+    wrap.appendChild(card);
+  });
+
+  m.appendChild(wrap);
+  scrollDown(); setTimeout(scrollDown,300);
 }
 
 // ===== PREVIEW =====
