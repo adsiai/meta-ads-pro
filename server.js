@@ -268,6 +268,23 @@ const server = http.createServer(async (req, res) => {
         }
         // Save token to GitHub
         currentToken = token;
+      // Save to GitHub token.json using GH_TOKEN env var
+      (async () => {
+        try {
+          const ghTok = process.env.GH_TOKEN;
+          if(!ghTok) return;
+          const hdrs = {'Authorization':'token '+ghTok,'Content-Type':'application/json'};
+          const cm = await fetch('https://api.github.com/repos/adsiai/meta-ads-pro/commits?per_page=1',{headers:hdrs}).then(r=>r.json());
+          const tr = await fetch('https://api.github.com/repos/adsiai/meta-ads-pro/git/trees/'+cm[0].commit.tree.sha+'?recursive=1',{headers:hdrs}).then(r=>r.json());
+          const tf = tr.tree.find(f=>f.path==='token.json');
+          const cnt = JSON.stringify({access_token:token,type:'permanent',updated_at:new Date().toISOString()},null,2);
+          await fetch('https://api.github.com/repos/adsiai/meta-ads-pro/contents/token.json',{
+            method:'PUT',headers:hdrs,
+            body:JSON.stringify({message:'Update Meta token',content:Buffer.from(cnt).toString('base64'),sha:tf&&tf.sha})
+          });
+          console.log('[Token] Saved to GitHub ok');
+        } catch(e){console.log('[Token] GH save error:',e.message);}
+      })();
         await saveTokenToGitHub(token);
         res.writeHead(200, {'Content-Type':'application/json'});
         res.end(JSON.stringify({success: true, user: data.name}));
