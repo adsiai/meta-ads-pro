@@ -475,6 +475,7 @@ body.light .kpi-pi{color:#333}
   <div class="ni" data-g="sg-general">General</div>
   <div class="ni" data-g="sg-language">Language</div>
   <div class="ni" data-g="sg-appearance">Appearance</div>
+<div class="ni" data-g="sg-token">🔑 Meta Token</div>
 </div>
 </div>
 
@@ -893,8 +894,6 @@ body.light .kpi-pi{color:#333}
 </div>
 </div>
 
-<div class="pg" id="pg-sg-token"><div class="pt">Meta Token</div><div class="ps">Update your Meta API access token</div><div class="cc"><div class="mb"><div class="mb-h">Current Token Status</div><div id="token-status" style="font-size:.85rem;color:#6b6b8a;margin-bottom:1rem">Checking...</div></div><div class="mb"><div class="mb-h">New Access Token</div><p style="font-size:.8rem;color:#6b6b8a;margin-bottom:.75rem">Get your token from <a href="https://developers.facebook.com/tools/explorer/" target="_blank" style="color:#4f7fff">Meta Graph API Explorer</a></p><textarea class="inp" id="token-input" rows="3" placeholder="EAA..." style="font-family:monospace;font-size:.78rem;resize:vertical"></textarea></div><button class="btn ba" id="token-save-btn" style="width:100%;padding:.75rem;font-weight:700;margin-top:.5rem" onclick="window.saveMetaToken()">Update Token</button><div id="token-msg" style="margin-top:.75rem;font-size:.82rem;min-height:1.2rem"></div></div></div>
-
 <div class="pg" id="pg-campaign-ai" style="padding:0 1.25rem">
   <div class="cai-wrap" id="cai-wrap">
     <div class="cai-header">
@@ -918,6 +917,8 @@ body.light .kpi-pi{color:#333}
     </div>
   </div>
 </div>
+
+<div class="pg" id="pg-sg-token" style="padding:1.5rem"><div class="pt">🔑 Meta Token</div><div class="ps">עדכן את הMeta API access token — נשמר אוטומטית לעמידות בין restarts</div><div class="card" style="max-width:600px;margin-top:1.5rem"><div id="mtoken-status" style="font-size:.85rem;margin-bottom:1rem;padding:.6rem;border-radius:8px;background:rgba(255,255,255,.05)">בודק סטטוס...</div><label class="lbl">Token חדש</label><textarea id="mtoken-inp" class="inp" rows="4" style="font-family:monospace;font-size:.75rem;resize:vertical" placeholder="EAA..."></textarea><button onclick="window.doSaveToken()" id="mtoken-btn" class="btn-lo" style="width:100%;margin-top:.75rem">💾 שמור Token</button><div id="mtoken-msg" style="margin-top:.6rem;font-size:.83rem;text-align:center"></div></div></div>
 </main></div></div>
 <div class="mo" id="em" style="display:none"><div class="mc">
 <div class="mh"><div class="mt">Edit Campaign</div><button class="xb" id="closeMo">X</button></div>
@@ -2407,6 +2408,37 @@ document.addEventListener("click",function(e){
     var p=document.getElementById("kpi-picker");
     if(p) p.classList.remove("open");
   }
+});
+</script>
+
+<script id="mtoken-js">
+window.doSaveToken=async function(){
+  var t=document.getElementById("mtoken-inp").value.trim();
+  var msg=document.getElementById("mtoken-msg");
+  var btn=document.getElementById("mtoken-btn");
+  if(!t||!t.startsWith("EAA")){msg.style.color="#e17055";msg.textContent="❌ Token לא תקין";return;}
+  btn.disabled=true;btn.textContent="⏳ שומר...";
+  try{
+    var sid=localStorage.getItem("sid")||SID||"";
+    var r=await fetch("/api/token",{method:"POST",headers:{"Content-Type":"application/json","Authorization":sid},body:JSON.stringify({token:t})}).then(r=>r.json());
+    if(r.success){
+      msg.style.color="#00e5a0";
+      msg.textContent="✅ Token נשמר! ישרוד כל restart.";
+      document.getElementById("mtoken-status").innerHTML="<span style='color:#00e5a0'>✅ מחובר כ: "+(r.user||"OK")+"</span>";
+    }else{throw new Error(JSON.stringify(r).slice(0,60));}
+  }catch(e){msg.style.color="#e17055";msg.textContent="❌ "+e.message;}
+  btn.disabled=false;btn.textContent="💾 שמור Token";
+};
+document.addEventListener("click",function(e){
+  if(!e.target.closest('[data-g="sg-token"]'))return;
+  var sid=localStorage.getItem("sid")||"";
+  var s=document.getElementById("mtoken-status");
+  if(!s)return;
+  s.textContent="בודק...";
+  fetch("/api/meta/me?fields=name",{headers:{"Authorization":sid}}).then(r=>r.json()).then(function(d){
+    if(d.name)s.innerHTML="<span style='color:#00e5a0'>✅ Token פעיל — מחובר כ: "+d.name+"</span>";
+    else s.innerHTML="<span style='color:#e17055'>❌ "+(d.error&&d.error.message||"Token פג")+"</span>";
+  }).catch(function(){s.textContent="❌ שגיאת חיבור";});
 });
 </script>
 
