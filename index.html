@@ -2423,7 +2423,12 @@ window.doSaveToken=async function(){
     var r=await fetch("/api/token",{method:"POST",headers:{"Content-Type":"application/json","Authorization":sid},body:JSON.stringify({token:t})}).then(r=>r.json());
     if(r.success){
       msg.style.color="#00e5a0";
-      msg.textContent="✅ Token נשמר! ישרוד כל restart.";
+      msg.textContent="✅ Token נשמר! ישרוד כל restart. מרענן...";
+      // Reload dashboard data after 1 second
+      setTimeout(function(){
+        if(typeof window.goPage==='function') window.goPage('dash');
+        if(typeof window.apiGet==='function') setTimeout(window.apiGet, 300);
+      }, 1200);
       document.getElementById("mtoken-status").innerHTML="<span style='color:#00e5a0'>✅ מחובר כ: "+(r.user||"OK")+"</span>";
     }else{throw new Error(JSON.stringify(r).slice(0,60));}
   }catch(e){msg.style.color="#e17055";msg.textContent="❌ "+e.message;}
