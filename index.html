@@ -1031,6 +1031,7 @@ function refresh(){var p=document.querySelector(".pg.on");if(!p)return;var id=p.
 window.goPage = function goPage(n){document.querySelectorAll(".pg").forEach(function(p){p.classList.remove("on");});document.querySelectorAll(".ni").forEach(function(x){x.classList.remove("on");});var pg=g("pg-"+n);if(pg)pg.classList.add("on");var ni=document.querySelector(".ni[data-g=\""+n+"\"]");if(ni)ni.classList.add("on");if(n==="camps")loadCamps();else if(n==="adsets")loadAdsets();else if(n==="ads")loadAds();else if(n==="alerts")runAlerts();}
 document.querySelectorAll("[data-g]").forEach(function(e){e.addEventListener("click",function(){var n=this.dataset.g;if(n)goPage(n);});});
 function sc(l,c,v,s){return"<div class=\"sc\"><div class=\"sl\">"+l+"</div><div class=\"sv\" style=\""+c+"\">"+v+"</div><div class=\"sm2\">"+s+"</div></div>";}
+window._sc=sc;window._fmtM=fmtM;window._fmt=fmt;window._fmtP=fmtP;
 function loadDash(){g("dsub").textContent="Loading...";apiGet("act_"+ACCT+"/insights?"+gdp()+"&fields=spend,impressions,clicks,ctr,actions,action_values,cost_per_action_type&level=account").then(function(ins){var d=ins.data&&ins.data[0]?ins.data[0]:{};var pv=(d.action_values||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?parseFloat(pv.value):0;var pvCount=(d.actions||[]).find(function(a){return a.action_type==="purchase";});var purchaseCount=pvCount?parseInt(pvCount.value):0;window._lastKpiData=d;var ca=(d.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});var cpa=ca?ca.value:0;var roas=pvc>0&&d.spend>0?(pvc/parseFloat(d.spend)).toFixed(2):0;g("sg").innerHTML=sc("Spend","color:#4f7fff",fmtM(d.spend),"Selected period")+sc("Impressions","color:#ff9f43",fmt(d.impressions),fmt(d.clicks)+" clicks")+sc("CTR","color:#a29bfe",fmtP(d.ctr),"Click-through rate")+sc("Purchases","color:#00e5a0",fmt(purchaseCount),"purchase events")+sc("Revenue","color:#00c48c",fmtM(pvc),"purchase revenue")+sc("CPA","color:#fd79a8",cpa?fmtM(cpa):"-","Cost per purchase")+sc("ROAS","color:#55efc4",roas?roas+"x":"-","Return on ad spend");
 if(window._kpiRender) window._kpiRender();g("dsub").textContent="Updated: "+new Date().toLocaleTimeString();}).catch(function(e){g("sg").innerHTML="<div class=\"eb\" style=\"grid-column:1/-1\">"+_fmtErr(e.message)+"</div>";});apiGet("act_"+ACCT+"/insights?time_increment=1&"+gdp()+"&fields=spend,clicks,ctr,date_start").then(function(ins){drawChart(ins.data||[]);}).catch(function(){});apiGet("act_"+ACCT+"/campaigns?fields=name,status,daily_budget,insights{spend,impressions,ctr}&limit=8&effective_status=[\"ACTIVE\"]").then(function(r){renderCT("dc",r.data||[],true);}).catch(function(e){g("dc").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
 function drawChart(data){if(CHART)CHART.destroy();var lbs=data.map(function(d){return new Date(d.date_start).toLocaleDateString("en-GB",{day:"2-digit",month:"2-digit"});});var cs={spend:"#4f7fff",clicks:"#00e5a0",ctr:"#ff9f43"};var bg={spend:"rgba(79,127,255,.1)",clicks:"rgba(0,229,160,.1)",ctr:"rgba(255,159,67,.1)"};CHART=new Chart(g("ch").getContext("2d"),{type:"line",data:{labels:lbs,datasets:[{label:METRIC,data:data.map(function(d){return parseFloat(d[METRIC]||0);}),borderColor:cs[METRIC],backgroundColor:bg[METRIC],tension:.4,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:"rgba(42,42,58,.5)"},ticks:{color:"#6b6b8a",font:{size:10}}},y:{grid:{color:"rgba(42,42,58,.5)"},ticks:{color:"#6b6b8a",font:{size:10}}}}}});}
@@ -2377,33 +2378,30 @@ window.kpiSelectedMetrics=function(){
 
 <script id="kpi-render-js">
 // KPI Render — rebuilds KPI boxes based on checkbox selection
-window._kpiRender = function(){
-  var d = window._lastKpiData;
-  if(!d) return;
-  var spend = parseFloat(d.spend||0);
-  var pv = (d.action_values||[]).find(function(a){return a.action_type==="purchase";});
-  var pvc = pv ? parseFloat(pv.value) : 0;
-  var pvCount = (d.actions||[]).find(function(a){return a.action_type==="purchase";});
-  var purchaseCount = pvCount ? parseInt(pvCount.value) : 0;
-  var ca = (d.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});
-  var cpa = ca ? parseFloat(ca.value) : 0;
-  var roas = pvc>0 && spend>0 ? (pvc/spend).toFixed(2) : 0;
-  function chk(id){ var el=document.getElementById("kpic-"+id); return el?el.checked:true; }
-  function fmtM(v){ return "ILS "+(parseFloat(v)||0).toLocaleString("he-IL",{minimumFractionDigits:2,maximumFractionDigits:2}); }
-  function fmt(v){ return (parseInt(v)||0).toLocaleString("he-IL"); }
-  function fmtP(v){ return (parseFloat(v)||0).toFixed(2)+"%"; }
-  var parts = [];
-  if(chk("spend")) parts.push(sc("Spend","color:#4f7fff",fmtM(spend),"Selected period"));
-  if(chk("impressions")) parts.push(sc("Impressions","color:#ff9f43",fmt(d.impressions),fmt(d.clicks)+" clicks"));
-  if(chk("clicks")) parts.push(sc("Clicks","color:#fdcb6e",fmt(d.clicks),fmtP(d.ctr)+" CTR"));
-  if(chk("ctr")) parts.push(sc("CTR","color:#a29bfe",fmtP(d.ctr),"Click-through rate"));
-  if(chk("purchases")) parts.push(sc("Purchases","color:#00e5a0",fmt(purchaseCount),"purchase events"));
-  if(chk("revenue")) parts.push(sc("Revenue","color:#00c48c",fmtM(pvc),"purchase revenue"));
-  if(chk("cpa")) parts.push(sc("CPA","color:#e17055",cpa>0?fmtM(cpa):"-","Cost per purchase"));
-  if(chk("roas")) parts.push(sc("ROAS","color:#74b9ff",roas>0?roas+"x":"-","Return on ad spend"));
-  var sg=document.getElementById("sg");
-  if(sg) sg.innerHTML=parts.join("");
-};
+window._kpiRender=function(){
+var d=window._lastKpiData;if(!d)return;
+var sc=window._sc;if(!sc)return;
+var fmtM=window._fmtM;var fmt=window._fmt;var fmtP=window._fmtP;
+var spend=parseFloat(d.spend||0);
+var pv=(d.action_values||[]).find(function(a){return a.action_type==="purchase";});
+var pvc=pv?parseFloat(pv.value):0;
+var pvCnt=(d.actions||[]).find(function(a){return a.action_type==="purchase";});
+var purchaseCount=pvCnt?parseInt(pvCnt.value):0;
+var ca=(d.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});
+var cpa=ca?parseFloat(ca.value):0;
+var roas=pvc>0&&spend>0?(pvc/spend).toFixed(2):0;
+function chk(id){var el=document.getElementById("kpic-"+id);return el?el.checked:true;}
+var parts=[];
+if(chk("spend"))parts.push(sc("Spend","color:#4f7fff",fmtM(spend),"Selected period"));
+if(chk("impressions"))parts.push(sc("Impressions","color:#ff9f43",fmt(d.impressions),fmt(d.clicks)+" clicks"));
+if(chk("clicks"))parts.push(sc("Clicks","color:#fdcb6e",fmt(d.clicks),fmtP(d.ctr)+" CTR"));
+if(chk("ctr"))parts.push(sc("CTR","color:#a29bfe",fmtP(d.ctr),"Click-through rate"));
+if(chk("purchases"))parts.push(sc("Purchases","color:#00e5a0",fmt(purchaseCount),"purchase events"));
+if(chk("revenue"))parts.push(sc("Revenue","color:#00c48c",fmtM(pvc),"purchase revenue"));
+if(chk("cpa"))parts.push(sc("CPA","color:#e17055",cpa>0?fmtM(cpa):"-","Cost per purchase"));
+if(chk("roas"))parts.push(sc("ROAS","color:#74b9ff",roas>0?roas+"x":"-","Return on ad spend"));
+var sg=document.getElementById("sg");if(sg)sg.innerHTML=parts.join("");
+};;
 document.addEventListener("click",function(e){
   if(!e.target.closest(".kpi-cust-btn")&&!e.target.closest(".kpi-picker")){
     var p=document.getElementById("kpi-picker");
