@@ -268,6 +268,15 @@ const server = http.createServer(async (req, res) => {
         }
         // Save token to GitHub
         currentToken = token;
+// Auto-load Meta token from GitHub on startup
+(async()=>{
+  try{
+    const _gh=process.env.GH_TOKEN;if(!_gh)return;
+    const _r=await fetch("https://raw.githubusercontent.com/adsiai/meta-ads-pro/main/token.json?t="+Date.now());
+    const _d=await _r.json();
+    if(_d&&_d.access_token){currentToken=_d.access_token;console.log("[Token] Auto-loaded ok");}
+  }catch(_e){console.log("[Token] Auto-load err:",_e.message);}
+})();
       // Save to GitHub token.json using GH_TOKEN env var
       (async () => {
         try {
