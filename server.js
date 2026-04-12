@@ -83,7 +83,7 @@ async function saveTokenToGitHub(token) {
 async function refreshToken() {
   if (!META_TOKEN || !APP_SECRET) return;
   try {
-    const url = 'https://graph.facebook.com/v19.0/oauth/access_token?grant_type=fb_exchange_token&client_id=' + APP_ID + '&client_secret=' + APP_SECRET + '&fb_exchange_token=' + META_TOKEN;
+    const url = 'https://graph.facebook.com/v21.0/oauth/access_token?grant_type=fb_exchange_token&client_id=' + APP_ID + '&client_secret=' + APP_SECRET + '&fb_exchange_token=' + META_TOKEN;
     const d = await httpsGet(url);
     if (d.access_token) {
       META_TOKEN = d.access_token;
@@ -154,7 +154,7 @@ const server = http.createServer(async (req, res) => {
     if (!session || !sessions[session]) { res.writeHead(401); res.end(JSON.stringify({error:{message:'Unauthorized'}})); return; }
     const metaPath = pathname.replace('/api/meta/','');
     const qs = url.searchParams.toString();
-    const metaUrl = 'https://graph.facebook.com/v19.0/'+metaPath+'?'+(qs?qs+'&':'')+'access_token='+META_TOKEN;
+    const metaUrl = 'https://graph.facebook.com/v21.0/'+metaPath+'?'+(qs?qs+'&':'')+'access_token='+META_TOKEN;
     if (req.method === 'GET') {
       try { const r = await fetch(metaUrl); const data = await r.text(); res.writeHead(r.status,{'Content-Type':'application/json'}); res.end(data); }
       catch(e) { res.writeHead(500); res.end(JSON.stringify({error:{message:e.message}})); }
@@ -165,7 +165,7 @@ const server = http.createServer(async (req, res) => {
         try {
           const parsed = JSON.parse(body);
           const params = new URLSearchParams({...parsed, access_token: META_TOKEN});
-          const r = await fetch('https://graph.facebook.com/v19.0/'+metaPath, {method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:params.toString()});
+          const r = await fetch('https://graph.facebook.com/v21.0/'+metaPath, {method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:params.toString()});
           const data = await r.text();
           res.writeHead(r.status,{'Content-Type':'application/json'}); res.end(data);
         } catch(e) { res.writeHead(500); res.end(JSON.stringify({error:{message:e.message}})); }
@@ -223,7 +223,7 @@ const server = http.createServer(async (req, res) => {
         if (params.status) form.append('status', params.status);
         if (params.daily_budget) form.append('daily_budget', params.daily_budget);
         form.append('access_token', token);
-        const r = await fetch('https://graph.facebook.com/v19.0/' + metaId, {method:'POST', body: form});
+        const r = await fetch('https://graph.facebook.com/v21.0/' + metaId, {method:'POST', body: form});
         const data = await r.json();
         if (data.error) {
           res.writeHead(400, {'Content-Type':'application/json'});
@@ -259,7 +259,7 @@ const server = http.createServer(async (req, res) => {
           return;
         }
         // Validate token with Meta first
-        const check = await fetch('https://graph.facebook.com/v19.0/me?access_token=' + token);
+        const check = await fetch('https://graph.facebook.com/v21.0/me?access_token=' + token);
         const data = await check.json();
         if (data.error) {
           res.writeHead(400, {'Content-Type':'application/json'});
@@ -325,13 +325,13 @@ const server = http.createServer(async (req, res) => {
         // Step 1: Create Campaign
         const objectiveMap = {'מכירות':'OUTCOME_SALES','לידים':'OUTCOME_LEADS','תנועה לאתר':'OUTCOME_TRAFFIC','מעורבות':'OUTCOME_ENGAGEMENT','הורדות אפליקציה':'OUTCOME_APP_PROMOTION','מודעות למותג':'OUTCOME_AWARENESS'};
         const objective = objectiveMap[d.objective] || 'OUTCOME_TRAFFIC';
-        const campRes = await fetch('https://graph.facebook.com/v19.0/'+d.account_id+'/campaigns?access_token='+tok, {
+        const campRes = await fetch('https://graph.facebook.com/v21.0/'+d.account_id+'/campaigns?access_token='+tok, {
           method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({name:d.name||'Campaign AI', objective, status:'PAUSED', special_ad_categories:[]})
         }).then(r=>r.json());
         if (campRes.error) { res.writeHead(400,{'Content-Type':'application/json'}); res.end(JSON.stringify({error:campRes.error.message})); return; }
         // Step 2: Create Ad Set
-        const adSetRes = await fetch('https://graph.facebook.com/v19.0/'+d.account_id+'/adsets?access_token='+tok, {
+        const adSetRes = await fetch('https://graph.facebook.com/v21.0/'+d.account_id+'/adsets?access_token='+tok, {
           method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({name:d.name+' AdSet', campaign_id:campRes.id, daily_budget:d.daily_budget||5000, billing_event:'IMPRESSIONS', optimization_goal:'REACH', bid_strategy:'LOWEST_COST_WITHOUT_CAP', targeting:{geo_locations:{countries:['IL']}, age_min:18, age_max:65}, status:'PAUSED'})
         }).then(r=>r.json());
