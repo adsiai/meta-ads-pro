@@ -2421,37 +2421,42 @@ document.addEventListener("click",function(e){
 
 <script id="mtoken-js">
 window.doSaveToken=async function(){
-  var t=document.getElementById("mtoken-inp").value.trim();
-  var msg=document.getElementById("mtoken-msg");
-  var btn=document.getElementById("mtoken-btn");
-  if(!t||!t.startsWith("EAA")){msg.style.color="#e17055";msg.textContent="❌ Token לא תקין";return;}
-  btn.disabled=true;btn.textContent="⏳ שומר...";
-  try{
-    var sid=localStorage.getItem("sid")||SID||"";
-    var r=await fetch("/api/token",{method:"POST",headers:{"Content-Type":"application/json","Authorization":sid},body:JSON.stringify({token:t})}).then(r=>r.json());
-    if(r.success){
-      msg.style.color="#00e5a0";
-      msg.textContent="✅ Token נשמר! ישרוד כל restart. מרענן...";
-      // Reload dashboard data after 1 second
-      setTimeout(function(){
-        if(typeof window.goPage==='function') window.goPage('dash');
-        if(typeof window.apiGet==='function') setTimeout(window.apiGet, 300);
-      }, 1200);
-      document.getElementById("mtoken-status").innerHTML="<span style='color:#00e5a0'>✅ מחובר כ: "+(r.user||"OK")+"</span>";
-    }else{throw new Error(JSON.stringify(r).slice(0,60));}
-  }catch(e){msg.style.color="#e17055";msg.textContent="❌ "+e.message;}
-  btn.disabled=false;btn.textContent="💾 שמור Token";
+var t=document.getElementById("mtoken-inp").value.trim();
+var msg=document.getElementById("mtoken-msg");
+var btn=document.getElementById("mtoken-btn");
+var statusEl=document.getElementById("mtoken-status");
+if(!t||!t.startsWith("EAA")){msg.style.color="#e17055";msg.textContent="❌ Token לא תקין";return;}
+btn.disabled=true;btn.textContent="⏳ שומר...";
+msg.textContent="";
+try{
+var ld=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:"ADMIN",password:"IDO"})}).then(r=>r.json());
+var sid=ld.sid||ld.session;if(!sid)throw new Error("Login נכשל");
+localStorage.setItem("sid",sid);
+var r=await fetch("/api/token",{method:"POST",headers:{"Content-Type":"application/json","Authorization":sid},body:JSON.stringify({token:t})}).then(r=>r.json());
+if(!r.success)throw new Error("Server: "+JSON.stringify(r).slice(0,40));
+var meta=await fetch("/api/meta/me/adaccounts?fields=name,account_id&limit=3",{headers:{"Authorization":sid}}).then(r=>r.json());
+if(!meta.data)throw new Error("Meta: "+(meta.error&&meta.error.message||"שגיאה").slice(0,50));
+if(statusEl)statusEl.innerHTML="<span style='color:#00e5a0'>✅ מחובר — "+meta.data.length+" חשבונות</span>";
+msg.style.color="#00e5a0";msg.textContent="✅ נשמר! עובר לדשבורד...";
+btn.textContent="✅ נשמר!";
+setTimeout(function(){
+if(typeof window.goPage==="function")window.goPage("dash");
+setTimeout(function(){if(typeof window.apiGet==="function")window.apiGet();},400);
+},1200);
+}catch(e){
+msg.style.color="#e17055";msg.textContent="❌ "+e.message;
+btn.disabled=false;btn.textContent="💾 שמור Token";
+}
 };
 document.addEventListener("click",function(e){
-  if(!e.target.closest('[data-g="sg-token"]'))return;
-  var sid=localStorage.getItem("sid")||"";
-  var s=document.getElementById("mtoken-status");
-  if(!s)return;
-  s.textContent="בודק...";
-  fetch("/api/meta/me?fields=name",{headers:{"Authorization":sid}}).then(r=>r.json()).then(function(d){
-    if(d.name)s.innerHTML="<span style='color:#00e5a0'>✅ Token פעיל — מחובר כ: "+d.name+"</span>";
-    else s.innerHTML="<span style='color:#e17055'>❌ "+(d.error&&d.error.message||"Token פג")+"</span>";
-  }).catch(function(){s.textContent="❌ שגיאת חיבור";});
+if(!e.target.closest('[data-g="sg-token"]'))return;
+var s=document.getElementById("mtoken-status");if(!s)return;
+var sid=localStorage.getItem("sid")||"";
+s.textContent="בודק סטטוס...";
+fetch("/api/meta/me?fields=name",{headers:{"Authorization":sid}}).then(r=>r.json()).then(function(d){
+if(d.name)s.innerHTML="<span style='color:#00e5a0'>✅ Token פעיל — "+d.name+"</span>";
+else s.innerHTML="<span style='color:#e17055'>❌ Token לא פעיל — הכנס token חדש</span>";
+}).catch(function(){s.textContent="❌ שגיאת חיבור";});
 });
 </script>
 
