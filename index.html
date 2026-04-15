@@ -2497,4 +2497,21 @@ else s.innerHTML="<span style='color:#e17055'>❌ Token לא פעיל — הכנ
 });
 </script>
 
+<script id="camp-cols-js">
+(function(){
+function campColToggle(){
+var cols=["status","objective","budget","spend","impressions","ctr","clicks","roas"];
+cols.forEach(function(col){
+var chk=document.getElementById("cc-"+col);
+var show=chk?chk.checked:true;
+document.querySelectorAll('[data-col="'+col+'"]').forEach(function(el){el.classList.toggle("col-hidden",!show);});
+});
+}
+window._campColToggle=campColToggle;
+document.addEventListener("click",function(e){
+if(!e.target.closest(".camp-cols-btn")&&!e.target.closest(".camp-cols-picker")){var p=document.getElementById("camp-col-picker");if(p)p.classList.remove("open");}
+});
+})();
+</script>
+
 </body>
