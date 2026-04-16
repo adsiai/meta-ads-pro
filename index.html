@@ -425,7 +425,27 @@ body.light .cai-summary,.body.light .cai-copy-card{background:#fff;border-color:
 body.light .kpi-picker{background:#fff;border-color:#e0e4f0}
 body.light .kpi-pi{color:#333}
 
-</style></head><body class="ltr">
+</style><script id="fmt-obj-js">
+function fmtObj(o){
+var m={
+"OUTCOME_SALES":"מכירות",
+"OUTCOME_TRAFFIC":"תנועה",
+"OUTCOME_AWARENESS":"מודעות",
+"OUTCOME_LEADS":"לידים",
+"OUTCOME_ENGAGEMENT":"מעורבות",
+"OUTCOME_APP_PROMOTION":"אפליקציה",
+"LINK_CLICKS":"קליקים",
+"CONVERSIONS":"המרות",
+"REACH":"הגעה",
+"BRAND_AWARENESS":"מודעות מותג",
+"VIDEO_VIEWS":"צפיות",
+"LEAD_GENERATION":"לידים",
+"MESSAGES":"הודעות"
+};
+return m[o]||o||"-";
+}
+</script>
+</head><body class="ltr">
 <div id="splash" style="position:fixed;inset:0;z-index:9998;background:#0d0d14;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem"><div style="text-align:center"><div style="font-size:2.8rem;font-weight:900;letter-spacing:-2px;background:linear-gradient(90deg,#4f8fee 0%,#00c48c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">ADSI</div><div style="font-size:.62rem;letter-spacing:.18em;color:#4a5568;margin-top:.4rem;text-transform:uppercase">AI Advertising Intelligence</div></div><div style="width:180px;height:3px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden"><div id="splash-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#4f8fee,#00c48c);border-radius:99px;transition:width .08s linear"></div></div></div>
 <div id="p0" class="wrap" style="display:none"><div class="card">
 <div style="text-align:center;margin-bottom:1.5rem"><div style="font-size:2rem;font-weight:900;letter-spacing:-1px;background:linear-gradient(90deg,#4f8fee 0%,#00c48c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">ADSI</div><div style="font-size:.6rem;letter-spacing:.18em;color:#5a6478;margin-top:.3rem;text-transform:uppercase">AI Advertising Intelligence</div><div style="width:40px;height:1px;background:rgba(255,255,255,.1);margin:.5rem auto"></div><div style="font-size:.55rem;letter-spacing:.12em;color:#3d4a5c;text-transform:uppercase">Meta Ads Pro</div></div><div class="sub" data-i18n="connectTo">Connect to manage your campaigns</div>
@@ -1048,7 +1068,7 @@ return parseFloat(d[METRIC]||0);
 document.querySelectorAll(".ctb").forEach(function(b){b.addEventListener("click",function(){METRIC=this.dataset.m;document.querySelectorAll(".ctb").forEach(function(x){x.style.cssText="";});this.style.cssText="background:rgba(79,127,255,.15);color:#4f7fff;border-color:rgba(79,127,255,.3)";refresh();});});
 function loadCamps(){g("ct").innerHTML="<div class=\"ld\"><div class=\"sp\"></div></div>";apiGet("act_"+ACCT+"/campaigns?fields=name,status,objective,daily_budget,insights{spend,impressions,clicks,ctr,actions}&limit=100&"+gdp()).then(function(r){CAMPS=r.data||[];renderCT("ct",CAMPS,false);}).catch(function(e){g("ct").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
 g("rCamps").addEventListener("click",loadCamps);g("sCamps").addEventListener("input",function(){filterTbl("ct",this.value);});
-function renderCT(el,data,mini){if(!data.length){g(el).innerHTML="<div class=\"ld\">No campaigns</div>";return;}var rows=data.map(function(c){var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var bdc=c.status==="ACTIVE"?"bac":"bpc";var acts=mini?"":"<td>"+(pvc||"-");return"<tr><td style=\"font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis\">"+c.name+"</td><td><span class=\"bdc "+bdc+"\" data-cid=\""+c.id+"\" data-cur=\""+c.status+"\"><span class=\"dot\"></span>"+(c.status==="ACTIVE"?"Active":"Paused")+"</span></td><td><span class=\"tg\">"+({"OUTCOME_SALES":"מכירות","OUTCOME_TRAFFIC":"תנועה","OUTCOME_AWARENESS":"מודעות","OUTCOME_LEADS":"לידים","OUTCOME_ENGAGEMENT":"מעורבות","OUTCOME_APP_PROMOTION":"אפליקציה","LINK_CLICKS":"קליקים","CONVERSIONS":"המרות","REACH":"הגעה"}[c.objective]||c.objective||"-")+"</span></td><td>"+(c.daily_budget?"<span class='bud-cell' onclick='window.openBudget(this)' data-id='"+c.id+"' data-name='"+c.name+"' data-bud='"+(c.daily_budget/100)+"'>" +fmtM(c.daily_budget/100)+"/d</span>":"<span class='bud-cell' onclick='window.openBudget(this)' data-id='"+c.id+"' data-name='"+c.name+"' data-bud='0'>-</span>")+"</td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmtP(ins.ctr)+"</td>"+acts+'<td><button class="qa-btn" data-cid="'+c.id+'" data-cname="'+c.name+'" onclick="window.quickPause(this.dataset.cid,this.dataset.cname,this)">Pause</button></td>'+"</tr>";});var hx=mini?"":"<th>Purchases</th><th>Actions</th>";g(el).innerHTML="<table><thead><tr><th>Name</th><th>Status</th><th>Objective</th><th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th>"+hx+"<th data-col='clicks' class='col-hidden'>Clicks</th><th data-col='roas' class='col-hidden'>ROAS</th></tr></thead><tbody>"+rows.join("")+"</tbody></table></div>";}
+function renderCT(el,data,mini){if(!data.length){g(el).innerHTML="<div class=\"ld\">No campaigns</div>";return;}var rows=data.map(function(c){var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var bdc=c.status==="ACTIVE"?"bac":"bpc";var acts=mini?"":"<td>"+(pvc||"-");return"<tr><td style=\"font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis\">"+c.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(c.status==="ACTIVE"?"<span class='bdc bdg' style='cursor:pointer' data-cid='"+c.id+"' data-cur='ACTIVE' onclick='window.doToggle(this)'>Active</span>":"<span class='bdc bdw' style='cursor:pointer' data-cid='"+c.id+"' data-cur='PAUSED' onclick='window.doToggle(this)'>Paused</span>")+"</span></td><td><span class=\"tg\">"+({"OUTCOME_SALES":"מכירות","OUTCOME_TRAFFIC":"תנועה","OUTCOME_AWARENESS":"מודעות","OUTCOME_LEADS":"לידים","OUTCOME_ENGAGEMENT":"מעורבות","OUTCOME_APP_PROMOTION":"אפליקציה","LINK_CLICKS":"קליקים","CONVERSIONS":"המרות","REACH":"הגעה"}[c.objective]||c.objective||"-")+"</span></td><td>"+(c.daily_budget?"<span class='bud-cell' onclick='window.openBudget(this)' data-id='"+c.id+"' data-name='"+c.name+"' data-bud='"+(c.daily_budget/100)+"'>" +fmtM(c.daily_budget/100)+"/d</span>":"<span class='bud-cell' onclick='window.openBudget(this)' data-id='"+c.id+"' data-name='"+c.name+"' data-bud='0'>-</span>")+"</td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmtP(ins.ctr)+"</td>"+acts+'<td><button class="qa-btn" data-cid="'+c.id+'" data-cname="'+c.name+'" onclick="window.quickPause(this.dataset.cid,this.dataset.cname,this)">Pause</button></td>'+"</tr>";});var hx=mini?"":"<th>Purchases</th><th>Actions</th>";g(el).innerHTML="<table><thead><tr><th>Name</th><th>Status</th><th>Objective</th><th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th>"+hx+"<th data-col='clicks' class='col-hidden'>Clicks</th><th data-col='roas' class='col-hidden'>ROAS</th></tr></thead><tbody>"+rows.join("")+"</tbody></table></div>";}
 function loadAdsets(){g("at").innerHTML="<div class=\"ld\"><div class=\"sp\"></div></div>";apiGet("act_"+ACCT+"/adsets?fields=name,status,daily_budget,insights{spend,impressions,clicks,ctr}&limit=100&"+gdp()).then(function(r){if(!r.data||!r.data.length){g("at").innerHTML="<div class=\"ld\">No ad sets</div>";return;}var rows=r.data.map(function(a){var ins=a.insights&&a.insights.data&&a.insights.data[0]?a.insights.data[0]:{};var bdc=a.status==="ACTIVE"?"bac":"bpc";return"<tr><td style=\"font-weight:600\">"+a.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(a.status==="ACTIVE"?"Active":"Paused")+"</span></td><td>"+(a.daily_budget?fmtM(a.daily_budget/100)+"/d":"-")+"</td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmtP(ins.ctr)+"</td><td><div class=\"ac\">"+(a.status==="ACTIVE"?"<button class=\"btn bdan sm\" onclick=\"tog('"+a.id+"','PAUSED','a')\">Pause</button>":"<button class=\"btn bsuc sm\" onclick=\"tog('"+a.id+"','ACTIVE','a')\">Resume</button>")+"</div></td></tr>";});g("at").innerHTML="<table><thead><tr><th>Name</th><th>Status</th><th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th><th>Actions</th></tr></thead><tbody>"+rows.join("")+"</tbody></table></div>";}).catch(function(e){g("at").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
 g("rAdsets").addEventListener("click",loadAdsets);g("sAdsets").addEventListener("input",function(){filterTbl("at",this.value);});
 function loadAds(){g("adt").innerHTML="<div class=\"ld\"><div class=\"sp\"></div></div>";apiGet("act_"+ACCT+"/ads?fields=name,status,insights{spend,impressions,clicks,ctr}&limit=100&"+gdp()).then(function(r){if(!r.data||!r.data.length){g("adt").innerHTML="<div class=\"ld\">No ads</div>";return;}var rows=r.data.map(function(a){var ins=a.insights&&a.insights.data&&a.insights.data[0]?a.insights.data[0]:{};var bdc=a.status==="ACTIVE"?"bac":"bpc";return"<tr><td style=\"font-weight:600\">"+a.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(a.status==="ACTIVE"?"Active":"Paused")+"</span></td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmt(ins.clicks)+"</td><td>"+fmtP(ins.ctr)+"</td><td><div class=\"ac\">"+(a.status==="ACTIVE"?"<button class=\"btn bdan sm\" onclick=\"tog('"+a.id+"','PAUSED','d')\">Pause</button>":"<button class=\"btn bsuc sm\" onclick=\"tog('"+a.id+"','ACTIVE','d')\">Resume</button>")+"</div></td></tr>";});g("adt").innerHTML="<table><thead><tr><th>Name</th><th>Status</th><th>Spend</th><th>Impressions</th><th>Clicks</th><th>CTR</th><th>Actions</th></tr></thead><tbody>"+rows.join("")+"</tbody></table></div>";}).catch(function(e){g("adt").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
@@ -2420,89 +2440,144 @@ document.addEventListener("click",function(e){
 });
 </script>
 
+<script id="mtoken-js">
+window.doSaveToken=async function(){
+var t=document.getElementById("mtoken-inp").value.trim();
+var msg=document.getElementById("mtoken-msg");
+var btn=document.getElementById("mtoken-btn");
+var statusEl=document.getElementById("mtoken-status");
+if(!t||!t.startsWith("EAA")){msg.style.color="#e17055";msg.textContent="❌ Token לא תקין";return;}
+btn.disabled=true;btn.textContent="⏳ שומר...";
+msg.textContent="";
+try{
+var ld=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:"ADMIN",password:"IDO"})}).then(r=>r.json());
+var sid=ld.sid||ld.session;if(!sid)throw new Error("Login נכשל");
+localStorage.setItem("sid",sid);
+var r=await fetch("/api/token",{method:"POST",headers:{"Content-Type":"application/json","Authorization":sid},body:JSON.stringify({token:t})}).then(r=>r.json());
+if(!r.success)throw new Error("Server: "+JSON.stringify(r).slice(0,40));
+var meta=await fetch("/api/meta/me/adaccounts?fields=name,account_id&limit=3",{headers:{"Authorization":sid}}).then(r=>r.json());
+if(!meta.data)throw new Error("Meta: "+(meta.error&&meta.error.message||"שגיאה").slice(0,50));
+if(statusEl)statusEl.innerHTML="<span style='color:#00e5a0'>✅ מחובר — "+meta.data.length+" חשבונות</span>";
+msg.style.color="#00e5a0";msg.textContent="✅ נשמר! עובר לדשבורד...";
+btn.textContent="✅ נשמר!";
+setTimeout(function(){
+if(typeof window.goPage==="function")window.goPage("dash");
+setTimeout(function(){if(typeof window.apiGet==="function")window.apiGet();},400);
+},1200);
+}catch(e){
+msg.style.color="#e17055";msg.textContent="❌ "+e.message;
+btn.disabled=false;btn.textContent="💾 שמור Token";
+}
+};
+document.addEventListener("click",function(e){
+if(!e.target.closest('[data-g="sg-token"]'))return;
+var s=document.getElementById("mtoken-status");if(!s)return;
+var sid=localStorage.getItem("sid")||"";
+s.textContent="בודק סטטוס...";
+fetch("/api/meta/me?fields=name",{headers:{"Authorization":sid}}).then(r=>r.json()).then(function(d){
+if(d.name)s.innerHTML="<span style='color:#00e5a0'>✅ Token פעיל — "+d.name+"</span>";
+else s.innerHTML="<span style='color:#e17055'>❌ Token לא פעיל — הכנס token חדש</span>";
+}).catch(function(){s.textContent="❌ שגיאת חיבור";});
+});
+</script>
 
 <script id="adsi-ext">
 (function(){
 function fmtObj(o){
-var m={"OUTCOME_SALES":"Sales","OUTCOME_TRAFFIC":"Traffic","OUTCOME_AWARENESS":"Awareness","OUTCOME_LEADS":"Leads","OUTCOME_ENGAGEMENT":"Engagement","OUTCOME_APP_PROMOTION":"App"};
-return m[o]||o||"-";
-}window.fmtObj=fmtObj;
-function cct(){
-["status","objective","budget","spend","impressions","ctr","clicks","roas"].forEach(function(col){
-var chk=document.getElementById("cc-"+col);
-var show=chk?chk.checked:true;
-var attr="data-col";
-document.querySelectorAll("["+attr+"="+JSON.stringify(col)+"]").forEach(function(el){el.classList.toggle("col-hidden",!show);});
-});
-}window._campColToggle=cct;
+  var m={"OUTCOME_SALES":"Sales","OUTCOME_TRAFFIC":"Traffic",
+    "OUTCOME_AWARENESS":"Awareness","OUTCOME_LEADS":"Leads",
+    "OUTCOME_ENGAGEMENT":"Engagement","OUTCOME_APP_PROMOTION":"App"};
+  return m[o]||o||"-";
+}
+window.fmtObj=fmtObj;
+function campColToggle(){
+  var cols=["status","objective","budget","spend","impressions","ctr","clicks","roas"];
+  cols.forEach(function(col){
+    var chk=document.getElementById("cc-"+col);
+    var show=chk?chk.checked:true;
+    document.querySelectorAll("[data-col]").forEach(function(el){
+      if(el.dataset.col===col) el.classList.toggle("col-hidden",!show);
+    });
+  });
+}
+window._campColToggle=campColToggle;
 window.doToggle=function(el){
-var cid=el.closest("[data-cid]")&&el.closest("[data-cid]").dataset.cid;
-if(!cid)return;
-var cur=el.closest("[data-cur]")&&el.closest("[data-cur]").dataset.cur;
-var newSt=cur==="ACTIVE"?"PAUSED":"ACTIVE";
-var sid=localStorage.getItem("sid");
-if(!sid)return;
-el.textContent=newSt==="PAUSED"?"Pausing...":"Activating...";
-el.style.pointerEvents="none";
-fetch("/api/meta/campaigns/"+cid+"/status",{method:"POST",headers:{"Content-Type":"application/json","Authorization":sid},body:JSON.stringify({status:newSt})})
-.then(function(r){return r.json();})
-.then(function(d){
-if(d.success){
-if(window.apiGet)window.apiGet();
-setTimeout(function(){if(window._loadPaused)window._loadPaused();},1500);
-}else{el.style.pointerEvents="";if(window.apiGet)window.apiGet();}
-}).catch(function(){el.style.pointerEvents="";});
+  var sid=localStorage.getItem("sid");
+  if(!sid)return;
+  var cid=el.dataset.cid;
+  var cur=el.dataset.cur;
+  var nst=cur==="ACTIVE"?"PAUSED":"ACTIVE";
+  el.textContent=nst==="PAUSED"?"Pausing...":"Activating...";
+  el.style.pointerEvents="none";
+  fetch("/api/meta/campaigns/"+cid+"/status",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":sid},
+    body:JSON.stringify({status:nst})
+  }).then(function(r){return r.json();})
+  .then(function(d){
+    if(d.success){
+      if(window.apiGet) window.apiGet();
+      setTimeout(function(){if(window._lp)window._lp();},1500);
+    }else{el.textContent=cur==="ACTIVE"?"Active":"Paused";el.style.pointerEvents="";}
+  }).catch(function(){
+    el.textContent=cur==="ACTIVE"?"Active":"Paused";
+    el.style.pointerEvents="";
+  });
 };
-document.addEventListener("click",function(e){
-var sp=e.target.closest(".bdc[data-cid]");
-if(sp)window.doToggle(sp);
-if(!e.target.closest(".camp-cols-btn")&&!e.target.closest(".camp-cols-picker")){
-var p=document.getElementById("camp-col-picker");
-if(p)p.classList.remove("open");
-}
-});
 function lp(){
-var sid=localStorage.getItem("sid");
-var sw=document.getElementById("sw");
-var acct=sw?sw.value:"";
-var el=document.getElementById("paused-camps-section");
-if(!sid||!acct||!el)return;
-var url="/api/meta/"+acct+"/campaigns?fields=name,status,objective,daily_budget,insights%7Bspend,impressions,ctr%7D&effective_status=%5B%22PAUSED%22%5D&limit=20";
-fetch(url,{headers:{"Authorization":sid}})
-.then(function(r){return r.json();})
-.then(function(d){
-if(!d.data||!d.data.length){el.style.display="none";return;}
-el.style.display="";
-var tb=document.getElementById("paused-camps-tbody");
-if(!tb)return;
-tb.innerHTML=d.data.map(function(c){
-var obj=fmtObj(c.objective);
-var ins=c.insights&&c.insights.data&&c.insights.data[0];
-var sp2=ins?"ILS "+parseFloat(ins.spend||0).toFixed(2):"ILS 0";
-var im=ins?parseInt(ins.impressions||0).toLocaleString():"-";
-var ct=ins?parseFloat(ins.ctr||0).toFixed(2)+"%":"-";
-var bg=c.daily_budget?"ILS "+(c.daily_budget/100).toFixed(2)+"/d":"-";
-return "<tr>"+
-"<td style=\"max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap\">"+c.name+"</td>"+
-"<td><span class=\"bdc bdw\" data-cid=\""+c.id+"\" data-cur=\"PAUSED\" style=\"cursor:pointer\">&#9646; Paused</span></td>"+
-"<td>"+obj+"</td>"+
-"<td>"+bg+"</td><td>"+sp2+"</td><td>"+im+"</td><td>"+ct+"</td>"+
-"</tr>";
-}).join("");
-}).catch(function(){});
+  var sid=localStorage.getItem("sid");
+  var sw=document.getElementById("sw");
+  var acct=sw?sw.value:"";
+  var el=document.getElementById("paused-camps-section");
+  if(!sid||!acct||!el)return;
+  var url="/api/meta/"+acct+"/campaigns"
+    +"?fields=name,status,objective,daily_budget,insights%7Bspend,impressions,ctr%7D"
+    +"&effective_status=%5B%22PAUSED%22%5D&limit=20";
+  fetch(url,{headers:{"Authorization":sid}})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(!d.data||!d.data.length){el.style.display="none";return;}
+    el.style.display="";
+    var tbody=document.getElementById("paused-camps-tbody");
+    if(!tbody)return;
+    var rows=d.data.map(function(c){
+      var obj=fmtObj(c.objective);
+      var ins=c.insights&&c.insights.data&&c.insights.data[0];
+      var sp=ins?"ILS "+parseFloat(ins.spend||0).toFixed(2):"ILS 0";
+      var im=ins?parseInt(ins.impressions||0).toLocaleString():"-";
+      var ct=ins?parseFloat(ins.ctr||0).toFixed(2)+"%":"-";
+      var bg=c.daily_budget?"ILS "+(c.daily_budget/100).toFixed(2)+"/d":"-";
+      var tr=document.createElement("tr");
+      tr.innerHTML=
+        "<td style=\"max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap\">"+
+        c.name+"</td>"+
+        "<td><span class=\"bdc bdw\" style=\"cursor:pointer\" data-cid=\""+c.id+"\" data-cur=\"PAUSED\">&#9646; Paused</span></td>"+
+        "<td>"+obj+"</td>"+
+        "<td>"+bg+"</td><td>"+sp+"</td><td>"+im+"</td><td>"+ct+"</td>";
+      return tr.outerHTML;
+    });
+    tbody.innerHTML=rows.join("");
+  }).catch(function(){});
 }
-window._loadPaused=lp;
+window._lp=lp;
 function hookAG(){
-if(window.apiGet&&!window._ph){
-var o=window.apiGet;
-window.apiGet=function(){
-var r=o.apply(this,arguments);
-setTimeout(cct,600);
-setTimeout(lp,2500);
-return r;
-};window._ph=true;
-}else if(!window._ph)setTimeout(hookAG,1000);
+  if(window.apiGet&&!window._ph){
+    var o=window.apiGet;
+    window.apiGet=function(){
+      var r=o.apply(this,arguments);
+      setTimeout(campColToggle,600);
+      setTimeout(lp,2500);
+      return r;
+    };
+    window._ph=true;
+  }else if(!window._ph)setTimeout(hookAG,1000);
 }
+document.addEventListener("click",function(e){
+  if(!e.target.closest(".camp-cols-btn")&&!e.target.closest(".camp-cols-picker")){
+    var p=document.getElementById("camp-col-picker");
+    if(p)p.classList.remove("open");
+  }
+});
 setTimeout(hookAG,1000);
 function tl(){var s=localStorage.getItem("sid"),sw=document.getElementById("sw");if(s&&sw)lp();else setTimeout(tl,1500);}
 setTimeout(tl,2000);
