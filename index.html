@@ -532,7 +532,7 @@ return m[o]||o||"-";
 </div></div><div class="cs"><canvas id="ch"></canvas></div></div>
 <div class="sh"><div class="st">Active Campaigns</div><button class="btn ba sm" data-g="camps">All</button></div>
 <div class="tw" id="dc"><div class="ld"><div class="sp"></div>
-<div id="paused-camps-section" style="margin-top:1.5rem;display:none"><div class="sh">Paused Campaigns</div><div class="tw"><table style="width:100%;table-layout:auto"><thead><tr><th>Name</th><th>Status</th><th>Objective</th><th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th><th></th></tr></thead><tbody id="paused-camps-tbody"></tbody></table></div></div></div></div></div>
+<div id="paused-camps-section" style="margin-top:1.5rem;display:none"><div class="sh" style="margin-bottom:.5rem">Paused Campaigns</div><div class="tw"><table style="width:100%"><thead><tr><th>Name</th><th>Status</th><th>Objective</th><th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th><th></th></tr></thead><tbody id="paused-camps-tbody"></tbody></table></div></div></div></div></div>
 <div class="pg" id="pg-camps"><div class="pt">Campaigns</div><div class="ps">All campaigns</div>
 <div class="sh"><div style="display:flex;gap:.4rem"><button class="btn bg sm" id="rCamps">Refresh</button><button class="btn ba sm" data-g="create">+ New</button></div><input class="si" id="sCamps" placeholder="Search..."></div>
 <div class="tw" id="ct"><div class="ld"><div class="sp"></div></div></div></div>
@@ -1087,7 +1087,7 @@ return parseFloat(d[METRIC]||0);
 document.querySelectorAll(".ctb").forEach(function(b){b.addEventListener("click",function(){METRIC=this.dataset.m;document.querySelectorAll(".ctb").forEach(function(x){x.style.cssText="";});this.style.cssText="background:rgba(79,127,255,.15);color:#4f7fff;border-color:rgba(79,127,255,.3)";refresh();});});
 function loadCamps(){g("ct").innerHTML="<div class=\"ld\"><div class=\"sp\"></div></div>";apiGet("act_"+ACCT+"/campaigns?fields=name,status,objective,daily_budget,insights{spend,impressions,clicks,ctr,actions}&limit=100&"+gdp()).then(function(r){CAMPS=r.data||[];renderCT("ct",CAMPS,false);}).catch(function(e){g("ct").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
 g("rCamps").addEventListener("click",loadCamps);g("sCamps").addEventListener("input",function(){filterTbl("ct",this.value);});
-function renderCT(el,data,mini){if(!data.length){g(el).innerHTML="<div class=\"ld\">No campaigns</div>";return;}var rows=data.map(function(c){var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var bdc=c.status==="ACTIVE"?"bac":"bpc";var acts=mini?"":"<td>"+(pvc||"-")+"</td>"+(mini?"":"<td data-col=\"clicks\" class=\"col-hidden\">"+(c.insights&&c.insights.data&&c.insights.data[0]?parseInt(c.insights.data[0].clicks||0).toLocaleString():\"-\")+"</td><td data-col=\"roas\" class=\"col-hidden\">"+(function(){var ins=c.insights&&c.insights.data&&c.insights.data[0];if(!ins||!parseFloat(ins.spend))return\"-\";var pv=(ins.action_values||[]).find(function(a){return a.action_type===\"purchase\";});return pv&&parseFloat(pv.value)>0?(parseFloat(pv.value)/parseFloat(ins.spend)).toFixed(2)+\"x\":\"-\";})()+"</td>")+"<td><div class=\"ac\">"+(c.status==="ACTIVE"?"<button class=\"btn bsuc sm\" onclick=\"tog('"+c.id+"','PAUSED','c')\">Pause</button>":"<button class=\"btn bsuc sm\" onclick=\"tog('"+c.id+"','ACTIVE','c')\">Resume</button>")+"<button class=\"btn bg sm\" onclick=\"openEdit('"+c.id+"')\">Edit</button></div></td>";return"<tr><td style=\"font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis\">"+c.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(c.status==="ACTIVE"?"Active":"Paused")+"</span></td><td><span class=\"tg\">"+({"OUTCOME_SALES":"מכירות","OUTCOME_TRAFFIC":"תנועה","OUTCOME_AWARENESS":"מודעות","OUTCOME_LEADS":"לידים","OUTCOME_ENGAGEMENT":"מעורבות","OUTCOME_APP_PROMOTION":"אפליקציה","LINK_CLICKS":"קליקים","CONVERSIONS":"המרות","REACH":"הגעה"}[c.objective]||c.objective||"-")+"</span></td><td>"+(c.daily_budget?"<span class='bud-cell' onclick='window.openBudget(this)' data-id='"+c.id+"' data-name='"+c.name+"' data-bud='"+(c.daily_budget/100)+"'>" +fmtM(c.daily_budget/100)+"/d</span>":"<span class='bud-cell' onclick='window.openBudget(this)' data-id='"+c.id+"' data-name='"+c.name+"' data-bud='0'>-</span>")+"</td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmtP(ins.ctr)+"</td>"+acts+'<td><button class="qa-btn" data-cid="'+c.id+'" data-cname="'+c.name+'" onclick="window.quickPause(this.dataset.cid,this.dataset.cname,this)">Pause</button></td>'+"</tr>";});var hx=mini?"":"<th>Purchases</th><th>Actions</th>";g(el).innerHTML="<div class='camp-cols-wrap' style='position:relative'><span></span><div style='display:flex;gap:.5rem;align-items:center'><button class='camp-cols-btn' onclick='document.getElementById(\"camp-col-picker\").classList.toggle(\"open\")'>⚙️ עמודות</button><div class='camp-cols-picker' id='camp-col-picker'><div class='camp-cols-pt'>בחר עמודות</div><label class='camp-cols-item'><input type='checkbox' id='cc-status' checked onchange='window._campColToggle&&window._campColToggle()'>סטטוס</label><label class='camp-cols-item'><input type='checkbox' id='cc-objective' checked onchange='window._campColToggle&&window._campColToggle()'>מטרה</label><label class='camp-cols-item'><input type='checkbox' id='cc-budget' checked onchange='window._campColToggle&&window._campColToggle()'>תקציב</label><label class='camp-cols-item'><input type='checkbox' id='cc-spend' checked onchange='window._campColToggle&&window._campColToggle()'>הוצאה</label><label class='camp-cols-item'><input type='checkbox' id='cc-impressions' checked onchange='window._campColToggle&&window._campColToggle()'>חשיפות</label><label class='camp-cols-item'><input type='checkbox' id='cc-ctr' checked onchange='window._campColToggle&&window._campColToggle()'>CTR</label><label class='camp-cols-item'><input type='checkbox' id='cc-clicks' onchange='window._campColToggle&&window._campColToggle()'>קליקים</label><label class='camp-cols-item'><input type='checkbox' id='cc-roas' onchange='window._campColToggle&&window._campColToggle()'>ROAS</label><button onclick='document.getElementById(\"camp-col-picker\").classList.remove(\"open\");window._campColToggle&&window._campColToggle();' style='width:100%;margin-top:.5rem;padding:.35rem;background:#4f7fff;color:#fff;border:none;border-radius:8px;font-size:.82rem;cursor:pointer;font-family:Heebo,sans-serif'>✓ החל</button></div></div></div>"+"<table id='camp-table' style='table-layout:auto;width:100%'><thead><tr><th data-col='name'>Name</th><th data-col='status'>Status</th><th data-col='objective'>Objective</th><th data-col='budget'>Budget</th><th data-col='spend'>Spend</th><th data-col='impressions'>Impressions</th><th data-col='ctr'>CTR</th><th data-col='clicks' class='col-hidden'>Clicks</th><th data-col='roas' class='col-hidden'>ROAS</th>"+hx+"</tr></thead><tbody>"+rows.join("")+"</tbody></table></div>";}
+function renderCT(el,data,mini){if(!data.length){g(el).innerHTML="<div class=\"ld\">No campaigns</div>";return;}var rows=data.map(function(c){var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var bdc=c.status==="ACTIVE"?"bac":"bpc";var acts=mini?"":"<td>"+(pvc||"-")+"</td><td><div class=\"ac\">"+(c.status==="ACTIVE"?"<button class=\"btn bsuc sm\" onclick=\"tog('"+c.id+"','PAUSED','c')\">Pause</button>":"<button class=\"btn bsuc sm\" onclick=\"tog('"+c.id+"','ACTIVE','c')\">Resume</button>")+"<button class=\"btn bg sm\" onclick=\"openEdit('"+c.id+"')\">Edit</button></div></td>";return"<tr><td style=\"font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis\">"+c.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(c.status==="ACTIVE"?"Active":"Paused")+"</span></td><td><span class=\"tg\">"+({"OUTCOME_SALES":"מכירות","OUTCOME_TRAFFIC":"תנועה","OUTCOME_AWARENESS":"מודעות","OUTCOME_LEADS":"לידים","OUTCOME_ENGAGEMENT":"מעורבות","OUTCOME_APP_PROMOTION":"אפליקציה","LINK_CLICKS":"קליקים","CONVERSIONS":"המרות","REACH":"הגעה"}[c.objective]||c.objective||"-")+"</span></td><td>"+(c.daily_budget?"<span class='bud-cell' onclick='window.openBudget(this)' data-id='"+c.id+"' data-name='"+c.name+"' data-bud='"+(c.daily_budget/100)+"'>" +fmtM(c.daily_budget/100)+"/d</span>":"<span class='bud-cell' onclick='window.openBudget(this)' data-id='"+c.id+"' data-name='"+c.name+"' data-bud='0'>-</span>")+"</td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmtP(ins.ctr)+"</td>"+acts+'<td><button class="qa-btn" data-cid="'+c.id+'" data-cname="'+c.name+'" onclick="window.quickPause(this.dataset.cid,this.dataset.cname,this)">Pause</button></td>'+"</tr>";});var hx=mini?"":"<th>Purchases</th><th>Actions</th>";g(el).innerHTML="<div class='camp-cols-wrap' style='position:relative'><span></span><div style='display:flex;gap:.5rem;align-items:center'><button class='camp-cols-btn' onclick='document.getElementById(\"camp-col-picker\").classList.toggle(\"open\")'>⚙️ עמודות</button><div class='camp-cols-picker' id='camp-col-picker'><div class='camp-cols-pt'>בחר עמודות</div><label class='camp-cols-item'><input type='checkbox' id='cc-status' checked onchange='window._campColToggle&&window._campColToggle()'>סטטוס</label><label class='camp-cols-item'><input type='checkbox' id='cc-objective' checked onchange='window._campColToggle&&window._campColToggle()'>מטרה</label><label class='camp-cols-item'><input type='checkbox' id='cc-budget' checked onchange='window._campColToggle&&window._campColToggle()'>תקציב</label><label class='camp-cols-item'><input type='checkbox' id='cc-spend' checked onchange='window._campColToggle&&window._campColToggle()'>הוצאה</label><label class='camp-cols-item'><input type='checkbox' id='cc-impressions' checked onchange='window._campColToggle&&window._campColToggle()'>חשיפות</label><label class='camp-cols-item'><input type='checkbox' id='cc-ctr' checked onchange='window._campColToggle&&window._campColToggle()'>CTR</label><label class='camp-cols-item'><input type='checkbox' id='cc-clicks' onchange='window._campColToggle&&window._campColToggle()'>קליקים</label><label class='camp-cols-item'><input type='checkbox' id='cc-roas' onchange='window._campColToggle&&window._campColToggle()'>ROAS</label><button onclick='document.getElementById(\"camp-col-picker\").classList.remove(\"open\");window._campColToggle&&window._campColToggle();' style='width:100%;margin-top:.5rem;padding:.35rem;background:#4f7fff;color:#fff;border:none;border-radius:8px;font-size:.82rem;cursor:pointer;font-family:Heebo,sans-serif'>✓ החל</button></div></div></div>"+"<table id='camp-table' style='table-layout:auto;width:100%'><thead><tr><th data-col='name'>Name</th><th data-col='status'>Status</th><th data-col='objective'>Objective</th><th data-col='budget'>Budget</th><th data-col='spend'>Spend</th><th data-col='impressions'>Impressions</th><th data-col='ctr'>CTR</th><th data-col='clicks' class='col-hidden'>Clicks</th><th data-col='roas' class='col-hidden'>ROAS</th>"+hx+"</tr></thead><tbody>"+rows.join("")+"</tbody></table></div>";}
 function loadAdsets(){g("at").innerHTML="<div class=\"ld\"><div class=\"sp\"></div></div>";apiGet("act_"+ACCT+"/adsets?fields=name,status,daily_budget,insights{spend,impressions,clicks,ctr}&limit=100&"+gdp()).then(function(r){if(!r.data||!r.data.length){g("at").innerHTML="<div class=\"ld\">No ad sets</div>";return;}var rows=r.data.map(function(a){var ins=a.insights&&a.insights.data&&a.insights.data[0]?a.insights.data[0]:{};var bdc=a.status==="ACTIVE"?"bac":"bpc";return"<tr><td style=\"font-weight:600\">"+a.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(a.status==="ACTIVE"?"Active":"Paused")+"</span></td><td>"+(a.daily_budget?fmtM(a.daily_budget/100)+"/d":"-")+"</td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmtP(ins.ctr)+"</td><td><div class=\"ac\">"+(a.status==="ACTIVE"?"<button class=\"btn bdan sm\" onclick=\"tog('"+a.id+"','PAUSED','a')\">Pause</button>":"<button class=\"btn bsuc sm\" onclick=\"tog('"+a.id+"','ACTIVE','a')\">Resume</button>")+"</div></td></tr>";});g("at").innerHTML="<table><thead><tr><th>Name</th><th>Status</th><th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th><th>Actions</th></tr></thead><tbody>"+rows.join("")+"</tbody></table></div>";}).catch(function(e){g("at").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
 g("rAdsets").addEventListener("click",loadAdsets);g("sAdsets").addEventListener("input",function(){filterTbl("at",this.value);});
 function loadAds(){g("adt").innerHTML="<div class=\"ld\"><div class=\"sp\"></div></div>";apiGet("act_"+ACCT+"/ads?fields=name,status,insights{spend,impressions,clicks,ctr}&limit=100&"+gdp()).then(function(r){if(!r.data||!r.data.length){g("adt").innerHTML="<div class=\"ld\">No ads</div>";return;}var rows=r.data.map(function(a){var ins=a.insights&&a.insights.data&&a.insights.data[0]?a.insights.data[0]:{};var bdc=a.status==="ACTIVE"?"bac":"bpc";return"<tr><td style=\"font-weight:600\">"+a.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(a.status==="ACTIVE"?"Active":"Paused")+"</span></td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmt(ins.clicks)+"</td><td>"+fmtP(ins.ctr)+"</td><td><div class=\"ac\">"+(a.status==="ACTIVE"?"<button class=\"btn bdan sm\" onclick=\"tog('"+a.id+"','PAUSED','d')\">Pause</button>":"<button class=\"btn bsuc sm\" onclick=\"tog('"+a.id+"','ACTIVE','d')\">Resume</button>")+"</div></td></tr>";});g("adt").innerHTML="<table><thead><tr><th>Name</th><th>Status</th><th>Spend</th><th>Impressions</th><th>Clicks</th><th>CTR</th><th>Actions</th></tr></thead><tbody>"+rows.join("")+"</tbody></table></div>";}).catch(function(e){g("adt").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
@@ -2520,47 +2520,42 @@ if(!e.target.closest(".camp-cols-btn")&&!e.target.closest(".camp-cols-picker")){
 <script id="paused-camps-js">
 (function(){
 function loadPaused(){
-  var sid=localStorage.getItem("sid");
-  var swEl=document.getElementById("sw");
-  var acct=swEl?swEl.value:"";
-  var el=document.getElementById("paused-camps-section");
-  if(!sid||!acct||!el)return;
-  var url="/api/meta/"+acct+"/campaigns?fields=name,status,objective,daily_budget,insights{spend,impressions,clicks,ctr,action_values}&effective_status=%5B%22PAUSED%22%5D&limit=20";
-  fetch(url,{headers:{"Authorization":sid}})
-  .then(function(r){return r.json();})
-  .then(function(d){
-    if(!d.data||d.data.length===0){el.style.display="none";return;}
-    el.style.display="";
-    var om={"OUTCOME_SALES":"Sales","OUTCOME_TRAFFIC":"Traffic","OUTCOME_AWARENESS":"Awareness","OUTCOME_LEADS":"Leads","OUTCOME_ENGAGEMENT":"Engagement"};
-    var rows=d.data.map(function(c){
-      var obj=om[c.objective]||c.objective||"-";
-      var ins=c.insights&&c.insights.data&&c.insights.data[0];
-      var spend=ins?"ILS "+parseFloat(ins.spend||0).toFixed(2):"ILS 0.00";
-      var impr=ins?parseInt(ins.impressions||0).toLocaleString():"-";
-      var ctr=ins?parseFloat(ins.ctr||0).toFixed(2)+"%":"-";
-      var budget=c.daily_budget?"ILS "+(c.daily_budget/100).toFixed(2)+"/d":"-";
-      var cid=c.id; var cname=c.name;
-      return "<tr>"+
-        "<td style=\"max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap\">"+cname+"</td>"+
-        '<td><span class="bdc bdw" style="cursor:pointer" onclick="tog(\''+cid+'\',\'ACTIVE\',\'c\')">&bull; Paused</span></td>'+
-        "<td><span class=\"tg\">"+obj+"</span></td>"+
-        "<td>"+budget+"</td>"+
-        "<td>"+spend+"</td>"+
-        "<td>"+impr+"</td>"+
-        "<td>"+ctr+"</td>"+
-        '<td><button class="btn bsuc sm" onclick="tog(\''+cid+'\',\'ACTIVE\',\'c\')">Resume</button></td>'+
-      "</tr>";
-    }).join("");
-    document.getElementById("paused-camps-tbody").innerHTML=rows;
-  }).catch(function(){});
+var sid=localStorage.getItem("sid");
+var sw=document.getElementById("sw");
+var acct=sw?sw.value:"";
+var el=document.getElementById("paused-camps-section");
+if(!sid||!acct||!el)return;
+var url="/api/meta/"+acct+"/campaigns?fields=name,status,objective,daily_budget,insights%7Bspend,impressions,ctr%7D&effective_status=%5B%22PAUSED%22%5D&limit=20";
+fetch(url,{headers:{"Authorization":sid}})
+.then(function(r){return r.json();})
+.then(function(d){
+if(!d.data||d.data.length===0){el.style.display="none";return;}
+el.style.display="";
+var om={"OUTCOME_SALES":"Sales","OUTCOME_TRAFFIC":"Traffic","OUTCOME_AWARENESS":"Awareness","OUTCOME_LEADS":"Leads","OUTCOME_ENGAGEMENT":"Engagement","OUTCOME_APP_PROMOTION":"App"};
+document.getElementById("paused-camps-tbody").innerHTML=d.data.map(function(c){
+var obj=om[c.objective]||c.objective||"-";
+var ins=c.insights&&c.insights.data&&c.insights.data[0];
+var spend=ins?"ILS "+parseFloat(ins.spend||0).toFixed(2):"ILS 0.00";
+var impr=ins?parseInt(ins.impressions||0).toLocaleString():"-";
+var ctr=ins?parseFloat(ins.ctr||0).toFixed(2)+"%":"-";
+var budget=c.daily_budget?"ILS "+(c.daily_budget/100).toFixed(2)+"/d":"-";
+var rid=c.id;
+return "<tr>"
++"<td style=\"max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap\">"+c.name+"</td>"
++"<td><span class=\"bdc bdw\" style=\"cursor:pointer\""+' onclick="window.tog('+('\'')+rid+('\'')+','+('\'')+'ACTIVE'+('\'')+','+('\'')+'c'+('\'')+")"\">&#9646; Paused</span></td>"
++"<td><span class=\"tg\">"+obj+"</span></td>"
++"<td>"+budget+"</td><td>"+spend+"</td><td>"+impr+"</td><td>"+ctr+"</td>"
++"<td><button class=\"btn bsuc sm\""+' onclick="window.tog('+('\'')+rid+('\'')+','+('\'')+'ACTIVE'+('\'')+','+('\'')+'c'+('\'')+")"\">Resume</button></td>"
++"</tr>";
+}).join("");
+}).catch(function(){});
 }
 window._loadPaused=loadPaused;
 setTimeout(function(){
-  var _ag=window.apiGet;
-  if(_ag){window.apiGet=function(){var r=_ag.apply(this,arguments);setTimeout(loadPaused,2500);return r;};}
+var ag=window.apiGet;
+if(ag){window.apiGet=function(){var r=ag.apply(this,arguments);setTimeout(loadPaused,2500);return r;};}
+setTimeout(loadPaused,3000);
 },1000);
-setTimeout(loadPaused,4000);
 })();
 </script>
-
 </body>
