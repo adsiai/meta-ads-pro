@@ -425,27 +425,26 @@ body.light .cai-summary,.body.light .cai-copy-card{background:#fff;border-color:
 body.light .kpi-picker{background:#fff;border-color:#e0e4f0}
 body.light .kpi-pi{color:#333}
 
-</style><script id="fmt-obj-js">
-function fmtObj(o){
-var m={
-"OUTCOME_SALES":"מכירות",
-"OUTCOME_TRAFFIC":"תנועה",
-"OUTCOME_AWARENESS":"מודעות",
-"OUTCOME_LEADS":"לידים",
-"OUTCOME_ENGAGEMENT":"מעורבות",
-"OUTCOME_APP_PROMOTION":"אפליקציה",
-"LINK_CLICKS":"קליקים",
-"CONVERSIONS":"המרות",
-"REACH":"הגעה",
-"BRAND_AWARENESS":"מודעות מותג",
-"VIDEO_VIEWS":"צפיות",
-"LEAD_GENERATION":"לידים",
-"MESSAGES":"הודעות"
-};
-return m[o]||o||"-";
-}
-</script>
-</head><body class="ltr">
+
+/* Campaign table column picker */
+.camp-cols-wrap{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
+.camp-cols-btn{background:none;border:1px solid #2a2a3a;border-radius:8px;color:#6b6b8a;cursor:pointer;padding:.28rem .65rem;font-size:.75rem;font-family:Heebo,sans-serif;transition:all .15s}
+.camp-cols-btn:hover{border-color:#4f7fff;color:#4f7fff}
+.camp-cols-picker{display:none;position:absolute;top:2.2rem;right:0;background:#1a1a2e;border:1px solid #2a2a3a;border-radius:12px;padding:.7rem;z-index:300;min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.camp-cols-picker.open{display:block}
+.camp-cols-pt{font-size:.72rem;color:#6b6b8a;margin-bottom:.45rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.camp-cols-item{display:flex;align-items:center;gap:.45rem;padding:.25rem 0;font-size:.82rem;color:#c0c0d0;cursor:pointer;user-select:none}
+.camp-cols-item input{accent-color:#4f7fff;cursor:pointer;width:14px;height:14px}
+.camp-cols-item:hover{color:#4f7fff}
+/* Winner badge */
+.winner-badge{display:inline-block;margin-right:4px;font-size:1rem;vertical-align:middle;cursor:help}
+.winner-row td:first-child{position:relative}
+/* Column hide */
+.col-hidden{display:none!important}
+.tw table{table-layout:auto}
+.qa-btn{white-space:nowrap}
+
+</style></head><body class="ltr">
 <div id="splash" style="position:fixed;inset:0;z-index:9998;background:#0d0d14;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem"><div style="text-align:center"><div style="font-size:2.8rem;font-weight:900;letter-spacing:-2px;background:linear-gradient(90deg,#4f8fee 0%,#00c48c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">ADSI</div><div style="font-size:.62rem;letter-spacing:.18em;color:#4a5568;margin-top:.4rem;text-transform:uppercase">AI Advertising Intelligence</div></div><div style="width:180px;height:3px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden"><div id="splash-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#4f8fee,#00c48c);border-radius:99px;transition:width .08s linear"></div></div></div>
 <div id="p0" class="wrap" style="display:none"><div class="card">
 <div style="text-align:center;margin-bottom:1.5rem"><div style="font-size:2rem;font-weight:900;letter-spacing:-1px;background:linear-gradient(90deg,#4f8fee 0%,#00c48c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">ADSI</div><div style="font-size:.6rem;letter-spacing:.18em;color:#5a6478;margin-top:.3rem;text-transform:uppercase">AI Advertising Intelligence</div><div style="width:40px;height:1px;background:rgba(255,255,255,.1);margin:.5rem auto"></div><div style="font-size:.55rem;letter-spacing:.12em;color:#3d4a5c;text-transform:uppercase">Meta Ads Pro</div></div><div class="sub" data-i18n="connectTo">Connect to manage your campaigns</div>
@@ -513,7 +512,7 @@ return m[o]||o||"-";
 </div></div><div class="cs"><canvas id="ch"></canvas></div></div>
 <div class="sh"><div class="st">Active Campaigns</div><button class="btn ba sm" data-g="camps">All</button></div>
 <div class="tw" id="dc"><div class="ld"><div class="sp"></div>
-<div id="paused-camps-section" style="margin-top:1.5rem;display:none"><div class="sh" style="margin-bottom:.5rem">Paused Campaigns</div><div class="tw"><table style="width:100%"><thead><tr><th>Name</th><th>Status</th><th>Objective</th><th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th></tr></thead><tbody id="paused-camps-tbody"></tbody></table></div></div></div></div></div>
+<div id="paused-camps-section" style="margin-top:1.5rem;display:none"><div class="sh" style="margin-bottom:.5rem">Paused Campaigns</div><div class="tw"><table style="width:100%;table-layout:auto"><thead><tr><th>Name</th><th>Status</th><th>Objective</th><th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th></tr></thead><tbody id="paused-camps-tbody"></tbody></table></div></div></div></div></div>
 <div class="pg" id="pg-camps"><div class="pt">Campaigns</div><div class="ps">All campaigns</div>
 <div class="sh"><div style="display:flex;gap:.4rem"><button class="btn bg sm" id="rCamps">Refresh</button><button class="btn ba sm" data-g="create">+ New</button></div><input class="si" id="sCamps" placeholder="Search..."></div>
 <div class="tw" id="ct"><div class="ld"><div class="sp"></div></div></div></div>
@@ -1059,7 +1058,7 @@ document.querySelectorAll("[data-g]").forEach(function(e){e.addEventListener("cl
 function sc(l,c,v,s){return"<div class=\"sc\"><div class=\"sl\">"+l+"</div><div class=\"sv\" style=\""+c+"\">"+v+"</div><div class=\"sm2\">"+s+"</div></div>";}
 window._sc=sc;window._fmtM=fmtM;window._fmt=fmt;window._fmtP=fmtP;
 function loadDash(){g("dsub").textContent="Loading...";apiGet("act_"+ACCT+"/insights?"+gdp()+"&fields=spend,impressions,clicks,ctr,actions,action_values,cost_per_action_type&level=account").then(function(ins){var d=ins.data&&ins.data[0]?ins.data[0]:{};var pv=(d.action_values||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?parseFloat(pv.value):0;var pvCount=(d.actions||[]).find(function(a){return a.action_type==="purchase";});var purchaseCount=pvCount?parseInt(pvCount.value):0;window._lastKpiData=d;var ca=(d.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});var cpa=ca?ca.value:0;var roas=pvc>0&&d.spend>0?(pvc/parseFloat(d.spend)).toFixed(2):0;g("sg").innerHTML=sc("Spend","color:#4f7fff",fmtM(d.spend),"Selected period")+sc("Impressions","color:#ff9f43",fmt(d.impressions),fmt(d.clicks)+" clicks")+sc("CTR","color:#a29bfe",fmtP(d.ctr),"Click-through rate")+sc("Purchases","color:#00e5a0",fmt(purchaseCount),"purchase events")+sc("Revenue","color:#00c48c",fmtM(pvc),"purchase revenue")+sc("CPA","color:#fd79a8",cpa?fmtM(cpa):"-","Cost per purchase")+sc("ROAS","color:#55efc4",roas?roas+"x":"-","Return on ad spend");
-if(window._kpiRender) window._kpiRender();g("dsub").textContent="Updated: "+new Date().toLocaleTimeString();}).catch(function(e){g("sg").innerHTML="<div class=\"eb\" style=\"grid-column:1/-1\">"+_fmtErr(e.message)+"</div>";});apiGet("act_"+ACCT+"/insights?time_increment=1&"+gdp()+"&fields=spend,clicks,ctr,actions,action_values,date_start").then(function(ins){drawChart(ins.data||[]);}).catch(function(){});apiGet("act_"+ACCT+"/campaigns?fields=name,status,daily_budget,insights{spend,impressions,ctr}&limit=8&effective_status=[\"ACTIVE\"]").then(function(r){renderCT("dc",r.data||[],true);}).catch(function(e){g("dc").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
+if(window._kpiRender) window._kpiRender();g("dsub").textContent="Updated: "+new Date().toLocaleTimeString();}).catch(function(e){g("sg").innerHTML="<div class=\"eb\" style=\"grid-column:1/-1\">"+_fmtErr(e.message)+"</div>";});apiGet("act_"+ACCT+"/insights?time_increment=1&"+gdp()+"&fields=spend,clicks,ctr,actions,action_values,date_start").then(function(ins){drawChart(ins.data||[]);}).catch(function(){});apiGet("act_"+ACCT+"/campaigns?fields=name,status,objective,daily_budget,insights{spend,impressions,clicks,ctr,actions,action_values,cost_per_action_type}&limit=8&effective_status=[\"ACTIVE\"]").then(function(r){renderCT("dc",r.data||[],true);}).catch(function(e){g("dc").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
 function drawChart(data){if(CHART)CHART.destroy();var lbs=data.map(function(d){return new Date(d.date_start).toLocaleDateString("en-GB",{day:"2-digit",month:"2-digit"});});var cs={spend:"#4f7fff",clicks:"#00e5a0",ctr:"#ff9f43",revenue:"#a29bfe",purchases:"#fd79a8"};var bg={spend:"rgba(79,127,255,.1)",clicks:"rgba(0,229,160,.1)",ctr:"rgba(255,159,67,.1)",revenue:"rgba(162,155,254,.1)",purchases:"rgba(253,121,168,.1)"};CHART=new Chart(g("ch").getContext("2d"),{type:"line",data:{labels:lbs,datasets:[{label:METRIC,data:data.map(function(d){
 if(METRIC==="revenue"){var rv=(d.action_values||[]).find(function(a){return a.action_type==="purchase";});return rv?parseFloat(rv.value):0;}
 if(METRIC==="purchases"){var pc=(d.actions||[]).find(function(a){return a.action_type==="purchase";});return pc?parseInt(pc.value):0;}
@@ -1068,7 +1067,7 @@ return parseFloat(d[METRIC]||0);
 document.querySelectorAll(".ctb").forEach(function(b){b.addEventListener("click",function(){METRIC=this.dataset.m;document.querySelectorAll(".ctb").forEach(function(x){x.style.cssText="";});this.style.cssText="background:rgba(79,127,255,.15);color:#4f7fff;border-color:rgba(79,127,255,.3)";refresh();});});
 function loadCamps(){g("ct").innerHTML="<div class=\"ld\"><div class=\"sp\"></div></div>";apiGet("act_"+ACCT+"/campaigns?fields=name,status,objective,daily_budget,insights{spend,impressions,clicks,ctr,actions}&limit=100&"+gdp()).then(function(r){CAMPS=r.data||[];renderCT("ct",CAMPS,false);}).catch(function(e){g("ct").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
 g("rCamps").addEventListener("click",loadCamps);g("sCamps").addEventListener("input",function(){filterTbl("ct",this.value);});
-function renderCT(el,data,mini){if(!data.length){g(el).innerHTML="<div class=\"ld\">No campaigns</div>";return;}var rows=data.map(function(c){var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var bdc=c.status==="ACTIVE"?"bac":"bpc";var acts=mini?"":"<td>"+(pvc||"-");return"<tr><td style=\"font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis\">"+c.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(c.status==="ACTIVE"?"<span class='bdc bdg' style='cursor:pointer' data-cid='"+c.id+"' data-cur='ACTIVE' onclick='window.doToggle(this)'>Active</span>":"<span class='bdc bdw' style='cursor:pointer' data-cid='"+c.id+"' data-cur='PAUSED' onclick='window.doToggle(this)'>Paused</span>")+"</span></td><td><span class=\"tg\">"+(fmtObj(c.objective)||c.objective||"-")+"</span></td><td>"+(c.daily_budget?"<span class='bud-cell' onclick='window.openBudget(this)' data-id='"+c.id+"' data-name='"+c.name+"' data-bud='"+(c.daily_budget/100)+"'>" +fmtM(c.daily_budget/100)+"/d</span>":"<span class='bud-cell' onclick='window.openBudget(this)' data-id='"+c.id+"' data-name='"+c.name+"' data-bud='0'>-</span>")+"</td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmtP(ins.ctr)+"</td>"+"<td class=\"col-hidden\" data-col=\"clicks\">"+(c.insights&&c.insights.data&&c.insights.data[0]?parseInt(c.insights.data[0].clicks||0).toLocaleString():"-")+"</td>"+"<td class=\"col-hidden\" data-col=\"roas\">"+(function(i){if(!i||!parseFloat(i.spend))return"-";var pv=(i.action_values||[]).filter(function(a){return a.action_type==="purchase";})[0];return pv?(parseFloat(pv.value)/parseFloat(i.spend)).toFixed(2)+"x":"-";})(c.insights&&c.insights.data&&c.insights.data[0])+"</td>"+acts+"</tr>";});var hx=mini?"":"<th>Purchases</th><th>Actions</th>";g(el).innerHTML="<table><thead><tr><th>Name</th><th>Status</th><th>Objective</th><th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th>"+hx+"<th data-col='clicks' class='col-hidden'>Clicks</th><th data-col='roas' class='col-hidden'>ROAS</th></tr></thead><tbody>"+rows.join("")+"</tbody></table></div>";}
+function renderCT(el,data,mini){if(!data.length){g(el).innerHTML="<div class=\"ld\">No campaigns</div>";return;}var rows=data.map(function(c){var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var bdc=c.status==="ACTIVE"?"bac":"bpc";var acts=mini?"":"<td>"+(pvc||"-")+"</td><td><div class=\"ac\">"+(c.status==="ACTIVE"?"<button class=\"btn bdan sm\" onclick=\"tog('"+c.id+"','PAUSED','c')\">Pause</button>":"<button class=\"btn bsuc sm\" onclick=\"tog('"+c.id+"','ACTIVE','c')\">Resume</button>")+"<button class=\"btn bg sm\" onclick=\"openEdit('"+c.id+"')\">Edit</button></div></td>";return"<tr><td style=\"font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis\">"+c.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(c.status==="ACTIVE"?"Active":"Paused")+"</span></td><td><span class=\"tg\">"+({"OUTCOME_SALES":"מכירות","OUTCOME_TRAFFIC":"תנועה","OUTCOME_AWARENESS":"מודעות","OUTCOME_LEADS":"לידים","OUTCOME_ENGAGEMENT":"מעורבות","OUTCOME_APP_PROMOTION":"אפליקציה","LINK_CLICKS":"קליקים","CONVERSIONS":"המרות","REACH":"הגעה"}[c.objective]||c.objective||"-")+"</span></td><td>"+(c.daily_budget?"<span class='bud-cell' onclick='window.openBudget(this)' data-id='"+c.id+"' data-name='"+c.name+"' data-bud='"+(c.daily_budget/100)+"'>" +fmtM(c.daily_budget/100)+"/d</span>":"<span class='bud-cell' onclick='window.openBudget(this)' data-id='"+c.id+"' data-name='"+c.name+"' data-bud='0'>-</span>")+"</td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmtP(ins.ctr)+"</td>"+"<td class=\"col-hidden\" data-col=\"clicks\">"+(c.insights&&c.insights.data&&c.insights.data[0]?parseInt(c.insights.data[0].clicks||0).toLocaleString():"-")+"</td>"+"<td class=\"col-hidden\" data-col=\"roas\">"+(function(i){if(!i||!parseFloat(i.spend))return"-";var pv=(i.action_values||[]).filter(function(a){return a.action_type==="purchase";})[0];return pv?(parseFloat(pv.value)/parseFloat(i.spend)).toFixed(2)+"x":"-";})(c.insights&&c.insights.data&&c.insights.data[0])+"</td>"+acts+"</tr>";});var hx=mini?"":"<th>Purchases</th><th>Actions</th>";g(el).innerHTML="<div class='camp-cols-wrap' style='position:relative'><span></span><div style='display:flex;gap:.5rem;align-items:center'><button class='camp-cols-btn' onclick='document.getElementById(\"camp-col-picker\").classList.toggle(\"open\")'>⚙️ עמודות</button><div class='camp-cols-picker' id='camp-col-picker'><div class='camp-cols-pt'>בחר עמודות</div><label class='camp-cols-item'><input type='checkbox' id='cc-status' checked onchange='window._campColToggle&&window._campColToggle()'>סטטוס</label><label class='camp-cols-item'><input type='checkbox' id='cc-objective' checked onchange='window._campColToggle&&window._campColToggle()'>מטרה</label><label class='camp-cols-item'><input type='checkbox' id='cc-budget' checked onchange='window._campColToggle&&window._campColToggle()'>תקציב</label><label class='camp-cols-item'><input type='checkbox' id='cc-spend' checked onchange='window._campColToggle&&window._campColToggle()'>הוצאה</label><label class='camp-cols-item'><input type='checkbox' id='cc-impressions' checked onchange='window._campColToggle&&window._campColToggle()'>חשיפות</label><label class='camp-cols-item'><input type='checkbox' id='cc-ctr' checked onchange='window._campColToggle&&window._campColToggle()'>CTR</label><label class='camp-cols-item'><input type='checkbox' id='cc-clicks' onchange='window._campColToggle&&window._campColToggle()'>קליקים</label><label class='camp-cols-item'><input type='checkbox' id='cc-roas' onchange='window._campColToggle&&window._campColToggle()'>ROAS</label><button onclick='document.getElementById(\"camp-col-picker\").classList.remove(\"open\");window._campColToggle&&window._campColToggle();' style='width:100%;margin-top:.5rem;padding:.35rem;background:#4f7fff;color:#fff;border:none;border-radius:8px;font-size:.82rem;cursor:pointer;font-family:Heebo,sans-serif'>✓ החל</button></div></div></div>"+"<table id='camp-table' style='table-layout:auto;width:100%'><thead><tr><th data-col='name'>Name</th><th data-col='status'>Status</th><th data-col='objective'>Objective</th><th data-col='budget'>Budget</th><th data-col='spend'>Spend</th><th data-col='impressions'>Impressions</th><th data-col='ctr'>CTR</th><th data-col='clicks' class='col-hidden'>Clicks</th><th data-col='roas' class='col-hidden'>ROAS</th>"+hx+"</tr></thead><tbody>"+rows.join("")+"</tbody></table></div>";}
 function loadAdsets(){g("at").innerHTML="<div class=\"ld\"><div class=\"sp\"></div></div>";apiGet("act_"+ACCT+"/adsets?fields=name,status,daily_budget,insights{spend,impressions,clicks,ctr}&limit=100&"+gdp()).then(function(r){if(!r.data||!r.data.length){g("at").innerHTML="<div class=\"ld\">No ad sets</div>";return;}var rows=r.data.map(function(a){var ins=a.insights&&a.insights.data&&a.insights.data[0]?a.insights.data[0]:{};var bdc=a.status==="ACTIVE"?"bac":"bpc";return"<tr><td style=\"font-weight:600\">"+a.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(a.status==="ACTIVE"?"Active":"Paused")+"</span></td><td>"+(a.daily_budget?fmtM(a.daily_budget/100)+"/d":"-")+"</td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmtP(ins.ctr)+"</td><td><div class=\"ac\">"+(a.status==="ACTIVE"?"<button class=\"btn bdan sm\" onclick=\"tog('"+a.id+"','PAUSED','a')\">Pause</button>":"<button class=\"btn bsuc sm\" onclick=\"tog('"+a.id+"','ACTIVE','a')\">Resume</button>")+"</div></td></tr>";});g("at").innerHTML="<table><thead><tr><th>Name</th><th>Status</th><th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th><th>Actions</th></tr></thead><tbody>"+rows.join("")+"</tbody></table></div>";}).catch(function(e){g("at").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
 g("rAdsets").addEventListener("click",loadAdsets);g("sAdsets").addEventListener("input",function(){filterTbl("at",this.value);});
 function loadAds(){g("adt").innerHTML="<div class=\"ld\"><div class=\"sp\"></div></div>";apiGet("act_"+ACCT+"/ads?fields=name,status,insights{spend,impressions,clicks,ctr}&limit=100&"+gdp()).then(function(r){if(!r.data||!r.data.length){g("adt").innerHTML="<div class=\"ld\">No ads</div>";return;}var rows=r.data.map(function(a){var ins=a.insights&&a.insights.data&&a.insights.data[0]?a.insights.data[0]:{};var bdc=a.status==="ACTIVE"?"bac":"bpc";return"<tr><td style=\"font-weight:600\">"+a.name+"</td><td><span class=\"bdc "+bdc+"\"><span class=\"dot\"></span>"+(a.status==="ACTIVE"?"Active":"Paused")+"</span></td><td>"+fmtM(ins.spend)+"</td><td>"+fmt(ins.impressions)+"</td><td>"+fmt(ins.clicks)+"</td><td>"+fmtP(ins.ctr)+"</td><td><div class=\"ac\">"+(a.status==="ACTIVE"?"<button class=\"btn bdan sm\" onclick=\"tog('"+a.id+"','PAUSED','d')\">Pause</button>":"<button class=\"btn bsuc sm\" onclick=\"tog('"+a.id+"','ACTIVE','d')\">Resume</button>")+"</div></td></tr>";});g("adt").innerHTML="<table><thead><tr><th>Name</th><th>Status</th><th>Spend</th><th>Impressions</th><th>Clicks</th><th>CTR</th><th>Actions</th></tr></thead><tbody>"+rows.join("")+"</tbody></table></div>";}).catch(function(e){g("adt").innerHTML="<div class=\"eb\" style=\"margin:1rem\">"+e.message+"</div>";});}
@@ -1078,7 +1077,7 @@ function openEdit(id){var c=CAMPS.find(function(x){return x.id===id;});if(!c)ret
 g("saveEdit").addEventListener("click",function(){var b={name:g("en").value.trim(),status:g("es").value};var bv=g("eb").value;if(bv)b.daily_budget=Math.round(parseFloat(bv)*100);apiPost(EID,b).then(function(){g("em").style.display="none";loadCamps();}).catch(function(e){alert("Error: "+e.message);});});
 g("cancelEdit").addEventListener("click",function(){g("em").style.display="none";});g("closeMo").addEventListener("click",function(){g("em").style.display="none";});
 g("createBtn").addEventListener("click",function(){var name=g("cn").value.trim(),budget=g("cb").value;g("cerr").style.display="none";g("cok").style.display="none";if(!name||!budget){g("cerr").style.display="block";g("cerrm").textContent="Please fill name and budget";return;}g("createBtn").textContent="Creating...";g("createBtn").disabled=true;apiPost("act_"+ACCT+"/campaigns",{name:name,objective:g("co").value,status:g("cs2").value,daily_budget:Math.round(parseFloat(budget)*100),special_ad_categories:"[]"}).then(function(){g("cok").style.display="block";g("cn").value="";g("cb").value="";}).catch(function(e){g("cerr").style.display="block";g("cerrm").textContent=e.message;}).finally(function(){g("createBtn").textContent="Create Campaign";g("createBtn").disabled=false;});});
-function runAlerts(){g("al").innerHTML="<div class=\"ld\"><div class=\"sp\"></div><span>Scanning...</span></div>";apiGet("act_"+ACCT+"/campaigns?fields=name,status,insights{spend,ctr,actions,cost_per_action_type}&limit=50&date_preset=last_7d").then(function(r){var alerts=[];(r.data||[]).forEach(function(c){if(c.status!=="ACTIVE")return;var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};var spend=parseFloat(ins.spend||0),ctr=parseFloat(ins.ctr||0);var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var ca=(ins.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});var cpa=ca?ca.value:0;if(spend>50&&pvc==0)alerts.push({cls:"ah",title:c.name+" - Spend with no conversions",desc:"Spent ILS "+spend.toFixed(0)+" with zero purchases.",id:c.id});if(ctr>0&&ctr<0.3)alerts.push({cls:"am",title:c.name+" - Low CTR ("+ctr.toFixed(2)+"%)",desc:"CTR below 0.3%."});if(cpa>200)alerts.push({cls:"am",title:c.name+" - High CPA (ILS "+parseFloat(cpa).toFixed(0)+")",desc:"High cost per purchase."});});var badge=g("alb");if(alerts.length){badge.style.display="inline";badge.textContent=alerts.length;}else{badge.style.display="none";}if(!alerts.length){g("al").innerHTML="<div class=\"ok\">All campaigns look good!</div>";return;}g("al").innerHTML=alerts.map(function(a){return"<div class=\"alc "+a.cls+"\"><div><div style=\"font-weight:700;font-size:.83rem\">"+a.title+"</div><div style=\"color:#6b6b8a;font-size:.76rem\">"+a.desc+"</div></div></div>";}).join("");}).catch(function(e){g("al").innerHTML="<div class=\"eb\">"+_fmtErr(e.message)+"</div>";});}
+function runAlerts(){g("al").innerHTML="<div class=\"ld\"><div class=\"sp\"></div><span>Scanning...</span></div>";apiGet("act_"+ACCT+"/campaigns?fields=name,status,objective,insights{spend,ctr,actions,cost_per_action_type}&limit=50&date_preset=last_7d").then(function(r){var alerts=[];(r.data||[]).forEach(function(c){if(c.status!=="ACTIVE")return;var ins=c.insights&&c.insights.data&&c.insights.data[0]?c.insights.data[0]:{};var spend=parseFloat(ins.spend||0),ctr=parseFloat(ins.ctr||0);var pv=(ins.actions||[]).find(function(a){return a.action_type==="purchase";});var pvc=pv?pv.value:0;var ca=(ins.cost_per_action_type||[]).find(function(a){return a.action_type==="purchase";});var cpa=ca?ca.value:0;if(spend>50&&pvc==0)alerts.push({cls:"ah",title:c.name+" - Spend with no conversions",desc:"Spent ILS "+spend.toFixed(0)+" with zero purchases.",id:c.id});if(ctr>0&&ctr<0.3)alerts.push({cls:"am",title:c.name+" - Low CTR ("+ctr.toFixed(2)+"%)",desc:"CTR below 0.3%."});if(cpa>200)alerts.push({cls:"am",title:c.name+" - High CPA (ILS "+parseFloat(cpa).toFixed(0)+")",desc:"High cost per purchase."});});var badge=g("alb");if(alerts.length){badge.style.display="inline";badge.textContent=alerts.length;}else{badge.style.display="none";}if(!alerts.length){g("al").innerHTML="<div class=\"ok\">All campaigns look good!</div>";return;}g("al").innerHTML=alerts.map(function(a){return"<div class=\"alc "+a.cls+"\"><div><div style=\"font-weight:700;font-size:.83rem\">"+a.title+"</div><div style=\"color:#6b6b8a;font-size:.76rem\">"+a.desc+"</div></div></div>";}).join("");}).catch(function(e){g("al").innerHTML="<div class=\"eb\">"+_fmtErr(e.message)+"</div>";});}
 g("scanBtn").addEventListener("click",runAlerts);
 window.showAITab = function(n){for(var i=1;i<=5;i++){g("aiSec"+i).style.display=i===n?"block":"none";var btn=g("aiTab"+i);if(btn){btn.className=i===n?"btn ba sm":"btn bg sm";}}};
 function getCampaignData(){return apiGet("act_"+ACCT+"/campaigns?fields=name,status,objective,daily_budget,insights{spend,impressions,clicks,ctr,actions,action_values,cost_per_action_type}&limit=100&date_preset=last_7d");}
@@ -2481,106 +2480,123 @@ else s.innerHTML="<span style='color:#e17055'>❌ Token לא פעיל — הכנ
 });
 </script>
 
+
 <script id="adsi-ext">
 (function(){
-function fmtObj(o){
-  var m={"OUTCOME_SALES":"Sales","OUTCOME_TRAFFIC":"Traffic",
-    "OUTCOME_AWARENESS":"Awareness","OUTCOME_LEADS":"Leads",
-    "OUTCOME_ENGAGEMENT":"Engagement","OUTCOME_APP_PROMOTION":"App"};
-  return m[o]||o||"-";
-}
+function fmtObj(o){var m={"OUTCOME_SALES":"Sales","OUTCOME_TRAFFIC":"Traffic","OUTCOME_AWARENESS":"Awareness","OUTCOME_LEADS":"Leads","OUTCOME_ENGAGEMENT":"Engagement","OUTCOME_APP_PROMOTION":"App"};return m[o]||o||"-";}
 window.fmtObj=fmtObj;
-function campColToggle(){
-  var cols=["status","objective","budget","spend","impressions","ctr","clicks","roas"];
-  cols.forEach(function(col){
-    var chk=document.getElementById("cc-"+col);
-    var show=chk?chk.checked:true;
-    document.querySelectorAll("[data-col]").forEach(function(el){
-      if(el.dataset.col===col) el.classList.toggle("col-hidden",!show);
-    });
-  });
+function cct(){
+var cols=["status","objective","budget","spend","impressions","ctr","clicks","roas"];
+cols.forEach(function(col){
+var chk=document.getElementById("cc-"+col);
+var show=chk?chk.checked:true;
+document.querySelectorAll("[data-col]").forEach(function(el){
+if(el.dataset&&el.dataset.col===col)el.classList.toggle("col-hidden",!show);
+});});
 }
-window._campColToggle=campColToggle;
+window._campColToggle=cct;
 window.doToggle=function(el){
-  var sid=localStorage.getItem("sid");
-  if(!sid)return;
-  var cid=el.dataset.cid;
-  var cur=el.dataset.cur;
-  var nst=cur==="ACTIVE"?"PAUSED":"ACTIVE";
-  el.textContent=nst==="PAUSED"?"Pausing...":"Activating...";
-  el.style.pointerEvents="none";
-  fetch("/api/meta/campaigns/"+cid+"/status",{
-    method:"POST",
-    headers:{"Content-Type":"application/json","Authorization":sid},
-    body:JSON.stringify({status:nst})
-  }).then(function(r){return r.json();})
-  .then(function(d){
-    if(d.success){
-      if(window.apiGet) window.apiGet();
-      setTimeout(function(){if(window._lp)window._lp();},1500);
-    }else{el.textContent=cur==="ACTIVE"?"Active":"Paused";el.style.pointerEvents="";}
-  }).catch(function(){
-    el.textContent=cur==="ACTIVE"?"Active":"Paused";
-    el.style.pointerEvents="";
-  });
+var sid=localStorage.getItem("sid");if(!sid)return;
+var cid=el.dataset.cid;var cur=el.dataset.cur;
+var nst=cur==="ACTIVE"?"PAUSED":"ACTIVE";
+el.style.pointerEvents="none";
+var orig=el.innerHTML;
+el.innerHTML=nst==="PAUSED"?"Pausing...":"Activating...";
+fetch("/api/meta/campaigns/"+cid+"/status",{
+method:"POST",
+headers:{"Content-Type":"application/json","Authorization":sid},
+body:JSON.stringify({status:nst})}).then(function(r){return r.json();})
+.then(function(d){
+if(d.success){if(window.apiGet)window.apiGet();}
+else{el.innerHTML=orig;el.style.pointerEvents="";}
+}).catch(function(){el.innerHTML=orig;el.style.pointerEvents="";});
 };
+function fixObjective(){
+document.querySelectorAll(".tw tbody tr").forEach(function(tr){
+var tds=tr.querySelectorAll("td");
+if(tds[2]&&tds[2].textContent.trim()==="-"){
+var objSpan=tds[2].querySelector(".tg");
+if(objSpan&&objSpan.textContent==="-"){
+var stSpan=tds[1]&&tds[1].querySelector("[data-cid]");
+if(stSpan){
+var cid=stSpan.dataset.cid;
+if(cid&&window._campObjMap&&window._campObjMap[cid]){
+objSpan.textContent=window._campObjMap[cid];
+}}}}})
+}
 function lp(){
-  var sid=localStorage.getItem("sid");
-  var sw=document.getElementById("sw");
-  var acct=sw?sw.value:"";
-  var el=document.getElementById("paused-camps-section");
-  if(!sid||!acct||!el)return;
-  var url="/api/meta/"+acct+"/campaigns"
-    +"?fields=name,status,objective,daily_budget,insights%7Bspend,impressions,ctr%7D"
-    +"&effective_status=%5B%22PAUSED%22%5D&limit=20";
-  fetch(url,{headers:{"Authorization":sid}})
-  .then(function(r){return r.json();})
-  .then(function(d){
-    if(!d.data||!d.data.length){el.style.display="none";return;}
-    el.style.display="";
-    var tbody=document.getElementById("paused-camps-tbody");
-    if(!tbody)return;
-    var rows=d.data.map(function(c){
-      var obj=fmtObj(c.objective);
-      var ins=c.insights&&c.insights.data&&c.insights.data[0];
-      var sp=ins?"ILS "+parseFloat(ins.spend||0).toFixed(2):"ILS 0";
-      var im=ins?parseInt(ins.impressions||0).toLocaleString():"-";
-      var ct=ins?parseFloat(ins.ctr||0).toFixed(2)+"%":"-";
-      var bg=c.daily_budget?"ILS "+(c.daily_budget/100).toFixed(2)+"/d":"-";
-      var tr=document.createElement("tr");
-      tr.innerHTML=
-        "<td style=\"max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap\">"+
-        c.name+"</td>"+
-        "<td><span class=\"bdc bdw\" style=\"cursor:pointer\" data-cid=\""+c.id+"\" data-cur=\"PAUSED\">&#9646; Paused</span></td>"+
-        "<td>"+obj+"</td>"+
-        "<td>"+bg+"</td><td>"+sp+"</td><td>"+im+"</td><td>"+ct+"</td>";
-      return tr.outerHTML;
-    });
-    tbody.innerHTML=rows.join("");
-  }).catch(function(){});
+var sid=localStorage.getItem("sid");
+var sw=document.getElementById("sw");
+var acct=sw?sw.value:"";
+var el=document.getElementById("paused-camps-section");
+if(!sid||!acct||!el)return;
+fetch("/api/meta/"+acct+"/campaigns?fields=name,status,objective,daily_budget,insights%7Bspend,impressions,ctr%7D&effective_status=%5B%22PAUSED%22%5D&limit=20",
+{headers:{"Authorization":sid}})
+.then(function(r){return r.json();})
+.then(function(d){
+if(!d.data||!d.data.length){el.style.display="none";return;}
+el.style.display="";
+document.getElementById("paused-camps-tbody").innerHTML=d.data.map(function(c){
+var obj=fmtObj(c.objective);
+var ins=c.insights&&c.insights.data&&c.insights.data[0];
+var sp=ins?"ILS "+parseFloat(ins.spend||0).toFixed(2):"ILS 0";
+var im=ins?parseInt(ins.impressions||0).toLocaleString():"-";
+var ct=ins?parseFloat(ins.ctr||0).toFixed(2)+"%":"-";
+var bg=c.daily_budget?"ILS "+(c.daily_budget/100).toFixed(2)+"/d":"-";
+var cid=c.id;
+return "<tr>"+
+"<td style=\"max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap\">"+c.name+"</td>"+
+"<td><span class=\"bdc bdw\" style=\"cursor:pointer\" data-cid=\""+cid+"\"+\" data-cur=\"PAUSED\" onclick=\"window.doToggle(this)\">&#9646; Paused</span></td>"+
+"<td>"+obj+"</td>"+
+"<td>"+bg+"</td><td>"+sp+"</td><td>"+im+"</td><td>"+ct+"</td></tr>";
+}).join("");
+}).catch(function(){});
 }
 window._lp=lp;
 function hookAG(){
-  if(window.apiGet&&!window._ph){
-    var o=window.apiGet;
-    window.apiGet=function(){
-      var r=o.apply(this,arguments);
-      setTimeout(campColToggle,600);
-      setTimeout(lp,2500);
-      return r;
-    };
-    window._ph=true;
-  }else if(!window._ph)setTimeout(hookAG,1000);
+if(window.apiGet&&!window._ph){
+var orig=window.apiGet;
+window.apiGet=function(){
+var r=orig.apply(this,arguments);
+setTimeout(function(){
+cct();
+fixObjective();
+var sid=localStorage.getItem("sid");
+var sw=document.getElementById("sw");
+var acct=sw?sw.value:"";
+if(sid&&acct){
+fetch("/api/meta/"+acct+"/campaigns?fields=id,objective&limit=20",{headers:{"Authorization":sid}})
+.then(function(r){return r.json();})
+.then(function(d){
+if(!d.data)return;
+var map={};
+d.data.forEach(function(c){map[c.id]=fmtObj(c.objective);});
+window._campObjMap=map;
+document.querySelectorAll(".tw tbody tr").forEach(function(tr){
+var tds=tr.querySelectorAll("td");
+var st=tds[1]&&tds[1].querySelector("[data-cid]");
+if(st&&map[st.dataset.cid]){
+var objSpan=tds[2]&&tds[2].querySelector(".tg");
+if(objSpan)objSpan.textContent=map[st.dataset.cid];
+}});
+}).catch(function(){});
+}
+lp();
+},800);
+return r;
+};
+window._ph=true;
+}else if(!window._ph)setTimeout(hookAG,1000);
 }
 document.addEventListener("click",function(e){
-  if(!e.target.closest(".camp-cols-btn")&&!e.target.closest(".camp-cols-picker")){
-    var p=document.getElementById("camp-col-picker");
-    if(p)p.classList.remove("open");
-  }
+if(!e.target.closest&&!e.target.parentElement)return;
+var inBtn=e.target.closest&&e.target.closest(".camp-cols-btn");
+var inPicker=e.target.closest&&e.target.closest(".camp-cols-picker");
+if(!inBtn&&!inPicker){var p=document.getElementById("camp-col-picker");if(p)p.classList.remove("open");}
 });
 setTimeout(hookAG,1000);
-function tl(){var s=localStorage.getItem("sid"),sw=document.getElementById("sw");if(s&&sw)lp();else setTimeout(tl,1500);}
-setTimeout(tl,2000);
+function tryLp(){var s=localStorage.getItem("sid"),sw=document.getElementById("sw");if(s&&sw){lp();}else setTimeout(tryLp,1500);}
+setTimeout(tryLp,2500);
 })();
 </script>
 </body>
