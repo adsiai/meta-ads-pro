@@ -512,7 +512,7 @@ body.light .kpi-pi{color:#333}
 </div></div><div class="cs"><canvas id="ch"></canvas></div></div>
 <div class="sh"><div class="st">Active Campaigns</div><button class="btn ba sm" data-g="camps">All</button></div>
 <div class="tw" id="dc"><div class="ld"><div class="sp"></div>
-<div id="paused-camps-section" style="margin-top:1.5rem;display:none"><div class="sh" style="margin-bottom:.5rem">Paused Campaigns</div><div class="tw"><table style="width:100%;table-layout:auto"><thead><tr><th>Name</th><th>Status</th><th>Objective</th><th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th></tr></thead><tbody id="paused-camps-tbody"></tbody></table></div></div></div></div></div>
+</div></div>
 <div class="pg" id="pg-camps"><div class="pt">Campaigns</div><div class="ps">All campaigns</div>
 <div class="sh"><div style="display:flex;gap:.4rem"><button class="btn bg sm" id="rCamps">Refresh</button><button class="btn ba sm" data-g="create">+ New</button></div><input class="si" id="sCamps" placeholder="Search..."></div>
 <div class="tw" id="ct"><div class="ld"><div class="sp"></div></div></div></div>
@@ -2499,32 +2499,34 @@ window.doToggle=function(el){
 var sid=localStorage.getItem("sid");if(!sid)return;
 var cid=el.dataset.cid;var cur=el.dataset.cur;
 var nst=cur==="ACTIVE"?"PAUSED":"ACTIVE";
-el.style.pointerEvents="none";
-var orig=el.innerHTML;
+el.style.pointerEvents="none";var orig=el.innerHTML;
 el.innerHTML=nst==="PAUSED"?"Pausing...":"Activating...";
-fetch("/api/meta/campaigns/"+cid+"/status",{
-method:"POST",
+fetch("/api/meta/campaigns/"+cid+"/status",{method:"POST",
 headers:{"Content-Type":"application/json","Authorization":sid},
-body:JSON.stringify({status:nst})}).then(function(r){return r.json();})
-.then(function(d){
-if(d.success){if(window.apiGet)window.apiGet();}
+body:JSON.stringify({status:nst})})
+.then(function(r){return r.json();})
+.then(function(d){if(d.success){if(window.apiGet)window.apiGet();}
 else{el.innerHTML=orig;el.style.pointerEvents="";}
 }).catch(function(){el.innerHTML=orig;el.style.pointerEvents="";});
 };
-function fixObjective(){
-document.querySelectorAll(".tw tbody tr").forEach(function(tr){
-var tds=tr.querySelectorAll("td");
-if(tds[2]&&tds[2].textContent.trim()==="-"){
-var objSpan=tds[2].querySelector(".tg");
-if(objSpan&&objSpan.textContent==="-"){
-var stSpan=tds[1]&&tds[1].querySelector("[data-cid]");
-if(stSpan){
-var cid=stSpan.dataset.cid;
-if(cid&&window._campObjMap&&window._campObjMap[cid]){
-objSpan.textContent=window._campObjMap[cid];
-}}}}})
+function ensurePausedSection(){
+if(document.getElementById("paused-camps-section"))return;
+var dc=document.getElementById("dc");
+if(!dc)return;
+var d=document.createElement("div");
+d.id="paused-camps-section";
+d.style.marginTop="1.5rem";
+d.style.display="none";
+d.innerHTML=
+"<div class=\"sh\" style=\"margin-bottom:.5rem\">Paused Campaigns</div>"+
+"<div class=\"tw\"><table style=\"width:100%;table-layout:auto\">"+
+"<thead><tr><th>Name</th><th>Status</th><th>Objective</th>"+
+"<th>Budget</th><th>Spend</th><th>Impressions</th><th>CTR</th></tr></thead>"+
+"<tbody id=\"paused-camps-tbody\"></tbody></table></div>";
+dc.parentNode.insertBefore(d,dc.nextSibling);
 }
 function lp(){
+ensurePausedSection();
 var sid=localStorage.getItem("sid");
 var sw=document.getElementById("sw");
 var acct=sw?sw.value:"";
@@ -2536,7 +2538,9 @@ fetch("/api/meta/"+acct+"/campaigns?fields=name,status,objective,daily_budget,in
 .then(function(d){
 if(!d.data||!d.data.length){el.style.display="none";return;}
 el.style.display="";
-document.getElementById("paused-camps-tbody").innerHTML=d.data.map(function(c){
+var tbody=document.getElementById("paused-camps-tbody");
+if(!tbody)return;
+tbody.innerHTML=d.data.map(function(c){
 var obj=fmtObj(c.objective);
 var ins=c.insights&&c.insights.data&&c.insights.data[0];
 var sp=ins?"ILS "+parseFloat(ins.spend||0).toFixed(2):"ILS 0";
@@ -2546,56 +2550,49 @@ var bg=c.daily_budget?"ILS "+(c.daily_budget/100).toFixed(2)+"/d":"-";
 var cid=c.id;
 return "<tr>"+
 "<td style=\"max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap\">"+c.name+"</td>"+
-"<td><span class=\"bdc bdw\" style=\"cursor:pointer\" data-cid=\""+cid+"\"+\" data-cur=\"PAUSED\" onclick=\"window.doToggle(this)\">&#9646; Paused</span></td>"+
+"<td><span class=\"bdc bdw\" style=\"cursor:pointer\" data-cid=\""+cid+"\" data-cur=\"PAUSED\" onclick=\"window.doToggle(this)\">&#9646; Paused</span></td>"+
 "<td>"+obj+"</td>"+
 "<td>"+bg+"</td><td>"+sp+"</td><td>"+im+"</td><td>"+ct+"</td></tr>";
 }).join("");
 }).catch(function(){});
 }
 window._lp=lp;
+function fixObj(){
+var sid=localStorage.getItem("sid");
+var sw=document.getElementById("sw");
+var acct=sw?sw.value:"";
+if(!sid||!acct)return;
+fetch("/api/meta/"+acct+"/campaigns?fields=id,objective&limit=30",{headers:{"Authorization":sid}})
+.then(function(r){return r.json();})
+.then(function(d){
+if(!d.data)return;
+var map={};d.data.forEach(function(c){map[c.id]=fmtObj(c.objective);});
+document.querySelectorAll(".tw tbody tr").forEach(function(tr){
+var tds=tr.querySelectorAll("td");
+var st=tds[1]&&tds[1].querySelector("[data-cid]");
+if(st&&map[st.dataset.cid]){
+var sp=tds[2]&&tds[2].querySelector(".tg");
+if(sp&&sp.textContent==="-")sp.textContent=map[st.dataset.cid];
+}});}).catch(function(){});
+}
 function hookAG(){
 if(window.apiGet&&!window._ph){
 var orig=window.apiGet;
 window.apiGet=function(){
 var r=orig.apply(this,arguments);
-setTimeout(function(){
-cct();
-fixObjective();
-var sid=localStorage.getItem("sid");
-var sw=document.getElementById("sw");
-var acct=sw?sw.value:"";
-if(sid&&acct){
-fetch("/api/meta/"+acct+"/campaigns?fields=id,objective&limit=20",{headers:{"Authorization":sid}})
-.then(function(r){return r.json();})
-.then(function(d){
-if(!d.data)return;
-var map={};
-d.data.forEach(function(c){map[c.id]=fmtObj(c.objective);});
-window._campObjMap=map;
-document.querySelectorAll(".tw tbody tr").forEach(function(tr){
-var tds=tr.querySelectorAll("td");
-var st=tds[1]&&tds[1].querySelector("[data-cid]");
-if(st&&map[st.dataset.cid]){
-var objSpan=tds[2]&&tds[2].querySelector(".tg");
-if(objSpan)objSpan.textContent=map[st.dataset.cid];
-}});
-}).catch(function(){});
-}
-lp();
-},800);
-return r;
-};
+setTimeout(function(){cct();ensurePausedSection();fixObj();lp();},1000);
+return r;};
 window._ph=true;
 }else if(!window._ph)setTimeout(hookAG,1000);
 }
 document.addEventListener("click",function(e){
-if(!e.target.closest&&!e.target.parentElement)return;
 var inBtn=e.target.closest&&e.target.closest(".camp-cols-btn");
-var inPicker=e.target.closest&&e.target.closest(".camp-cols-picker");
-if(!inBtn&&!inPicker){var p=document.getElementById("camp-col-picker");if(p)p.classList.remove("open");}
+var inP=e.target.closest&&e.target.closest(".camp-cols-picker");
+if(!inBtn&&!inP){var p=document.getElementById("camp-col-picker");if(p)p.classList.remove("open");}
 });
 setTimeout(hookAG,1000);
-function tryLp(){var s=localStorage.getItem("sid"),sw=document.getElementById("sw");if(s&&sw){lp();}else setTimeout(tryLp,1500);}
+function tryLp(){var s=localStorage.getItem("sid"),sw=document.getElementById("sw");
+if(s&&sw){ensurePausedSection();lp();fixObj();}else setTimeout(tryLp,1500);}
 setTimeout(tryLp,2500);
 })();
 </script>
